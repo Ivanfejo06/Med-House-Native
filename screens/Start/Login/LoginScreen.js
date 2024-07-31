@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image} from 'react-native';
+import { View, Text, TextInput, StyleSheet} from 'react-native';
 import Button from '../../../components/Button';
 import Logo from '../../../components/Logo';
+import Entrada from '../../../components/Entrada';
+import SmallButton from '../../../components/SmallButton'
 
 const LoginScreen = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
@@ -17,29 +19,37 @@ const LoginScreen = ({ navigation }) => {
     <View style={styles.container}>
     <Logo></Logo>
       <Text style={styles.title}>Iniciar sesión</Text>
-      <TextInput
-        style={styles.input}
+      
+      <Entrada 
         placeholder="Nombre"
         value={nombre}
         onChangeText={setNombre}
+        color="#1E98A8"
       />
-      <TextInput
-        style={styles.input}
+      
+      <Entrada 
         placeholder="Apellido"
         value={apellido}
         onChangeText={setApellido}
+        color='#00EDDF'
       />
-      <TextInput
-        style={styles.input}
+
+      <Entrada 
         placeholder="Contraseña"
-        secureTextEntry
         value={password}
         onChangeText={setPassword}
+        color="#1E98A8"
+        secureTextEntry={true}
       />
-      <Button
+
+      <SmallButton 
         title="Olvidé mi contraseña"
         onPress={() => navigation.navigate('ForgotPassword')}
+        style={styles.forgotPasswordButton}
+        textStyle={styles.forgotPasswordText}
+        color='#00EDDF'
       />
+
       <Button 
         title="Iniciar sesión" 
         onPress={handleLogin} 
@@ -57,8 +67,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
     marginBottom: 20,
+    color: "#1E98A8"
   },
   input: {
     width: '80%',
