@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Button from '../../../components/Button';
+import Entrada from '../../../components/Entrada';
+import Logo from '../../../components/LogoInverted';
 
 const RegisterDNIScreen = ({ route, navigation }) => {
   const { nombre, apellido, password, email } = route.params;
@@ -12,14 +14,18 @@ const RegisterDNIScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>←</Text>
+      </TouchableOpacity>
+      <Logo></Logo>
       <Text style={styles.title}>Ingresa tu DNI</Text>
-      <TextInput
-        style={styles.input}
+      <Entrada 
         placeholder="DNI"
         value={dni}
         onChangeText={setDni}
+        color="#1E98A8"
       />
-      <Button title="Siguiente" onPress={handleNext} />
+      <Button title="Siguiente" onPress={handleNext} style={{ backgroundColor: '#00EDDF' }} />
     </View>
   );
 };
@@ -32,15 +38,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
     marginBottom: 20,
+    marginTop: 10,
+    color: '#00EDDF'
   },
-  input: {
-    width: '80%',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#CCC',
-    marginBottom: 10,
+  backButton: {
+    position: 'relative',
+    top: 67,
+    left: -140,
+  },
+  backButtonText: {
+    fontSize: 40,
+    color: '#00EDDF'
   },
 });
 

@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,     // Tamaño de fuente según el diseño
-    fontFamily: 'Exo2-SemiBold', // Familia de fuente según el diseño
+    fontWeight: 'medium', // Hacer el texto en negrita
+    // Puedes omitir fontFamily si solo quieres usar la fuente del sistema en negrita
   },
 });
 

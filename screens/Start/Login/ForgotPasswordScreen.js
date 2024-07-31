@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Button from '../../../components/Button';
 import Logo from '../../../components/Logo';
+import Entrada from '../../../components/Entrada';
 
 const ForgotPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,18 +14,21 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-    <Logo></Logo>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>←</Text>
+      </TouchableOpacity>
+      <Logo />
       <Text style={styles.title}>Recuperar contraseña</Text>
-      <TextInput
-        style={styles.input}
+      <Entrada 
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        color='#00EDDF'
       />
       <Button 
         title="Enviar mail" 
         onPress={handleForgotPassword}
-        style={{ backgroundColor: '#00EDDF' }}
+        style={{ backgroundColor: "#1E98A8" }}
       />
     </View>
   );
@@ -38,15 +42,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     marginBottom: 20,
+    marginTop: 10,
+    color: "#1E98A8"
   },
-  input: {
-    width: '80%',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#CCC',
-    marginBottom: 10,
+  backButton: {
+    position: 'relative',
+    top: 67,
+    left: -140,
+  },
+  backButtonText: {
+    fontSize: 40,
+    color: "#1E98A8"
   },
 });
 

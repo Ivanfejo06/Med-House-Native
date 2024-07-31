@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Button from '../../../components/Button';
+import Entrada from '../../../components/Entrada';
+import Logo from '../../../components/LogoInverted';
 
 const RegisterPasswordScreen = ({ route, navigation }) => {
   const { nombre, apellido } = route.params;
@@ -14,28 +16,36 @@ const RegisterPasswordScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>←</Text>
+      </TouchableOpacity>
+      <Logo />
       <Text style={styles.title}>Escribe tu contraseña</Text>
-      <TextInput
-        style={styles.input}
+      <Entrada 
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        color="#1E98A8"
       />
-      <TextInput
-        style={styles.input}
+      <Entrada 
         placeholder="Contraseña"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        color='#00EDDF'
       />
-      <TextInput
-        style={styles.input}
+      <Entrada 
         placeholder="Repetir contraseña"
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
+        color="#1E98A8"
       />
-      <Button title="Siguiente" onPress={handleNext} />
+      <Button 
+        title="Siguiente" 
+        onPress={handleNext} 
+        style={{ backgroundColor: '#00EDDF' }} 
+      />
     </View>
   );
 };
@@ -48,15 +58,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     marginBottom: 20,
+    marginTop: 10,
+    color: '#00EDDF'
   },
-  input: {
-    width: '80%',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#CCC',
-    marginBottom: 10,
+  backButton: {
+    position: 'relative',
+    top: 67,
+    left: -140,
+  },
+  backButtonText: {
+    fontSize: 40,
+    color: '#00EDDF'
   },
 });
 

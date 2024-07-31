@@ -1,4 +1,3 @@
-// navigation.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -16,7 +15,10 @@ const Stack = createStackNavigator();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Start">
+      <Stack.Navigator
+        initialRouteName="Start"
+        screenOptions={{ headerShown: false }} // Ocultar el encabezado en todas las pantallas
+      >
         <Stack.Screen name="Start" component={StartScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="RegisterName" component={RegisterNameScreen} />
