@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Button from '../../../components/Button';
 import Logo from '../../../components/Logo';
+
+// Obtener el tamaño de la pantalla
+const { height } = Dimensions.get('window');
+
+// Calcular el espacio como un porcentaje de la altura de la pantalla
+const SPACE_HEIGHT = height * 0.195; // 19.5% de la altura de la pantalla
+const BUTTON_HEIGHT = height * 0.75;
+const BACK_HEIGHT = height * 0.218;
+const BACK_LEFT = height * 0.04;
 
 const ResetPasswordScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
@@ -14,7 +23,11 @@ const ResetPasswordScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-    <Logo></Logo>
+      <View style={styles.space}></View>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>←</Text>
+      </TouchableOpacity>
+      <Logo style={styles.logo} />
       <Text style={styles.title}>Cambiar contraseña</Text>
       <TextInput
         style={styles.input}
@@ -30,16 +43,25 @@ const ResetPasswordScreen = ({ navigation }) => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Button 
-        title="Cambiar contraseña" 
-        onPress={handleResetPassword} 
-        style={{ backgroundColor: '#00EDDF' }}
-      />
+      <View style={styles.spacebutton}>
+        <Button 
+          title="Cambiar contraseña" 
+          onPress={handleResetPassword} 
+          style={{ backgroundColor: '#00EDDF' }}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  space: {
+    height: SPACE_HEIGHT
+  },
+  spacebutton: {
+    position: 'absolute',
+    top: BUTTON_HEIGHT,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -47,8 +69,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     marginBottom: 20,
+    marginTop: 10,
+    color: '#00EDDF'
   },
   input: {
     width: '80%',
@@ -56,6 +80,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCC',
     marginBottom: 10,
+  },
+  backButton: {
+    position: 'absolute',
+    top: BACK_HEIGHT,
+    left: BACK_LEFT,
+  },
+  backButtonText: {
+    fontSize: 40,
+    color: '#00EDDF'
+  },
+  logo: {
+    width: 100, // Ajusta el tamaño del logo según sea necesario
+    height: 100,
+    marginBottom: 20,
   },
 });
 

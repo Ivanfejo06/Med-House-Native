@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
 import Logo from '../../../components/LogoInverted';
+import SmallButton from '../../../components/SmallButton';
+
+// Obtener el tamaño de la pantalla
+const { height } = Dimensions.get('window');
+
+// Calcular el espacio como un porcentaje de la altura de la pantalla
+const SPACE_HEIGHT = height * 0.195; // 19.5% de la altura de la pantalla
+const BUTTON_HEIGHT = height * 0.75;
+const BACK_HEIGHT = height * 0.218;
+const BACK_LEFT = height * 0.04;
 
 const RegisterNameScreen = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
@@ -14,6 +24,7 @@ const RegisterNameScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.space}></View>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>←</Text>
       </TouchableOpacity>
@@ -31,11 +42,20 @@ const RegisterNameScreen = ({ navigation }) => {
         onChangeText={setApellido}
         color='#00EDDF'
       />
-      <Button 
-        title="Siguiente" 
-        onPress={handleNext} 
-        style={{ backgroundColor: '#00EDDF' }} 
-      />
+      <View style={styles.spacebutton}>
+        <Button 
+          title="Siguiente" 
+          onPress={handleNext} 
+          style={{ backgroundColor: '#00EDDF' }} 
+        />
+        <SmallButton
+          title="¿Tenes cuenta?"
+          onPress={() => navigation.navigate('Login')}
+          style={styles.forgotPasswordButton}
+          textStyle={styles.forgotPasswordText}
+          color='#00EDDF'
+        />
+      </View>
     </View>
   );
 };
@@ -43,9 +63,15 @@ const RegisterNameScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
+  },
+  space: {
+    height: SPACE_HEIGHT
+  },
+  spacebutton: {
+    position: 'absolute',
+    top: BUTTON_HEIGHT
   },
   title: {
     fontSize: 40,
@@ -54,13 +80,14 @@ const styles = StyleSheet.create({
     color: '#00EDDF'
   },
   backButton: {
-    position: 'relative',
-    top: 67,
-    left: -140,
+    position: 'absolute',
+    top: BACK_HEIGHT,
+    left: BACK_LEFT,
   },
   backButtonText: {
     fontSize: 40,
-    color: '#00EDDF'
+    color: '#00EDDF',
+    fontWeight: 'medium'
   },
 });
 
