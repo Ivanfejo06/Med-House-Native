@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
 import Logo from '../../../components/LogoInverted';
@@ -18,27 +18,35 @@ const RegisterDNIScreen = ({ route, navigation }) => {
   const [dni, setDni] = useState('');
 
   const handleNext = () => {
-    navigation.navigate('RegisterPhoto', { nombre, apellido, password, email, dni });
+    if (dni.length === 8) {
+      Keyboard.dismiss(); // Oculta el teclado
+      navigation.navigate('RegisterPhoto', { nombre, apellido, password, email, dni });
+    } else {
+      alert('Por favor, ingrese un DNI válido de 8 dígitos.');
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.space}></View>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>←</Text>
-      </TouchableOpacity>
-      <Logo />
-      <Text style={styles.title}>Ingresa tu DNI</Text>
-      <Entrada 
-        placeholder="DNI"
-        value={dni}
-        onChangeText={setDni}
-        color="#1E98A8"
-      />
-      <View style={styles.spacebutton}>
-        <Button title="Siguiente" onPress={handleNext} style={{ backgroundColor: '#00EDDF' }} />
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <View style={styles.space}></View>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+        <Logo />
+        <Text style={styles.title}>Ingresa tu DNI</Text>
+        <Entrada 
+          placeholder="DNI"
+          value={dni}
+          onChangeText={setDni}
+          color="#1E98A8"
+          isDni={true} // Asegúrate de que el componente Entrada maneje esto correctamente
+        />
+        <View style={styles.spacebutton}>
+          <Button title="Siguiente" onPress={handleNext} style={{ backgroundColor: '#00EDDF' }} />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

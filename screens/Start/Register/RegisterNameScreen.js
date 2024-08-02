@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
 import Logo from '../../../components/LogoInverted';
 import SmallButton from '../../../components/SmallButton';
 
-// Obtener el tamaño de la pantalla
 const { height } = Dimensions.get('window');
-
-// Calcular el espacio como un porcentaje de la altura de la pantalla
-const SPACE_HEIGHT = height * 0.195; // 19.5% de la altura de la pantalla
+const SPACE_HEIGHT = height * 0.195;
 const BUTTON_HEIGHT = height * 0.75;
 const BACK_HEIGHT = height * 0.218;
 const BACK_LEFT = height * 0.04;
@@ -23,40 +20,42 @@ const RegisterNameScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.space}></View>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>←</Text>
-      </TouchableOpacity>
-      <Logo />
-      <Text style={styles.title}>Crear cuenta</Text>
-      <Entrada 
-        placeholder="Nombre"
-        value={nombre}
-        onChangeText={setNombre}
-        color="#1E98A8"
-      />
-      <Entrada 
-        placeholder="Apellido"
-        value={apellido}
-        onChangeText={setApellido}
-        color='#00EDDF'
-      />
-      <View style={styles.spacebutton}>
-        <Button 
-          title="Siguiente" 
-          onPress={handleNext} 
-          style={{ backgroundColor: '#00EDDF' }} 
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <View style={styles.space}></View>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+        <Logo />
+        <Text style={styles.title}>Crear cuenta</Text>
+        <Entrada 
+          placeholder="Nombre"
+          value={nombre}
+          onChangeText={setNombre}
+          color="#1E98A8"
         />
-        <SmallButton
-          title="¿Tenes cuenta?"
-          onPress={() => navigation.navigate('Login')}
-          style={styles.forgotPasswordButton}
-          textStyle={styles.forgotPasswordText}
+        <Entrada 
+          placeholder="Apellido"
+          value={apellido}
+          onChangeText={setApellido}
           color='#00EDDF'
         />
+        <View style={styles.spacebutton}>
+          <Button 
+            title="Siguiente" 
+            onPress={handleNext} 
+            style={{ backgroundColor: '#00EDDF' }} 
+          />
+          <SmallButton
+            title="¿Tenes cuenta?"
+            onPress={() => navigation.navigate('Login')}
+            style={styles.forgotPasswordButton}
+            textStyle={styles.forgotPasswordText}
+            color='#00EDDF'
+          />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

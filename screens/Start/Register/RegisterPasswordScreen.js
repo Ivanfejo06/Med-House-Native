@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
 import Logo from '../../../components/LogoInverted';
 
-// Obtener el tamaño de la pantalla
 const { height } = Dimensions.get('window');
-
-// Calcular el espacio como un porcentaje de la altura de la pantalla
-const SPACE_HEIGHT = height * 0.195; // 19.5% de la altura de la pantalla
+const SPACE_HEIGHT = height * 0.195;
 const BUTTON_HEIGHT = height * 0.75;
 const BACK_HEIGHT = height * 0.218;
 const BACK_LEFT = height * 0.04;
@@ -24,41 +21,43 @@ const RegisterPasswordScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.space}></View>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>←</Text>
-      </TouchableOpacity>
-      <Logo />
-      <Text style={styles.title}>Escribe tu contraseña</Text>
-      <Entrada 
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        color="#1E98A8"
-      />
-      <Entrada 
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        color='#00EDDF'
-      />
-      <Entrada 
-        placeholder="Repetir contraseña"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        color="#1E98A8"
-      />
-      <View style={styles.spacebutton}>
-        <Button 
-          title="Siguiente" 
-          onPress={handleNext} 
-          style={{ backgroundColor: '#00EDDF' }} 
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <View style={styles.space}></View>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+        <Logo />
+        <Text style={styles.title}>Escribe tu contraseña</Text>
+        <Entrada 
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          color="#1E98A8"
         />
+        <Entrada 
+          placeholder="Contraseña"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          color='#00EDDF'
+        />
+        <Entrada 
+          placeholder="Repetir contraseña"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          color="#1E98A8"
+        />
+        <View style={styles.spacebutton}>
+          <Button 
+            title="Siguiente" 
+            onPress={handleNext} 
+            style={{ backgroundColor: '#00EDDF' }} 
+          />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
