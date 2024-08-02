@@ -9,7 +9,11 @@ import RegisterNameScreen from './screens/Start/Register/RegisterNameScreen';
 import RegisterPasswordScreen from './screens/Start/Register/RegisterPasswordScreen';
 import RegisterDNIScreen from './screens/Start/Register/RegisterDNIScreen';
 import RegisterPhotoScreen from './screens/Start/Register/RegisterPhotoScreen';
-import HomeScreen from './screens/Home/HomeScreen'; // Importa la pantalla Home
+import HomeScreen from './screens/Home/HomeScreen'; 
+import BolsaScreen from './screens/Home/BolsaScreen';
+import DonacionesScreen from './screens/Home/DonacionesScreen';
+import NotificacionesScreen from './screens/Home/NotificacionesScreen';
+import ProfileIndex from './screens/Profile/ProfileIndex';
 
 const Stack = createStackNavigator();
 
@@ -18,17 +22,43 @@ const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Start"
-        screenOptions={{ headerShown: false }} // Ocultar el encabezado en todas las pantallas
+        screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="Start" component={StartScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false }} />
+        {/* LOGIN ROUTES */}
+        <Stack.Screen name="Start" component={StartScreen} options={{ gestureEnabled: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="RegisterName" component={RegisterNameScreen} />
         <Stack.Screen name="RegisterPassword" component={RegisterPasswordScreen} />
         <Stack.Screen name="RegisterDNI" component={RegisterDNIScreen} />
         <Stack.Screen name="RegisterPhoto" component={RegisterPhotoScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} options={{ gestureEnabled: false }} />
+
+        {/* NAVBAR ROUTES */}
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{ gestureEnabled: false, animationEnabled: false }} 
+        />
+        <Stack.Screen 
+          name="Bolsa" 
+          component={BolsaScreen} 
+          options={{ gestureEnabled: false, animationEnabled: false }} 
+        />
+        <Stack.Screen 
+          name="Donaciones" 
+          component={DonacionesScreen} 
+          options={{ gestureEnabled: false, animationEnabled: false }} 
+        />
+        <Stack.Screen 
+          name="Notificaciones" 
+          component={NotificacionesScreen} 
+          options={{ gestureEnabled: false, animationEnabled: false }} 
+        />
+
+        {/* SETTINGS ROUTES */}
+        <Stack.Screen name="ProfileIndex" component={ProfileIndex} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

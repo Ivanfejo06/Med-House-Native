@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
 
-const HomeScreen = ({ navigation }) => {
+const DonacionesScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TopBar
@@ -11,11 +11,11 @@ const HomeScreen = ({ navigation }) => {
         selected="home"
       />
       <View style={styles.content}>
-        <Text>Home Anashe</Text>
+        <Text>Donaciones Anashe</Text>
       </View>
       <NavBar 
         navigation={navigation} // Pasar la función de navegación al NavBar
-        selected="home" // Indica que el ícono de Home está seleccionado
+        selected="donaciones" // Indica que el ícono de Home está seleccionado
       />
     </View>
   );
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+export default DonacionesScreen;

@@ -15,8 +15,7 @@ const BACK_HEIGHT = height * 0.218;
 const BACK_LEFT = height * 0.04;
 
 const LoginScreen = ({ navigation }) => {
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
+  const [DNI, setDNI] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
@@ -33,22 +32,16 @@ const LoginScreen = ({ navigation }) => {
       <Text style={styles.title}>Iniciar sesión</Text>
       <View>
         <Entrada 
-          placeholder="Nombre"
-          value={nombre}
-          onChangeText={setNombre}
+          placeholder="DNI"
+          value={DNI}
+          onChangeText={setDNI}
           color='#00EDDF'
-        />
-        <Entrada 
-          placeholder="Apellido"
-          value={apellido}
-          onChangeText={setApellido}
-          color="#1E98A8"
         />
         <Entrada 
           placeholder="Contraseña"
           value={password}
           onChangeText={setPassword}
-          color='#00EDDF'
+          color='#1E98A8'
           secureTextEntry={true}
         />
         <SmallButton 
@@ -56,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('ForgotPassword')}
           style={styles.forgotPasswordButton}
           textStyle={styles.forgotPasswordText}
-          color="#1E98A8"
+          color="#00EDDF"
         />
       </View>
       <View style={styles.spacebutton}>
