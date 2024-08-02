@@ -20,8 +20,7 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Manejar inicio de sesión
-    console.log('Iniciar sesión presionado');
+    navigation.replace('Home');
   };
 
   return (
