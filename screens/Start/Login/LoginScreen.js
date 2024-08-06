@@ -34,6 +34,7 @@ const LoginScreen = ({ navigation }) => {
             value={DNI}
             onChangeText={setDNI}
             color='#00EDDF'
+            isDni={true}
           />
           <Entrada 
             placeholder="Contraseña"
