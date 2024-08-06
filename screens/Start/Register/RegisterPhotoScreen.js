@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Button from '../../../components/Button';
 import Logo from '../../../components/LogoInverted';
+import BackButton from '../../../components/BackButton';
 
+// Obtener el tamaño de la pantalla
 const { height } = Dimensions.get('window');
-const SPACE_HEIGHT = height * 0.195;
+
+// Calcular el espacio como un porcentaje de la altura de la pantalla
+const SPACE_HEIGHT = height * 0.195; // 19.5% de la altura de la pantalla
 const BUTTON_HEIGHT = height * 0.75;
-const BACK_HEIGHT = height * 0.218;
-const BACK_LEFT = height * 0.04;
 
 const RegisterPhotoScreen = ({ route, navigation }) => {
   const { nombre, apellido, password, email, dni } = route.params;
@@ -18,12 +20,10 @@ const RegisterPhotoScreen = ({ route, navigation }) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.space}></View>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
+        <BackButton onPress={() => navigation.goBack()} />
         <Logo />
         <Text style={styles.title}>Foto de perfil</Text>
         <Button 
@@ -61,16 +61,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
     color: '#00EDDF'
-  },
-  backButton: {
-    position: 'absolute',
-    top: BACK_HEIGHT,
-    left: BACK_LEFT,
-  },
-  backButtonText: {
-    fontSize: 40,
-    color: '#00EDDF',
-    fontWeight: 'medium'
   },
 });
 

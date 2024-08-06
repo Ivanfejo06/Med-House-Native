@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
 import Logo from '../../../components/LogoInverted';
+import BackButton from '../../../components/BackButton';
 
 // Obtener el tamaño de la pantalla
 const { height } = Dimensions.get('window');
@@ -10,40 +11,34 @@ const { height } = Dimensions.get('window');
 // Calcular el espacio como un porcentaje de la altura de la pantalla
 const SPACE_HEIGHT = height * 0.195; // 19.5% de la altura de la pantalla
 const BUTTON_HEIGHT = height * 0.75;
-const BACK_HEIGHT = height * 0.218;
-const BACK_LEFT = height * 0.04;
 
 const RegisterDNIScreen = ({ route, navigation }) => {
   const { nombre, apellido, password, email } = route.params;
-  const [dni, setDni] = useState('');
+  const [dni, setDNI] = useState('');
 
   const handleNext = () => {
-    if (dni.length === 8) {
-      Keyboard.dismiss(); // Oculta el teclado
-      navigation.navigate('RegisterPhoto', { nombre, apellido, password, email, dni });
-    } else {
-      alert('Por favor, ingrese un DNI válido de 8 dígitos.');
-    }
+    navigation.navigate('RegisterPhoto', { nombre, apellido, password, email, dni });
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.space}></View>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
+        <BackButton onPress={() => navigation.goBack()} />
         <Logo />
-        <Text style={styles.title}>Ingresa tu DNI</Text>
+        <Text style={styles.title}>Ingrese su DNI</Text>
         <Entrada 
           placeholder="DNI"
           value={dni}
-          onChangeText={setDni}
-          color="#1E98A8"
-          isDni={true} // Asegúrate de que el componente Entrada maneje esto correctamente
+          onChangeText={setDNI}
+          color='#00EDDF'
         />
         <View style={styles.spacebutton}>
-          <Button title="Siguiente" onPress={handleNext} style={{ backgroundColor: '#00EDDF' }} />
+          <Button 
+            title="Siguiente" 
+            onPress={handleNext} 
+            style={{ backgroundColor: '#00EDDF' }} 
+          />
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -64,20 +59,10 @@ const styles = StyleSheet.create({
     top: BUTTON_HEIGHT
   },
   title: {
-    fontSize: 40,
+    fontSize: 32,
     marginBottom: 20,
     marginTop: 10,
     color: '#00EDDF'
-  },
-  backButton: {
-    position: 'absolute',
-    top: BACK_HEIGHT,
-    left: BACK_LEFT,
-  },
-  backButtonText: {
-    fontSize: 40,
-    color: '#00EDDF',
-    fontWeight: 'medium'
   },
 });
 
