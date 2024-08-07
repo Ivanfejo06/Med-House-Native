@@ -32,6 +32,7 @@ const RegisterDNIScreen = ({ route, navigation }) => {
           value={dni}
           onChangeText={setDNI}
           color='#00EDDF'
+          isDni={true}
         />
         <View style={styles.spacebutton}>
           <Button 

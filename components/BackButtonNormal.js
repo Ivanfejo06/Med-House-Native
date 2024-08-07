@@ -1,5 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+
+// Obtener el tamaño de la pantalla
+const { height } = Dimensions.get('window');
+
+// Calcular el espacio como un porcentaje de la altura de la pantalla
+const BACK_HEIGHT = height * 0.083
+const BACK_LEFT = height * 0.02;
 
 const BackButton = ({ onPress }) => {
   return (

@@ -1,17 +1,17 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 
 // Obtener el tamaño de la pantalla
 const { height } = Dimensions.get('window');
 
 // Calcular el espacio como un porcentaje de la altura de la pantalla
-const BACK_HEIGHT = height * 0.218;
+const BACK_HEIGHT = height * 0.235;
 const BACK_LEFT = height * 0.04;
 
 const BackButton = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.backButton} onPress={onPress}>
-      <Image source={require('../assets/BackBlue.png')} style={styles.backButtonText}/>
+      <Image source={require('../assets/Back.png')} style={styles.backButtonText}/>
     </TouchableOpacity>
   );
 };
