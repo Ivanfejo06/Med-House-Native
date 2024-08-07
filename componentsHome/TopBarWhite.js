@@ -14,8 +14,13 @@ const TopBarWhite = ({ navigation, title }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>
-        <BackButton onPress={navigation} />
-        <Text style={styles.title}>{title}</Text>
+        <View style={styles.sectionLeft}>
+          <BackButton onPress={navigation} />
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
+        <View style={styles.section}></View>
       </View>
     </View>
   );
@@ -43,12 +48,20 @@ const styles = StyleSheet.create({
     width: LINER_WIDTH,
     height: LINER_HEIGHT,
     position: 'absolute',
-    bottom: HEIGHT/2, 
+    bottom: HEIGHT / 2, 
   },
-  title:{
-    fontWeight: "bold",
-    fontSize: 18
-  }
+  section: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  sectionLeft: {
+    flex: 1,
+    alignItems: 'left',
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
 });
 
 export default TopBarWhite;

@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Button, StyleSheet, Dimensions } from 'react-native';
+import { View, Button, StyleSheet, Dimensions, Text, Image } from 'react-native';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
+import ProfileNavigator from '../../componentsHome/ProfileNavigator';
 
 const { height } = Dimensions.get('window');
 
@@ -17,7 +18,34 @@ const ProfileIndex = ({ navigation }) => {
         title="Perfil"
       />
       <View style={styles.content}>
-        <Button title="Logout" onPress={() => navigation.navigate('Start')} />
+        <View style={styles.salute}>
+          <Image source={require('../../assets/Face.png')} style={styles.foto} />
+          <View style={styles.user}>
+            <Text style={styles.hello}>Hola!</Text>
+            <Text style={styles.name}>Juanito Perez</Text>
+          </View>
+        </View>
+
+        <ProfileNavigator
+          onPress={() => navigation.goBack()}
+          text={"Mi Perfil"}
+        />
+        <ProfileNavigator
+          onPress={() => navigation.goBack()}
+          text={"Autenticación"}
+        />
+        <ProfileNavigator
+          onPress={() => navigation.goBack()}
+          text={"Donaciones"}
+        />
+        <ProfileNavigator
+          onPress={() => navigation.goBack()}
+          text={"Deseados"}
+        />
+        <ProfileNavigator
+          onPress={() => navigation.navigate('Start')}
+          text={"Cerrar Sesión"}
+        />
       </View>
     </View>
   );
@@ -38,6 +66,27 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  salute:{
+    flexDirection: 'row',
+    justifyContent: "center",
+    margin: 40
+  },
+  foto: {
+    width: 100,
+    height: 100
+  },
+  user:{
+    flexDirection: "column",
+    justifyContent: "center"
+  },
+  hello:{
+    fontSize: 20,
+  },
+  name:{
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1E98A8"
   }
 });
 
