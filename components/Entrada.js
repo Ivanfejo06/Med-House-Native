@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions, Keyboard } from 'react-native';
+
+const { height, width } = Dimensions.get('window');
+
+// Definir constantes para width y height en porcentaje
+const INPUT_WIDTH = height * 0.3509; // Ajusta el porcentaje según lo necesario
+const INPUT_HEIGHT = height * 0.03873; // Ajusta el porcentaje según lo necesario
 
 const Entrada = ({ placeholder, value, onChangeText, color, secureTextEntry, isDni }) => {
   const [formattedValue, setFormattedValue] = useState('');
@@ -55,8 +61,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: 263,
-    height: 33,
+    width: INPUT_WIDTH,
+    height: INPUT_HEIGHT,
     borderBottomWidth: 2,
     fontSize: 18,
     paddingLeft: 10,
