@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import { TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 // Obtener el tamaño de la pantalla
 const { height } = Dimensions.get('window');
@@ -11,7 +11,7 @@ const BACK_LEFT = height * 0.04;
 const BackButton = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.backButton} onPress={onPress}>
-      <Text style={styles.backButtonText}>←</Text>
+      <Image source={require('../assets/BackBlue.png')} style={styles.backButtonText}/>
     </TouchableOpacity>
   );
 };
@@ -23,9 +23,8 @@ const styles = StyleSheet.create({
     left: BACK_LEFT,
   },
   backButtonText: {
-    fontSize: 40,
-    color: '#00EDDF',
-    fontWeight: 'medium'
+    width:25,
+    height: 20
   },
 });
 

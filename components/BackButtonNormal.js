@@ -4,7 +4,7 @@ import { TouchableOpacity, StyleSheet, Image } from 'react-native';
 const BackButton = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.backButton} onPress={onPress}>
-      <Image source={require('../assets/Back.png')} style={styles.backButtonText}/>
+      <Image source={require('../assets/BackBlue.png')} style={styles.backButtonText}/>
     </TouchableOpacity>
   );
 };
