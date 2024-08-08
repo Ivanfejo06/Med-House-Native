@@ -55,6 +55,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    bottom: 0,
+    position: "absolute"
   },
   liner: {
     flexDirection: 'row',
@@ -71,7 +73,8 @@ const styles = StyleSheet.create({
   icon: {
     width: BORDERRADIUS,
     height: BORDERRADIUS,
-    overflow: "visible"
+    overflow: "visible",
+    objectFit: "contain"
   },
   selectedIcon: {
     tintColor: '#1E98A8', 

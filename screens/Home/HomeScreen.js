@@ -1,24 +1,25 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
+
+const { height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TopBar
         navigation={navigation}
-        selected="home"
       />
       <View style={styles.content}>
         <View style={styles.top}>
-        <Image style={styles.favs} source={require("../../assets/Heart.png")}/>
-          <Image style={styles.favs} source={require("../../assets/Heart.png")}/>
+          <Image style={styles.favs} source={require("../../assets/Options.png")}/>
+          <Image style={styles.favsH} source={require("../../assets/Heart.png")}/>
         </View>
       </View>
       <NavBar 
-        navigation={navigation} // Pasar la función de navegación al NavBar
-        selected="home" // Indica que el ícono de Home está seleccionado
+        navigation={navigation}
+        selected="home"
       />
     </View>
   );
@@ -26,21 +27,30 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'space-between', 
-    alignItems: 'center',
+    height: height
   },
   content: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
   },
   top:{
     flexDirection: "row",
-    height: 50,
-    width: 393,
-    justifyContent: "space-between"
+    width: 333,
+    justifyContent: "space-between",
+    margin: 20
   },
   favs:{
-    height: 22,
-    width: 22
+    height: 30,
+    width: 30,
+    overflow: "visible",
+    objectFit: "contain"
+  },
+  favsH:{
+    height: 27,
+    width: 27,
+    overflow: "visible",
+    objectFit: "contain"
   }
 });
 

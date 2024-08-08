@@ -1,21 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
+
+const { height } = Dimensions.get('window');
 
 const DonacionesScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TopBar
         navigation={navigation}
-        selected="home"
       />
       <View style={styles.content}>
-        <Text>Donaciones Anashe</Text>
+        <Text>Donations</Text>
       </View>
       <NavBar 
-        navigation={navigation} // Pasar la función de navegación al NavBar
-        selected="donaciones" // Indica que el ícono de Home está seleccionado
+        navigation={navigation}
+        selected="donaciones"
       />
     </View>
   );
@@ -23,13 +24,24 @@ const DonacionesScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'space-between', 
-    alignItems: 'center',
+    height: height
   },
   content: {
-    flex: 1,
-    justifyContent: 'center', 
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  favs:{
+    height: 30,
+    width: 30,
+    overflow: "visible",
+    objectFit: "contain"
+  },
+  favsH:{
+    height: 27,
+    width: 27,
+    overflow: "visible",
+    objectFit: "contain"
   }
 });
 

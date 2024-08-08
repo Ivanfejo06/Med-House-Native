@@ -10,7 +10,7 @@ const SEARCH_WIDTH = height * 0.373239;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
 
-const TopBar = ({ navigation, selected }) => {
+const TopBar = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>

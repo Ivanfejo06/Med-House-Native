@@ -43,13 +43,15 @@ const styles = StyleSheet.create({
   centre:{
     flexDirection:"row",
     justifyContent: "flex-start",
+    alignItems: "center",
     width: HEIGHT
   },
   image: {
     width: 30,
     height: 30,
     marginRight: 10,
-    overflow: "visible"
+    overflow: "visible",
+    objectFit: "contain"
   },
   text: {
     color: '#A8A8A8',
