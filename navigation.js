@@ -14,6 +14,8 @@ import BolsaScreen from './screens/Home/BolsaScreen';
 import DonacionesScreen from './screens/Home/DonacionesScreen';
 import NotificacionesScreen from './screens/Home/NotificacionesScreen';
 import ProfileIndex from './screens/Profile/ProfileIndex';
+import ProfileScreen from './screens/Profile/ProfileScreen';
+import AuthenticationScreen from './screens/Profile/AuthenticationScreen';
 
 const Stack = createStackNavigator();
 
@@ -58,7 +60,8 @@ const AppNavigator = () => {
 
         {/* SETTINGS ROUTES */}
         <Stack.Screen name="ProfileIndex" component={ProfileIndex} />
-
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="AuthenticationScreen" component={AuthenticationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

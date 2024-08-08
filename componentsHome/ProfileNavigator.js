@@ -1,13 +1,28 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
 
-const ProfileNavigator = ({ onPress, text }) => {
+const { height } = Dimensions.get('window');
+
+const HEIGHT = height * 0.18;
+
+// Mapa de imágenes
+const imageMap = {
+  image1: require('../assets/Profile.png'),
+  image2: require('../assets/Auth.png'),
+  image3: require('../assets/DonacionesBig.png'),
+  image4: require('../assets/Deseados.png'),
+  image5: require('../assets/Logout.png'),
+};
+
+const ProfileNavigator = ({ onPress, text, image }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-        <View style={styles.middle}>
-            <Image style={styles.image} />
-            <Text style={styles.text}>{text}</Text>
+      <View style={styles.middle}>
+        <View style={styles.centre}>
+          <Image style={styles.image} source={imageMap[image]} />
+          <Text style={styles.text}>{text}</Text>
         </View>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -23,14 +38,18 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   middle:{
-    flexDirection:"row",
     alignItems: "center" 
   },
+  centre:{
+    flexDirection:"row",
+    justifyContent: "flex-start",
+    width: HEIGHT
+  },
   image: {
-    // Ajusta el tamaño de la imagen según sea necesario
     width: 30,
     height: 30,
     marginRight: 10,
+    overflow: "visible"
   },
   text: {
     color: '#A8A8A8',

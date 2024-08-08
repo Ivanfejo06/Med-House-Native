@@ -27,22 +27,27 @@ const ProfileIndex = ({ navigation }) => {
         </View>
 
         <ProfileNavigator
-          onPress={() => navigation.goBack()}
+          image={"image1"}
+          onPress={() => navigation.navigate("ProfileScreen")}
           text={"Mi Perfil"}
         />
         <ProfileNavigator
-          onPress={() => navigation.goBack()}
+          image={"image2"}
+          onPress={() => navigation.navigate("AuthenticationScreen")}
           text={"Autenticación"}
         />
         <ProfileNavigator
-          onPress={() => navigation.goBack()}
+          image={"image3"}
+          onPress={() => navigation.navigate("Donaciones")}
           text={"Donaciones"}
         />
         <ProfileNavigator
-          onPress={() => navigation.goBack()}
+          image={"image4"}
+          onPress={() => navigation.navigate("Bolsa")} //CAMBIAR RUTA DESPUES DE CREAR DESEADOS DENTRO DE BOLSA
           text={"Deseados"}
         />
         <ProfileNavigator
+          image={"image5"}
           onPress={() => navigation.navigate('Start')}
           text={"Cerrar Sesión"}
         />
