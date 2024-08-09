@@ -1,57 +1,66 @@
-import React from 'react';
-import { View, StyleSheet, Image, Dimensions } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, Image, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
 
 const { height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current; // Inicializa la opacidad en 0
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1, // Cambia la opacidad a 1
+      duration: 1000, // Duración de la animación en milisegundos
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
   return (
-    <View style={styles.container}>
-      <TopBar
-        navigation={navigation}
-      />
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      <TopBar navigation={navigation} />
       <View style={styles.content}>
         <View style={styles.top}>
-          <Image style={styles.favs} source={require("../../assets/Options.png")}/>
-          <Image style={styles.favsH} source={require("../../assets/Heart.png")}/>
+          <TouchableOpacity>
+            <Image style={styles.favs} source={require("../../assets/Options.png")} />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Image style={styles.favsH} source={require("../../assets/Heart.png")} />
+          </TouchableOpacity>
         </View>
       </View>
-      <NavBar 
-        navigation={navigation}
-        selected="home"
-      />
-    </View>
+      <NavBar navigation={navigation} selected="home" />
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: height
+    height: height,
   },
   content: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  top:{
-    flexDirection: "row",
+  top: {
+    flexDirection: 'row',
     width: 333,
-    justifyContent: "space-between",
-    margin: 20
+    justifyContent: 'space-between',
+    margin: 20,
   },
-  favs:{
+  favs: {
     height: 30,
     width: 30,
-    overflow: "visible",
-    objectFit: "contain"
+    overflow: 'visible',
+    objectFit: 'contain',
   },
-  favsH:{
+  favsH: {
     height: 27,
     width: 27,
-    overflow: "visible",
-    objectFit: "contain"
-  }
+    overflow: 'visible',
+    objectFit: 'contain',
+  },
 });
 
 export default HomeScreen;

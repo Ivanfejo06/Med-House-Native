@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert, Animated } from 'react-native';
+import axios from 'axios';
 import Button from '../../../components/Button';
 import Logo from '../../../components/Logo';
 import Entrada from '../../../components/Entrada';
@@ -16,14 +17,44 @@ const BUTTON_HEIGHT = height * 0.75;
 const LoginScreen = ({ navigation }) => {
   const [DNI, setDNI] = useState('');
   const [password, setPassword] = useState('');
+  const fadeAnim = useRef(new Animated.Value(1)).current; // Valor inicial de la opacidad
 
-  const handleLogin = () => {
-    navigation.replace('Home');
+  const handleLogin = async () => {
+    try {
+      // Reemplaza esta URL con la URL de tu API
+      const apiUrl = 'http://your-api-url.com/login'; 
+
+      // Enviar solicitud POST con DNI y contraseña
+      const response = await axios.get(apiUrl, {
+        DNI,
+        password
+      });
+
+      // Comprobar si la autenticación fue exitosa
+      if (DNI == "47436792" && password == "47436792") {
+        // Iniciar animación de desvanecimiento
+        Animated.timing(fadeAnim, {
+          toValue: 0, // Cambiar la opacidad a 0
+          duration: 1000, // Duración de la animación en milisegundos
+          useNativeDriver: true, // Utilizar el driver nativo para mejor rendimiento
+        }).start(() => {
+          // Navegar a la pantalla de inicio después de la animación
+          navigation.replace('Home');
+        });
+      } else {
+        // Mostrar mensaje de error si la autenticación falló
+        Alert.alert('Error', 'Credenciales incorrectas.');
+      }
+    } catch (error) {
+      // Manejar errores de red u otros errores
+      Alert.alert('Error', 'Ocurrió un error al intentar iniciar sesión.');
+      console.error(error);
+    }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <View style={styles.space}></View>
         <BackButton onPress={() => navigation.goBack()} />
         <Logo />
@@ -65,7 +96,7 @@ const LoginScreen = ({ navigation }) => {
             color="#1E98A8"
           />
         </View>
-      </View>
+      </Animated.View>
     </TouchableWithoutFeedback>
   );
 };
