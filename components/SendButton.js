@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
     margin: 15,
-    borderRadius: 10,
+    borderRadius: 15,
     height: BUTTON_HEIGHT
   },
   text: {

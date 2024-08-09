@@ -3,7 +3,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
-const BolsaItem = ({ item, onIncrease, onDecrease, onRemove }) => {
+const BolsaItem = ({ item, onRemove }) => {
   return (
     <View style={styles.itemContainer}>
       <Image source={{ uri: item.image }} style={styles.itemImage}/>
