@@ -5,23 +5,25 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 const BolsaItem = ({ item, onRemove }) => {
   return (
-    <View style={styles.itemContainer}>
-      <Image source={{ uri: item.image }} style={styles.itemImage}/>
-      <View style={styles.itemDetails}>
-        <Text style={styles.itemTitle}>{item.title}</Text>
-        <Text style={styles.itemDescription}>{item.description}</Text>
-      </View>
-      <View style={styles.itemActions}>
-        <View style={styles.itemQuantity}>
-            <Text style={styles.itemQuantityText}>{item.quantity}</Text>
+    <TouchableOpacity>
+      <View style={styles.itemContainer}>
+        <Image source={{ uri: item.image }} style={styles.itemImage}/>
+        <View style={styles.itemDetails}>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemDescription}>{item.description}</Text>
         </View>
-        <TouchableOpacity onPress={() => onRemove(item.id)}>
-            <View style={styles.itemRemove}>
-                <Image style={styles.itemRemoveImage} source={require("../assets/Remove.png")}/>
-            </View>
-        </TouchableOpacity>
+        <View style={styles.itemActions}>
+          <View style={styles.itemQuantity}>
+              <Text style={styles.itemQuantityText}>{item.quantity}</Text>
+          </View>
+          <TouchableOpacity onPress={() => onRemove(item.id)}>
+              <View style={styles.itemRemove}>
+                  <Image style={styles.itemRemoveImage} source={require("../assets/Remove.png")}/>
+              </View>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -36,8 +38,8 @@ const styles = StyleSheet.create({
       borderTopColor: "#D3D3D3",
     },
     itemImage: {
-      width: 50,
-      height: 50,
+      width: 60,
+      height: 60,
       borderRadius: 5,
       resizeMode: 'contain',  // Utilizar resizeMode para ajustar la imagen
     },

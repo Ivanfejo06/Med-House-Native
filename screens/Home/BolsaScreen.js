@@ -26,14 +26,6 @@ const items = [
 ];
 
 const BolsaScreen = ({ navigation }) => {
-  const handleIncrease = (itemId) => {
-    console.log(`Increase quantity for item ${itemId}`);
-  };
-
-  const handleDecrease = (itemId) => {
-    console.log(`Decrease quantity for item ${itemId}`);
-  };
-
   const handleRemove = (itemId) => {
     console.log(`Remove item ${itemId}`);
   };
@@ -51,8 +43,6 @@ const BolsaScreen = ({ navigation }) => {
             renderItem={({ item }) => (
               <BolsaItem
                 item={item}
-                onIncrease={handleIncrease}
-                onDecrease={handleDecrease}
                 onRemove={handleRemove}
               />
             )}

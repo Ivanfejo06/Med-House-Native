@@ -16,6 +16,7 @@ import NotificacionesScreen from './screens/Home/NotificacionesScreen';
 import ProfileIndex from './screens/Profile/ProfileIndex';
 import ProfileScreen from './screens/Profile/ProfileScreen';
 import AuthenticationScreen from './screens/Profile/AuthenticationScreen';
+import DeseadosScreen from './screens/Home/Deseados';
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ const AppNavigator = () => {
           component={HomeScreen} 
           options={{ gestureEnabled: false, animationEnabled: false }} 
         />
+        <Stack.Screen name="Deseados" component={DeseadosScreen}/>
         <Stack.Screen 
           name="Bolsa" 
           component={BolsaScreen} 

@@ -2,8 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, FlatList, Text } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
-import DonacionItem from '../../componentsHome/DonacionItem'; // Asegúrate de tener este componente
-import SendButton from '../../components/SendButton';
+import DonacionItem from '../../componentsHome/DonacionItem';
 
 const { height, width } = Dimensions.get('window');
 

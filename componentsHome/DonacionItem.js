@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 const DonacionItem = ({ item }) => {
   // Determinar el color de fondo según el estado
@@ -19,18 +19,20 @@ const DonacionItem = ({ item }) => {
   }
 
   return (
-    <View style={[styles.itemContainer, { backgroundColor }]}>
-      <Image source={{ uri: item.image }} style={styles.itemImage}/>
-      <View style={styles.itemDetails}>
-        <Text style={styles.itemTitle}>{item.title}</Text>
-        <Text style={styles.itemDescription}>{item.description}</Text>
-      </View>
-      <View style={styles.itemStateContainer}>
-        <View style={[styles.itemState, { backgroundColor: itemStateColor }]}>
-            <Text style={styles.itemStateText}>{stateText}</Text>
+    <TouchableOpacity>
+      <View style={[styles.itemContainer, { backgroundColor }]}>
+        <Image source={{ uri: item.image }} style={styles.itemImage}/>
+        <View style={styles.itemDetails}>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemDescription}>{item.description}</Text>
+        </View>
+        <View style={styles.itemStateContainer}>
+          <View style={[styles.itemState, { backgroundColor: itemStateColor }]}>
+              <Text style={styles.itemStateText}>{stateText}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -44,8 +46,8 @@ const styles = StyleSheet.create({
     borderTopColor: "#D3D3D3",
   },
   itemImage: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 5,
     resizeMode: 'contain',
   },
