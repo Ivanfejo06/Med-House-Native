@@ -28,7 +28,21 @@ const donations = [
     description: 'Descripción de la donación 3',
     image: 'https://your-image-url.com/Med3.png',
     stock: 0
-  }
+  },
+  {
+    id: '4',
+    title: 'Donación 4',
+    description: 'Descripción de la donación 4',
+    image: 'https://your-image-url.com/Med4.png',
+    stock: 0
+  },
+  {
+    id: '5',
+    title: 'Donación 5',
+    description: 'Descripción de la donación 5',
+    image: 'https://your-image-url.com/Med5.png',
+    stock: 1
+  },
   // Agrega más elementos según sea necesario
 ];
 
@@ -52,6 +66,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <TopBar navigation={navigation} />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.content}>
         <View style={styles.top}>
           <TouchableOpacity>
@@ -62,7 +77,6 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.MedesShadowContainer}>
           <View style={styles.MedesContainer}>
             <View style={styles.MedesTitleContainer}>
@@ -80,8 +94,6 @@ const HomeScreen = ({ navigation }) => {
             />
           </View>
         </View>
-
-
         <View style={styles.HorizontalMedesShadowContainer}>
           <View style={styles.HorizontalMedesContainer}>
             <View style={styles.MedesTitleContainer}>

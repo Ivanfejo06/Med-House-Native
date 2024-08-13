@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, FlatList, Text } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
-import BolsaItem from '../../componentsHome/BolsaItem';
+import DeseadosItem from '../../componentsHome/DeseadosItem';
 import SendButton from '../../components/SendButton';
 
 const { height, width } = Dimensions.get('window');
@@ -34,15 +34,15 @@ const DeseadosScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <BackTopBar navigation={() => navigation.goBack()} />
-      <View style={styles.bolsaShadowContainer}>
-        <View style={styles.bolsaContainer}>
-          <View style={styles.bolsaTitleContainer}>
-            <Text style={styles.bolsaTitle}>Mi bolsa</Text>
+      <View style={styles.DeseadosShadowContainer}>
+        <View style={styles.DeseadosContainer}>
+          <View style={styles.DeseadosTitleContainer}>
+            <Text style={styles.DeseadosTitle}>Deseados</Text>
           </View>
           <FlatList
             data={items}
             renderItem={({ item }) => (
-              <BolsaItem
+              <DeseadosItem
                 item={item}
                 onRemove={handleRemove}
               />
@@ -52,7 +52,7 @@ const DeseadosScreen = ({ navigation }) => {
           />
         </View>
       </View>
-      <NavBar navigation={navigation} selected="bolsa" />
+      <NavBar navigation={navigation} selected="Deseados" />
     </View>
   );
 };
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   container: {
     height: height,
   },
-  bolsaShadowContainer: {
+  DeseadosShadowContainer: {
     marginTop: 20,
     margin: 15,
     borderRadius: 15,
@@ -71,18 +71,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5, // Añade esta línea para Android
   },
-  bolsaContainer: {
+  DeseadosContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 15,
     overflow: 'hidden', // Se mantiene en el contenedor interno
     maxHeight: 515,
   },
-  bolsaTitleContainer: {
+  DeseadosTitleContainer: {
     backgroundColor: '#1E98A8',
     padding: 5,
     alignItems: 'center',
   },
-  bolsaTitle: {
+  DeseadosTitle: {
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: 'bold',

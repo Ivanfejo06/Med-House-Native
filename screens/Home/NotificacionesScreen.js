@@ -1,9 +1,29 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
+import { View, FlatList, Dimensions, StyleSheet } from 'react-native';
+import NotificacionesItem from '../../componentsHome/NotificacionesItem';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
 
 const { height } = Dimensions.get('window');
+
+const notifications = [
+  {
+    id: '1',
+    message: 'Tu pedido ha sido enviado',
+    image: 'https://your-image-url.com/notificacion1.png'
+  },
+  {
+    id: '2',
+    message: 'Tu donación ha sido recibida',
+    image: 'https://your-image-url.com/notificacion2.png'
+  },
+  {
+    id: '3',
+    message: 'Nuevo mensaje de soporte',
+    image: 'https://your-image-url.com/notificacion3.png'
+  }
+  // Agrega más notificaciones según sea necesario
+];
 
 const NotificacionesScreen = ({ navigation }) => {
   return (
@@ -11,9 +31,16 @@ const NotificacionesScreen = ({ navigation }) => {
       <TopBar
         navigation={navigation}
       />
-      <View style={styles.content}>
-        <Text>Notifs</Text>
-      </View>
+      <FlatList
+        data={notifications}
+        renderItem={({ item }) => (
+          <NotificacionesItem
+            item={item}
+          />
+        )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.itemList}
+      />
       <NavBar 
         navigation={navigation}
         selected="notificaciones"
@@ -24,24 +51,7 @@ const NotificacionesScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: height
-  },
-  content: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  favs:{
-    height: 30,
-    width: 30,
-    overflow: "visible",
-    objectFit: "contain"
-  },
-  favsH:{
-    height: 27,
-    width: 27,
-    overflow: "visible",
-    objectFit: "contain"
+    flex: 1
   }
 });
 
