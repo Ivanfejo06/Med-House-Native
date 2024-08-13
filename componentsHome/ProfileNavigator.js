@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
+import Auth from '../assets/Auth';
 
 const { height } = Dimensions.get('window');
 
