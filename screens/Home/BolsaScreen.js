@@ -96,12 +96,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 90,
     right: 0,
-    left: 0,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5, // Añade esta línea para Android
+    left: 0
   }
 });
 

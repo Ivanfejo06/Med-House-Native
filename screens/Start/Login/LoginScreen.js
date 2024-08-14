@@ -15,23 +15,30 @@ const SPACE_HEIGHT = height * 0.195; // 19.5% de la altura de la pantalla
 const BUTTON_HEIGHT = height * 0.75;
 
 const LoginScreen = ({ navigation }) => {
-  const [DNI, setDNI] = useState('');
+  const [dni, setDNI] = useState('');
   const [password, setPassword] = useState('');
   const fadeAnim = useRef(new Animated.Value(1)).current; // Valor inicial de la opacidad
 
   const handleLogin = async () => {
     try {
       // Reemplaza esta URL con la URL de tu API
-      const apiUrl = 'http://your-api-url.com/login'; 
+      const apiUrl = 'http://localhost:3000/usuario/login';
 
       // Enviar solicitud POST con DNI y contraseña
-      const response = await axios.get(apiUrl, {
-        DNI,
-        password
+      const response = await axios.post(apiUrl, {
+        dni: dni,
+        password: password
       });
 
       // Comprobar si la autenticación fue exitosa
-      if (DNI == "47436792" && password == "47436792") {
+      if (response.data.success) {
+        // Guardar el token en almacenamiento local o contexto global según sea necesario
+        const { token } = response.data;
+
+        // Aquí puedes guardar el token en almacenamiento local
+        // Ejemplo usando AsyncStorage
+        // await AsyncStorage.setItem('userToken', token);
+
         // Iniciar animación de desvanecimiento
         Animated.timing(fadeAnim, {
           toValue: 0, // Cambiar la opacidad a 0
@@ -43,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
         });
       } else {
         // Mostrar mensaje de error si la autenticación falló
-        Alert.alert('Error', 'Credenciales incorrectas.');
+        Alert.alert('Error', response.data.message);
       }
     } catch (error) {
       // Manejar errores de red u otros errores
@@ -62,7 +69,7 @@ const LoginScreen = ({ navigation }) => {
         <View>
           <Entrada 
             placeholder="DNI"
-            value={DNI}
+            value={dni}
             onChangeText={setDNI}
             color='#00EDDF'
             isDni={true}

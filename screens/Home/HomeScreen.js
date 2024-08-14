@@ -163,7 +163,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 15,
     overflow: 'hidden',
-    maxHeight: 515,
   },
   HorizontalMedesShadowContainer: {
     marginTop: 5,
@@ -174,7 +173,6 @@ const styles = StyleSheet.create({
     elevation: 5, // Añade esta línea para Android
   },
   HorizontalMedesContainer: {
-    backgroundColor: '#FFFFFF',
     overflow: 'hidden',
     backgroundColor: "#1E98A8"
   },

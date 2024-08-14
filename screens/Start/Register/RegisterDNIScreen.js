@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
+import axios from 'axios'; // Importar axios
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
 import Logo from '../../../components/LogoInverted';
@@ -16,8 +17,34 @@ const RegisterDNIScreen = ({ route, navigation }) => {
   const { nombre, apellido, password, email } = route.params;
   const [dni, setDNI] = useState('');
 
-  const handleNext = () => {
-    navigation.navigate('RegisterPhoto', { nombre, apellido, password, email, dni });
+  const handleCreateAccount = async () => {
+    try {
+      // Reemplaza esta URL con la URL de tu API
+      const apiUrl = 'http://localhost:3000/usuario/register';
+
+      // Enviar solicitud POST con los datos del usuario
+      const response = await axios.post(apiUrl, {
+        dni: dni,
+        nombre: nombre,
+        apellido: apellido,
+        password: password,
+        email: email
+      });
+
+      // Comprobar si la creación de cuenta fue exitosa
+      if (response.data.success) {
+        // Navegar a la pantalla de inicio o login si la creación de cuenta fue exitosa
+        Alert.alert('Éxito', response.data.message);
+        navigation.replace('Login');
+      } else {
+        // Mostrar mensaje de error si la creación de cuenta falló
+        Alert.alert('Error', response.data.message);
+      }
+    } catch (error) {
+      // Manejar errores de red u otros errores
+      Alert.alert('Error', 'Ocurrió un error al intentar crear la cuenta.');
+      console.error(error);
+    }
   };
 
   return (
@@ -36,8 +63,8 @@ const RegisterDNIScreen = ({ route, navigation }) => {
         />
         <View style={styles.spacebutton}>
           <Button 
-            title="Siguiente" 
-            onPress={handleNext} 
+            title="Crear cuenta" 
+            onPress={handleCreateAccount} 
             style={{ backgroundColor: '#00EDDF' }} 
           />
         </View>

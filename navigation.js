@@ -8,7 +8,6 @@ import ResetPasswordScreen from './screens/Start/Login/ResetPasswordScreen';
 import RegisterNameScreen from './screens/Start/Register/RegisterNameScreen';
 import RegisterPasswordScreen from './screens/Start/Register/RegisterPasswordScreen';
 import RegisterDNIScreen from './screens/Start/Register/RegisterDNIScreen';
-import RegisterPhotoScreen from './screens/Start/Register/RegisterPhotoScreen';
 import HomeScreen from './screens/Home/HomeScreen'; 
 import BolsaScreen from './screens/Home/BolsaScreen';
 import DonacionesScreen from './screens/Home/DonacionesScreen';
@@ -33,7 +32,6 @@ const AppNavigator = () => {
         <Stack.Screen name="RegisterName" component={RegisterNameScreen} />
         <Stack.Screen name="RegisterPassword" component={RegisterPasswordScreen} />
         <Stack.Screen name="RegisterDNI" component={RegisterDNIScreen} />
-        <Stack.Screen name="RegisterPhoto" component={RegisterPhotoScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
 
