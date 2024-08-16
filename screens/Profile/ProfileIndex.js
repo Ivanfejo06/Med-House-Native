@@ -17,40 +17,42 @@ const ProfileIndex = ({ navigation }) => {
         navigation={() => navigation.goBack()}
         title="Perfil"
       />
-      <View style={styles.content}>
-        <View style={styles.salute}>
-          <Image source={require('../../assets/Face.png')} style={styles.foto} />
-          <View style={styles.user}>
-            <Text style={styles.hello}>Hola!</Text>
-            <Text style={styles.name}>Juanito Perez</Text>
+      <View style={styles.center}>
+        <View style={styles.content}>
+          <View style={styles.salute}>
+            <Image source={require('../../assets/Face.png')} style={styles.foto} />
+            <View style={styles.user}>
+              <Text style={styles.hello}>Hola!</Text>
+              <Text style={styles.name}>Juanito Perez</Text>
+            </View>
           </View>
-        </View>
 
-        <ProfileNavigator
-          image={"image1"}
-          onPress={() => navigation.navigate("ProfileScreen")}
-          text={"Mi Perfil"}
-        />
-        <ProfileNavigator
-          image={"image2"}
-          onPress={() => navigation.navigate("AuthenticationScreen")}
-          text={"Autenticación"}
-        />
-        <ProfileNavigator
-          image={"image3"}
-          onPress={() => navigation.navigate("Donaciones")}
-          text={"Donaciones"}
-        />
-        <ProfileNavigator
-          image={"image4"}
-          onPress={() => navigation.navigate("Bolsa")} //CAMBIAR RUTA DESPUES DE CREAR DESEADOS DENTRO DE BOLSA
-          text={"Deseados"}
-        />
-        <ProfileNavigator
-          image={"image5"}
-          onPress={() => navigation.navigate('Start')}
-          text={"Cerrar Sesión"}
-        />
+          <ProfileNavigator
+            image={"image1"}
+            onPress={() => navigation.navigate("ProfileScreen")}
+            text={"Mi Perfil"}
+          />
+          <ProfileNavigator
+            image={"image2"}
+            onPress={() => navigation.navigate("AuthenticationScreen")}
+            text={"Autenticación"}
+          />
+          <ProfileNavigator
+            image={"image3"}
+            onPress={() => navigation.navigate("Donaciones")}
+            text={"Donaciones"}
+          />
+          <ProfileNavigator
+            image={"image4"}
+            onPress={() => navigation.navigate("Bolsa")} //CAMBIAR RUTA DESPUES DE CREAR DESEADOS DENTRO DE BOLSA
+            text={"Deseados"}
+          />
+          <ProfileNavigator
+            image={"image5"}
+            onPress={() => navigation.navigate('Start')}
+            text={"Cerrar Sesión"}
+          />
+        </View>
       </View>
     </View>
   );
@@ -59,18 +61,25 @@ const ProfileIndex = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between', 
-    alignItems: 'center'
+    alignItems: 'center',
   },
+  center:{
+    width: '100%',
+    paddingHorizontal: 15,
+    justifyContent: "center",
+    alignContent: "center"
+  }, 
   content: {
     marginTop: SPACING,
     backgroundColor: "#FFFFFF",
     borderRadius: BORDERRADIUS,
     height: CONTENT_HEIGHT,
-    width: CONTENT_WIDTH,
+    width: '100%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    maxWidth: 700
   },
   salute:{
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import axios from 'axios'; // Importar axios
 import Button from '../../../components/Button';
@@ -16,11 +16,31 @@ const BUTTON_HEIGHT = height * 0.75;
 const RegisterDNIScreen = ({ route, navigation }) => {
   const { nombre, apellido, password, email } = route.params;
   const [dni, setDNI] = useState('');
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+
+  // Verifica si el DNI es válido
+  const validateDNI = () => {
+    if (dni.length >= 8) {
+      setIsButtonEnabled(true);
+    } else {
+      setIsButtonEnabled(false);
+    }
+  };
+
+  // Llama a validateDNI cada vez que el DNI cambia
+  useEffect(() => {
+    validateDNI();
+  }, [dni]);
 
   const handleCreateAccount = async () => {
+    if (dni.length < 8) {
+      Alert.alert('Error', 'El DNI debe tener al menos 8 caracteres.');
+      return;
+    }
+
     try {
       // Reemplaza esta URL con la URL de tu API
-      const apiUrl = 'http://localhost:3000/usuario/register';
+      const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/register';
 
       // Enviar solicitud POST con los datos del usuario
       const response = await axios.post(apiUrl, {
@@ -65,7 +85,8 @@ const RegisterDNIScreen = ({ route, navigation }) => {
           <Button 
             title="Crear cuenta" 
             onPress={handleCreateAccount} 
-            style={{ backgroundColor: '#00EDDF' }} 
+            style={{ backgroundColor: isButtonEnabled ? '#00EDDF' : '#B0B0B0' }} 
+            disabled={!isButtonEnabled}
           />
         </View>
       </View>

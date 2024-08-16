@@ -4,7 +4,6 @@ import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'rea
 const { height } = Dimensions.get('window');
 
 const TOPBAR_HEIGHT = height * 0.13;
-const LINER_WIDTH = height * 0.4260;
 const LINER_HEIGHT = height * 0.03521;
 const SEARCH_WIDTH = height * 0.373239;
 const HEIGHT = height * 0.03521;
@@ -25,8 +24,8 @@ const TopBar = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     backgroundColor: '#1E98A8',
     borderBottomLeftRadius: BORDERRADIUS,
     borderBottomRightRadius: BORDERRADIUS,
@@ -43,10 +42,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: LINER_WIDTH,
     height: LINER_HEIGHT,
-    position: 'absolute',
     bottom: HEIGHT/2, 
+    marginLeft: 15,
+    marginRight: 15
   },
   button: {
     alignItems: 'center',
@@ -57,10 +56,11 @@ const styles = StyleSheet.create({
     borderRadius: HEIGHT/2
   },
   searchBar: {
+    flex: 1,
     height: HEIGHT,
-    width: SEARCH_WIDTH,
-    borderRadius: HEIGHT/2,
-    backgroundColor: "#FFFFFF"
+    marginRight: 15, // Espacio entre la barra de búsqueda y el botón de perfil
+    borderRadius: HEIGHT / 2,
+    backgroundColor: "#FFFFFF",
   }
 });
 

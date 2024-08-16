@@ -67,7 +67,6 @@ const HomeScreen = ({ navigation }) => {
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <TopBar navigation={navigation} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.content}>
         <View style={styles.top}>
           <TouchableOpacity>
             <Image style={styles.favs} source={require("../../assets/Options.png")} />
@@ -76,7 +75,6 @@ const HomeScreen = ({ navigation }) => {
             <Image style={styles.favsH} source={require("../../assets/Heart.png")} />
           </TouchableOpacity>
         </View>
-      </View>
         <View style={styles.MedesShadowContainer}>
           <View style={styles.MedesContainer}>
             <View style={styles.MedesTitleContainer}>
@@ -122,20 +120,15 @@ const styles = StyleSheet.create({
   container: {
     height: height,
   },
-  content: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   scrollContainer: {
     paddingBottom: 80, // Espacio para el NavBar
   },
   top: {
     flexDirection: 'row',
-    width: 333,
     justifyContent: 'space-between',
-    margin: 20,
-    marginBottom: 0
+    width: '100%',
+    marginTop: 20,
+    paddingHorizontal: 30
   },
   favs: {
     height: 30,
@@ -150,7 +143,7 @@ const styles = StyleSheet.create({
     objectFit: 'contain',
   },
   MedesShadowContainer: {
-    marginTop: 20,
+    marginVertical: 20,
     margin: 15,
     borderRadius: 15,
     shadowColor: '#000000',
@@ -165,7 +158,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   HorizontalMedesShadowContainer: {
-    marginTop: 5,
+    marginBottom: 20,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -178,6 +171,7 @@ const styles = StyleSheet.create({
   },
   HorizontalitemList:{
     flexDirection: "row",
+    paddingHorizontal: 5
   },
   MedesTitleContainer: {
     backgroundColor: '#1E98A8',

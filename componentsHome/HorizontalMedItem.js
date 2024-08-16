@@ -11,6 +11,10 @@ const HorizontalMedItem = ({ item }) => {
     itemstockColor = '#ED5046'; // Mismo color para el estado
     stockText = 'Sin stock';
   }
+  if (item.stock > 0) {
+    itemstockColor = '#FFFFFF'; // Mismo color para el estado
+    stockText = 'Sin stock';
+  }
 
   return (
     <TouchableOpacity>
@@ -37,9 +41,8 @@ const styles = StyleSheet.create({
     width: 150,
     alignItems: "flex-start",
     backgroundColor: "#FFFFFF",
-    margin: 10,
-    marginTop: 0,
-    marginRight: 5,
+    margin: 5,
+    marginBottom: 10,
     borderRadius: 15,
     padding: 10
   },
@@ -64,7 +67,10 @@ const styles = StyleSheet.create({
   },
   itemstockContainer: {
     flexDirection: 'row',
+    justifyContent: 'center', // Asegura que el contenido se centre horizontalmente
     alignItems: 'center',
+    marginTop: 10, // Opcional, para un poco de separación
+    width: '100%', // Asegura que el contenedor use el ancho completo del elemento padre
   },
   itemstock: {
     padding: 5,

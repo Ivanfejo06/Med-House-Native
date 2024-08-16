@@ -22,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       // Reemplaza esta URL con la URL de tu API
-      const apiUrl = 'http://localhost:3000/usuario/login';
+      const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
 
       // Enviar solicitud POST con DNI y contraseña
       const response = await axios.post(apiUrl, {

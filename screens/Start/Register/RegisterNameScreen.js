@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
 import Logo from '../../../components/LogoInverted';
@@ -16,10 +16,39 @@ const BUTTON_HEIGHT = height * 0.75;
 const RegisterNameScreen = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
+  const [isButtonEnabled, setIsButtonEnabled] = useState(true);
+
+  useEffect(() => {
+    validateForm();
+  }, [nombre, apellido]);
+
+  const validateForm = () => {
+    // Validar que los campos no estén vacíos, no superen los 40 caracteres y tengan más de 3 letras
+    if (
+      nombre.trim() === '' ||
+      apellido.trim() === '' ||
+      nombre.length > 40 ||
+      apellido.length > 40 ||
+      nombre.length < 3 ||
+      apellido.length < 3
+    ) {
+      setIsButtonEnabled(false);
+    } else {
+      setIsButtonEnabled(true);
+    }
+  };  
 
   const handleNext = () => {
-    navigation.navigate('RegisterPassword', { nombre, apellido });
-  };
+    if (nombre.trim() === '' || apellido.trim() === '') {
+      Alert.alert('Error', 'Todos los campos deben ser completados.');
+    } else if (nombre.length > 40 || apellido.length > 40) {
+      Alert.alert('Error', 'Los campos no deben superar los 40 caracteres.');
+    } else if (nombre.length < 3 || apellido.length < 3) {
+      Alert.alert('Error', 'Los campos deben tener más de 3 letras.');
+    } else {
+      navigation.navigate('RegisterPassword', { nombre, apellido });
+    }
+  };  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -44,10 +73,11 @@ const RegisterNameScreen = ({ navigation }) => {
           <Button 
             title="Siguiente" 
             onPress={handleNext} 
-            style={{ backgroundColor: '#00EDDF' }} 
+            style={{ backgroundColor: isButtonEnabled ? '#00EDDF' : '#B0B0B0' }} 
+            disabled={!isButtonEnabled}
           />
           <SmallButton
-            title="¿Tenes cuenta?"
+            title="¿Tenés cuenta?"
             onPress={() => navigation.navigate('Login')}
             style={styles.forgotPasswordButton}
             textStyle={styles.forgotPasswordText}
@@ -77,6 +107,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
     color: '#00EDDF'
+  },
+  forgotPasswordButton: {
+    // Añadir estilo para el botón pequeño si es necesario
+  },
+  forgotPasswordText: {
+    // Añadir estilo para el texto del botón pequeño si es necesario
   },
 });
 

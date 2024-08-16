@@ -60,15 +60,17 @@ const styles = StyleSheet.create({
   },
   liner: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    width: LINER_WIDTH, 
     height: LINER_HEIGHT,
-    marginTop: MARGIN
+    marginTop: MARGIN,
+    width: '100%',
+    paddingHorizontal: 10
   },
   button: {
     alignItems: 'center',
+    overflow: "visible",
+    objectFit: "contain"
   },
   icon: {
     width: BORDERRADIUS,
@@ -80,8 +82,8 @@ const styles = StyleSheet.create({
     tintColor: '#1E98A8', 
   },
   publish: {
-    width: PUBLISH_WIDTH,
-    height: PUBLISH_HEIGHT,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     backgroundColor: "#1E98A8",
     borderRadius: PUBLISH_HEIGHT/2,
     flex: 1,
