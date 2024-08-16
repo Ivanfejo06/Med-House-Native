@@ -1,16 +1,24 @@
+// ProfileIndex.js
 import React from 'react';
 import { View, Button, StyleSheet, Dimensions, Text, Image } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
 import ProfileNavigator from '../../componentsHome/ProfileNavigator';
+import { clearUser } from '../../store/userSlice';
 
 const { height } = Dimensions.get('window');
 
-const CONTENT_WIDTH = height * 0.4260;
 const CONTENT_HEIGHT = height * 0.8;
-const BORDERRADIUS = height * 0.029342;
-const SPACING = height * 0.026;
 
 const ProfileIndex = ({ navigation }) => {
+  const user = useSelector(state => state.user.user); // Obtén el usuario global
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(clearUser()); // Limpia el token y la información del usuario
+    navigation.replace('Start'); // Navega a la pantalla de login
+  };
+
   return (
     <View style={styles.container}>
       <TopBarWhite 
@@ -23,7 +31,7 @@ const ProfileIndex = ({ navigation }) => {
             <Image source={require('../../assets/Face.png')} style={styles.foto} />
             <View style={styles.user}>
               <Text style={styles.hello}>Hola!</Text>
-              <Text style={styles.name}>Juanito Perez</Text>
+              <Text style={styles.name}>{user ? `${user.nombre} ${user.apellido}` : 'Invitado'}</Text>
             </View>
           </View>
 
@@ -44,12 +52,12 @@ const ProfileIndex = ({ navigation }) => {
           />
           <ProfileNavigator
             image={"image4"}
-            onPress={() => navigation.navigate("Bolsa")} //CAMBIAR RUTA DESPUES DE CREAR DESEADOS DENTRO DE BOLSA
+            onPress={() => navigation.navigate("Deseados")}
             text={"Deseados"}
           />
           <ProfileNavigator
             image={"image5"}
-            onPress={() => navigation.navigate('Start')}
+            onPress={handleLogout}
             text={"Cerrar Sesión"}
           />
         </View>
@@ -65,14 +73,15 @@ const styles = StyleSheet.create({
   },
   center:{
     width: '100%',
+    flexDirection: "row",
     paddingHorizontal: 15,
     justifyContent: "center",
     alignContent: "center"
   }, 
   content: {
-    marginTop: SPACING,
+    marginTop: 20,
     backgroundColor: "#FFFFFF",
-    borderRadius: BORDERRADIUS,
+    borderRadius: 15,
     height: CONTENT_HEIGHT,
     width: '100%',
     shadowColor: '#000',

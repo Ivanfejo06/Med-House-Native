@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
+import { Provider } from 'react-redux';
 import Entypo from '@expo/vector-icons/Entypo';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import AppNavigator from './navigation';
 import Logo from './components/LogoInverted';
+import store from './store/store'; // Asegúrate de ajustar la ruta
 
 SplashScreen.preventAutoHideAsync();
 
@@ -61,10 +63,9 @@ const App = () => {
   }
 
   return (
-    <>
-      {console.log('Navigating to AppNavigator')}
+    <Provider store={store}>
       <AppNavigator />
-    </>
+    </Provider>
   );
 };
 

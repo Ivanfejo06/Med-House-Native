@@ -5,11 +5,9 @@ const { height } = Dimensions.get('window');
 
 const NAVBAR_HEIGHT = height * 0.0974;
 const LINER_HEIGHT = height * 0.0469;
-const LINER_WIDTH = height * 0.3873;
 const BORDERRADIUS = height * 0.029342;
 const MARGIN = height * 0.007042;
 const PUBLISH_HEIGHT = height * 0.046948;
-const PUBLISH_WIDTH = height * 0.111737;
 
 const NavBar = ({ navigation, selected }) => {
   return (

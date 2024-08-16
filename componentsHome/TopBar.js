@@ -5,7 +5,6 @@ const { height } = Dimensions.get('window');
 
 const TOPBAR_HEIGHT = height * 0.13;
 const LINER_HEIGHT = height * 0.03521;
-const SEARCH_WIDTH = height * 0.373239;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
 

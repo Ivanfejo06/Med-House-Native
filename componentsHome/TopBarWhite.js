@@ -28,8 +28,8 @@ const TopBarWhite = ({ navigation, title }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     backgroundColor: '#FFFFFF',
     borderBottomLeftRadius: BORDERRADIUS,
     borderBottomRightRadius: BORDERRADIUS,
@@ -40,15 +40,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    position: 'relative', 
   },
   liner: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    width: LINER_WIDTH,
     height: LINER_HEIGHT,
-    position: 'absolute',
-    bottom: HEIGHT / 2, 
+    bottom: HEIGHT/2, 
+    marginLeft: 15,
+    marginRight: 15
   },
   section: {
     flex: 1,
