@@ -72,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <View style={styles.space}></View>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => navigation.goBack()} color={"#00EDDF"}/>
         <Logo />
         <Text style={styles.title}>Iniciar sesión</Text>
         <View>

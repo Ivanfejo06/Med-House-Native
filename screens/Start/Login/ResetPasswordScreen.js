@@ -24,7 +24,7 @@ const ResetPasswordScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.space}></View>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => navigation.goBack()} color={"#00EDDF"}/>
         <Logo style={styles.logo} />
         <Text style={styles.title}>Cambiar contraseña</Text>
         <TextInput

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import RemoveIcon from '../assets/RemoveIcon';
 
 const BolsaItem = ({ item, onRemove }) => {
   return (
@@ -18,7 +19,7 @@ const BolsaItem = ({ item, onRemove }) => {
           </View>
           <TouchableOpacity onPress={() => onRemove(item.id)}>
               <View style={styles.itemRemove}>
-                  <Image style={styles.itemRemoveImage} source={require("../assets/Remove.png")}/>
+                <RemoveIcon height={24} width={24}></RemoveIcon>
               </View>
           </TouchableOpacity>
         </View>

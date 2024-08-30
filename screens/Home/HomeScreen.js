@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, Dimensions, TouchableOpacity, Animated, Text, FlatList, ScrollView } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Animated, Text, FlatList, ScrollView } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
 import MedItem from '../../componentsHome/MedItem';
 import HorizontalMedItem from '../../componentsHome/HorizontalMedItem';
+import OptionsIcon from '../../assets/OptionsIcon';
+import HeartIcon from '../../assets/HeartIcon';
 
 const { height } = Dimensions.get('window');
 
@@ -69,10 +71,10 @@ const HomeScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.top}>
           <TouchableOpacity>
-            <Image style={styles.favs} source={require("../../assets/Options.png")} />
+            <OptionsIcon width={30} height={30}></OptionsIcon>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLiked}>
-            <Image style={styles.favsH} source={require("../../assets/Heart.png")} />
+            <HeartIcon width={27} height={27}></HeartIcon>
           </TouchableOpacity>
         </View>
         <View style={styles.MedesShadowContainer}>
@@ -129,18 +131,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
     paddingHorizontal: 30
-  },
-  favs: {
-    height: 30,
-    width: 30,
-    overflow: 'visible',
-    objectFit: 'contain',
-  },
-  favsH: {
-    height: 27,
-    width: 27,
-    overflow: 'visible',
-    objectFit: 'contain',
   },
   MedesShadowContainer: {
     marginVertical: 20,

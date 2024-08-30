@@ -1,5 +1,9 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import HomeIcon from '../assets/HomeIcon';
+import BolsaIcon from '../assets/BolsaIcon';
+import DonacionesIcon from '../assets/DonacionesIcon';
+import NotificacionesIcon from '../assets/NotificacionesIcon';
 
 const { height } = Dimensions.get('window');
 
@@ -14,11 +18,11 @@ const NavBar = ({ navigation, selected }) => {
     <View style={styles.container}>
       <View style={styles.liner}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-          <Image source={require('../assets/Home.png')} style={[styles.icon, selected === 'home' && styles.selectedIcon]} />
+          <HomeIcon width={BORDERRADIUS} height={BORDERRADIUS} tintColor={selected === 'home' ? '#1E98A8' : '#A8A8A8'} />
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Bolsa')}>
-          <Image source={require('../assets/Bolsa.png')} style={[styles.icon, selected === 'bolsa' && styles.selectedIcon]} />
+          <BolsaIcon width={BORDERRADIUS} height={BORDERRADIUS} tintColor={selected === 'bolsa' ? '#1E98A8' : '#A8A8A8'} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => console.log('Publish Pressed')}>
@@ -28,11 +32,11 @@ const NavBar = ({ navigation, selected }) => {
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Donaciones')}>
-          <Image source={require('../assets/Donaciones.png')} style={[styles.icon, selected === 'donaciones' && styles.selectedIcon]} />
+          <DonacionesIcon width={BORDERRADIUS} height={BORDERRADIUS} tintColor={selected === 'donaciones' ? '#1E98A8' : '#A8A8A8'} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Notificaciones')}>
-          <Image source={require('../assets/Notificaciones.png')} style={[styles.icon, selected === 'notificaciones' && styles.selectedIcon]} />
+          <NotificacionesIcon width={BORDERRADIUS} height={BORDERRADIUS} tintColor={selected === 'notificaciones' ? '#1E98A8' : '#A8A8A8'} />
         </TouchableOpacity>
       </View>
     </View>
@@ -68,22 +72,12 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     overflow: "visible",
-    objectFit: "contain"
-  },
-  icon: {
-    width: BORDERRADIUS,
-    height: BORDERRADIUS,
-    overflow: "visible",
-    objectFit: "contain"
-  },
-  selectedIcon: {
-    tintColor: '#1E98A8', 
   },
   publish: {
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: "#1E98A8",
-    borderRadius: PUBLISH_HEIGHT/2,
+    borderRadius: PUBLISH_HEIGHT / 2,
     flex: 1,
     alignItems: "center",
     justifyContent: "center"

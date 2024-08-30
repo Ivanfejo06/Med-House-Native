@@ -15,7 +15,7 @@ const TopBarWhite = ({ navigation, title }) => {
     <View style={styles.container}>
       <View style={styles.liner}>
         <View style={styles.sectionLeft}>
-          <BackButton onPress={navigation} />
+          <BackButton onPress={navigation} color={"#1E98A8"}/>
         </View>
         <View style={styles.section}>
           <Text style={styles.title}>{title}</Text>

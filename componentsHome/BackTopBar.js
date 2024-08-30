@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
-import BackButton from '../components/BackButtonNormalWhite';
+import BackButton from '../components/BackButtonNormal';
 
 const { height } = Dimensions.get('window');
 
@@ -13,7 +13,7 @@ const BackTopBar = ({ navigation, profile }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>
-        <BackButton onPress={navigation} />
+        <BackButton onPress={navigation} color={"#FFFFFF"}/>
         <View style={styles.searchBar}></View>
         <TouchableOpacity style={styles.pfp} onPress={profile}>
           <Image source={require('../assets/Face.png')} style={styles.pfp} />

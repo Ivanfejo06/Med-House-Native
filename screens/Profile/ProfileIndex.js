@@ -1,13 +1,16 @@
 // ProfileIndex.js
 import React from 'react';
-import { View, Button, StyleSheet, Dimensions, Text, Image } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
-import ProfileNavigator from '../../componentsHome/ProfileNavigator';
+import ProfileIcon from '../../assets/ProfileIcon';
+import AuthIcon from '../../assets/AuthIcon';
+import DonacionesIcon from '../../assets/DonacionesIcon';
+import DeseadosIcon from '../../assets/DeseadosIcon';
+import LogoutIcon from '../../assets/LogoutIcon';
 import { clearUser } from '../../store/userSlice';
 
 const { height } = Dimensions.get('window');
-
 const CONTENT_HEIGHT = height * 0.8;
 
 const ProfileIndex = ({ navigation }) => {
@@ -35,31 +38,51 @@ const ProfileIndex = ({ navigation }) => {
             </View>
           </View>
 
-          <ProfileNavigator
-            image={"image1"}
-            onPress={() => navigation.navigate("ProfileScreen")}
-            text={"Mi Perfil"}
-          />
-          <ProfileNavigator
-            image={"image2"}
-            onPress={() => navigation.navigate("AuthenticationScreen")}
-            text={"Autenticación"}
-          />
-          <ProfileNavigator
-            image={"image3"}
-            onPress={() => navigation.navigate("Donaciones")}
-            text={"Donaciones"}
-          />
-          <ProfileNavigator
-            image={"image4"}
-            onPress={() => navigation.navigate("Deseados")}
-            text={"Deseados"}
-          />
-          <ProfileNavigator
-            image={"image5"}
-            onPress={handleLogout}
-            text={"Cerrar Sesión"}
-          />
+          <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("ProfileScreen")}>
+            <View style={styles.navigatorContent}>
+              <View style={styles.icon} >
+                <ProfileIcon width={30} height={30}/>
+              </View>
+              <Text style={styles.navigatorText}>Mi Perfil</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("AuthenticationScreen")}>
+            <View style={styles.navigatorContent}>
+              <View style={styles.icon} >
+                <AuthIcon width={30} height={30}/>
+              </View>
+              <Text style={styles.navigatorText}>Autenticación</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Donaciones")}>
+            <View style={styles.navigatorContent}>
+              <View style={styles.icon} >
+                <DonacionesIcon width={30} height={30}/>
+              </View>
+              <Text style={styles.navigatorText}>Donaciones</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Deseados")}>
+            <View style={styles.navigatorContent}>
+              <View style={styles.icon} >
+                <DeseadosIcon width={30} height={30}/>
+              </View>
+              <Text style={styles.navigatorText}>Deseados</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navigatorContainer} onPress={handleLogout}>
+            <View style={styles.navigatorContent}>
+              <View style={styles.icon} >
+                <LogoutIcon width={30} height={30}/>
+              </View>
+              <Text style={styles.navigatorText}>Cerrar Sesión</Text>
+            </View>
+          </TouchableOpacity>
+
         </View>
       </View>
     </View>
@@ -71,7 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', 
     alignItems: 'center',
   },
-  center:{
+  center: {
     width: '100%',
     flexDirection: "row",
     paddingHorizontal: 15,
@@ -90,7 +113,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     maxWidth: 700
   },
-  salute:{
+  salute: {
     flexDirection: 'row',
     justifyContent: "center",
     margin: 40
@@ -99,18 +122,41 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100
   },
-  user:{
+  user: {
     flexDirection: "column",
     justifyContent: "center"
   },
-  hello:{
+  hello: {
     fontSize: 20,
   },
-  name:{
+  name: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#1E98A8"
-  }
+  },
+  navigatorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginHorizontal: 40,
+    marginTop: 30,
+    borderBottomWidth: 2,
+    borderBottomColor: '#A8A8A8',
+    paddingBottom: 20,
+  },
+  navigatorContent: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: height * 0.18,
+  },
+  navigatorText: {
+    color: '#A8A8A8',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  icon: {
+    marginRight: 15,
+  },
 });
 
 export default ProfileIndex;

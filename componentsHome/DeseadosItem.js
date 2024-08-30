@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import HeartIcon from '../assets/HeartIcon';
 
 const DeseadosItem = ({ item, onRemove }) => {
   return (
@@ -14,9 +15,9 @@ const DeseadosItem = ({ item, onRemove }) => {
         </View>
         <View style={styles.itemActions}>
           <TouchableOpacity onPress={() => onRemove(item.id)}>
-              <View style={styles.itemRemove}>
-                  <Image style={styles.itemRemoveImage} source={require("../assets/Heart.png")}/>
-              </View>
+            <View style={styles.itemRemove}>
+              <HeartIcon height={24} width={24}></HeartIcon>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
