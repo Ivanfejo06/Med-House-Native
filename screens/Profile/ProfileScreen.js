@@ -58,12 +58,7 @@ const ProfileScreen = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.center}>
           <View style={styles.content}>
-            <UserInfo 
-              label="DNI" 
-              value={userData.dni.toString()} 
-              editable={false} 
-            />
-
+            
             <UserInfo 
               label="Nombre" 
               value={userData.nombre} 

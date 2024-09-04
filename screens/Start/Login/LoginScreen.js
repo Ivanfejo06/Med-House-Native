@@ -8,6 +8,7 @@ import Entrada from '../../../components/Entrada';
 import SmallButton from '../../../components/SmallButton';
 import BackButton from '../../../components/BackButton';
 import { setUser } from '../../../store/userSlice';
+import LogoV from '../../../assets/LogoV';
 
 const { height } = Dimensions.get('window');
 const SPACE_HEIGHT = height * 0.195;
