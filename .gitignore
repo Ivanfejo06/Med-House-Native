@@ -2,7 +2,7 @@
 # Repository URL: https://github.com/Ivanfejo06/Med-House-Native.git
 
 # Node modules
-node_modules
+/node_modules
 
 # Expo
 dist/
