@@ -2,32 +2,31 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert, Modal, TextInput, Animated, Easing, Platform, KeyboardAvoidingView, Button } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
-import axios from 'axios'; // Importa Axios
-import { setUser } from '../../store/userSlice'; // Importa la acción para actualizar el usuario
+import axios from 'axios'; 
+import { setUser } from '../../store/userSlice'; 
 import Boton from '../../components/Button';
 import Mini from '../../components/MiniButton';
 
 const { width, height } = Dimensions.get('window');
 
 const ProfileScreen = ({ navigation }) => {
-  const user = useSelector(state => state.user.user); // Obtén el usuario global
-  const token = useSelector(state => state.user.token); // Obtén el token global
-  const dispatch = useDispatch(); // Obtén el dispatch para actualizar el estado global
+  const user = useSelector(state => state.user.user); 
+  const token = useSelector(state => state.user.token); 
+  const dispatch = useDispatch(); 
   const [userData, setUserData] = useState({ email: user.email });
   const [modalVisible, setModalVisible] = useState(false);
-  const [newEmail, setNewEmail] = useState(user.email); // Estado para el nuevo email
-  const [newPassword, setNewPassword] = useState(''); // Estado para la nueva contraseña
+  const [newEmail, setNewEmail] = useState(user.email); 
+  const [newPassword, setNewPassword] = useState(''); 
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  const [modalType, setModalType] = useState('email'); // 'email' o 'password' para determinar qué tipo de modal mostrar
+  const [modalType, setModalType] = useState('email'); 
 
-  const slideAnim = useRef(new Animated.Value(width)).current; // Animación desde la derecha
+  const slideAnim = useRef(new Animated.Value(width)).current; 
 
   useEffect(() => {
     setUserData({ email: user.email });
   }, [user]);
 
   useEffect(() => {
-    // Verifica si hay cambios en el email del usuario
     setIsButtonEnabled(newEmail !== user.email);
   }, [newEmail]);
 
@@ -40,7 +39,7 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const response = await axios.put(
         'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
-        { email: newEmail }, // Solo actualiza el email
+        { email: newEmail }, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,13 +52,13 @@ const ProfileScreen = ({ navigation }) => {
           const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
           const loginResponse = await axios.post(apiUrl, { 
             dni: user.dni, 
-            password: user.password // Usar la contraseña actual del usuario
+            password: user.password 
           });
 
           if (loginResponse.data.success) {
             const { token, user } = loginResponse.data;
             dispatch(setUser({ token, user }));
-            closeModal(); // Cierra el modal después del éxito
+            closeModal(); 
             Alert.alert('Éxito', 'Email actualizado con éxito');
           } else {
             Alert.alert('Error', loginResponse.data.message);
@@ -86,7 +85,7 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const response = await axios.put(
         'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
-        { password: newPassword }, // Solo actualiza la contraseña
+        { password: newPassword }, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -96,7 +95,7 @@ const ProfileScreen = ({ navigation }) => {
 
       if (response.data.success) {
         Alert.alert('Éxito', 'Contraseña actualizada con éxito');
-        closeModal(); // Cierra el modal después del éxito
+        closeModal(); 
       } else {
         Alert.alert('Error', response.data.message);
       }
@@ -107,10 +106,10 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const openModal = (type) => {
-    setModalType(type); // Establece el tipo de modal a mostrar
+    setModalType(type); 
     setModalVisible(true);
     Animated.timing(slideAnim, {
-      toValue: 0, // Mueve el modal a la posición central
+      toValue: 0, 
       duration: 400,
       easing: Easing.out(Easing.ease),
       useNativeDriver: true,
@@ -119,7 +118,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const closeModal = () => {
     Animated.timing(slideAnim, {
-      toValue: width, // Mueve el modal fuera de la pantalla a la derecha
+      toValue: width, 
       duration: 400,
       easing: Easing.in(Easing.ease),
       useNativeDriver: true,
@@ -135,7 +134,6 @@ const ProfileScreen = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.center}>
           <View style={styles.content}>
-            {/* Sección de Email */}
             <View style={styles.textContainer}>
               <Text style={styles.infoTitle}>Email</Text>
               <Text style={styles.infoDescription}>
@@ -151,7 +149,6 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.content}>
-            {/* Sección de Contraseña */}
             <View style={styles.textContainer}>
               <Text style={styles.infoTitle}>Contraseña</Text>
               <Text style={styles.infoDescription}>
@@ -174,54 +171,58 @@ const ProfileScreen = ({ navigation }) => {
         animationType="none"
         onRequestClose={closeModal}
       >
-        <TouchableWithoutFeedback onPress={() => { }}>
+        <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalOverlay}>
-            <Animated.View style={[styles.modalContainer, { transform: [{ translateX: slideAnim }] }]}>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.modalContent}
-              >
-                {modalType === 'email' && (
-                  <>
-                    <Text style={styles.modalTitle}>Modificar Email</Text>
-                    <Text style={styles.modalSubtitle}>Ingresa el nuevo email</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Nuevo Email"
-                      value={newEmail}
-                      onChangeText={setNewEmail}
-                    />
-                    <View>
-                      <Boton 
-                        title="Confirmar" 
-                        onPress={handleEmailSubmit}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <Animated.View style={[styles.modalContainer, { transform: [{ translateX: slideAnim }] }]}>
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  style={styles.modalContent}
+                >
+                  {modalType === 'email' && (
+                    <>
+                      <Text style={styles.modalTitle}>Modificar Email</Text>
+                      <Text style={styles.modalSubtitle}>Ingresa el nuevo email</Text>
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder="Nuevo Email"
+                        value={newEmail}
+                        onChangeText={setNewEmail}
                       />
-                      <Button title="Cancelar" onPress={closeModal} />
-                    </View>
-                  </>
-                )}
-                {modalType === 'password' && (
-                  <>
-                    <Text style={styles.modalTitle}>Modificar Contraseña</Text>
-                    <Text style={styles.modalSubtitle}>Ingresa la nueva contraseña</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Nueva Contraseña"
-                      secureTextEntry
-                      value={newPassword}
-                      onChangeText={setNewPassword}
-                    />
-                    <View style={styles.buttonContainer}>
-                      <Boton 
-                        title="Confirmar" 
-                        onPress={handlePasswordSubmit}
+                      <View>
+                        <Boton 
+                          title="Confirmar" 
+                          onPress={handleEmailSubmit}
+                        />
+                        <Button title="Cancelar" onPress={closeModal} />
+                      </View>
+                    </>
+                  )}
+                  {modalType === 'password' && (
+                    <>
+                      <Text style={styles.modalTitle}>Modificar Contraseña</Text>
+                      <Text style={styles.modalSubtitle}>Ingresa la nueva contraseña</Text>
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder="Nueva Contraseña"
+                        secureTextEntry
+                        value={newPassword}
+                        onChangeText={setNewPassword}
                       />
-                      <Button title="Cancelar" onPress={closeModal} />
-                    </View>
-                  </>
-                )}
-              </KeyboardAvoidingView>
-            </Animated.View>
+                      <View style={styles.buttonContainer}>
+                        <Boton
+                          title="Confirmar"
+                          onPress={handlePasswordSubmit}
+                          style={styles.button}
+                        />
+                        <Button title="Cancelar" onPress={closeModal} />
+                      </View>
+                    </>
+                  )}
+                </KeyboardAvoidingView>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+            <View></View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -252,15 +253,16 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     padding: 20,
     maxWidth: 700,
-    flexDirection: "column", // Cambiado a column para apilar los elementos verticalmente
+    flexDirection: "column", 
   },
   textContainer: {
-    marginBottom: 20, // Añade un espacio debajo del contenedor de texto
+    marginBottom: 20, 
   },
   buttonContainer: {
-    alignSelf: 'flex-end', // Alinea el botón a la derecha
-    flexDirection: 'column', // Alinea los botones en fila
-    justifyContent: 'space-between', // Añade espacio entre los botones
+    width: "100%",
+    alignSelf: 'flex-end', 
+    flexDirection: 'column', 
+    justifyContent: 'space-between', 
   },
   infoTitle: {
     fontSize: 18,
@@ -279,43 +281,46 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     alignItems: 'center',
+    justifyContent: 'space-around',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 25,
     width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    justifyContent: 'center', // Centra el contenido verticalmente,
-    alignItems: "center"
+  },
+  modalContent: {
+    width: '100%',
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: 'center',
   },
   modalSubtitle: {
     fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
     color: 'gray',
+    marginBottom: 20,
   },
   textInput: {
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
+    borderRadius: 10,
     padding: 10,
     marginBottom: 20,
-    borderRadius: 5,
-    width: '100%',
+    fontSize: 16,
   },
-  modalContent:{
-    width: '100%'
-  }
+  button: {
+    width: '100%', // Asegura que el botón ocupe todo el ancho disponible
+  },
 });
 
 export default ProfileScreen;

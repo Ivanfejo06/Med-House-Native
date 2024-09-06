@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Button, Modal } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, FlatList, TouchableOpacity, Modal } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker'; // Asegúrate de instalar esta librería
 
 const UserInfo = ({ label, value, editable = false, onChangeText }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showGenderPicker, setShowGenderPicker] = useState(false);
   const [selectedGender, setSelectedGender] = useState(value);
   const [phoneNumber, setPhoneNumber] = useState(value || '');
+  const [selectedDate, setSelectedDate] = useState(value ? new Date(value) : new Date());
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
+      setSelectedDate(selectedDate);
       onChangeText(selectedDate.toISOString().split('T')[0]); // Formato YYYY-MM-DD
     }
   };
@@ -19,7 +20,7 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
   const handleGenderChange = (gender) => {
     setSelectedGender(gender);
     onChangeText(gender);
-    setShowGenderPicker(false);
+    setShowGenderPicker(false); // Cierra el modal después de seleccionar
   };
 
   const formatPhoneNumber = (text) => {
@@ -36,19 +37,14 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
   const renderInput = () => {
     if (label.toLowerCase() === 'fecha de nacimiento') {
       return (
-        <>
-          <Text style={styles.value} onPress={() => setShowDatePicker(true)}>
-            {value ? new Date(value).toLocaleDateString() : 'Selecciona una fecha'}
-          </Text>
-          {showDatePicker && (
-            <DateTimePicker
-              value={value ? new Date(value) : new Date()}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-            />
-          )}
-        </>
+        <View style={styles.datePickerContainer}>
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        </View>
       );
     } else if (label.toLowerCase() === 'género') {
       return (
@@ -56,38 +52,33 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
           <Text style={styles.value} onPress={() => setShowGenderPicker(true)}>
             {selectedGender || 'Selecciona tu género'}
           </Text>
+          {/* Modal personalizado para seleccionar género */}
           <Modal
             transparent={true}
             visible={showGenderPicker}
             animationType="slide"
             onRequestClose={() => setShowGenderPicker(false)}
           >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Picker
-                  selectedValue={selectedGender}
-                  onValueChange={(itemValue) => handleGenderChange(itemValue)}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Femenino" value="Femenino" />
-                  <Picker.Item label="Masculino" value="Masculino" />
-                  <Picker.Item label="Otro" value="Otro" />
-                </Picker>
-                <Button title="Cerrar" onPress={() => setShowGenderPicker(false)} />
+            <TouchableWithoutFeedback onPress={() => setShowGenderPicker(false)}>
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.modalTitle}>Selecciona tu género</Text>
+                  <FlatList
+                    data={['Femenino', 'Masculino', 'Otro']}
+                    keyExtractor={(item) => item}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.optionButton}
+                        onPress={() => handleGenderChange(item)}
+                      >
+                        <Text style={styles.optionText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </View>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </Modal>
-          {selectedGender === 'Otro' && (
-            <TextInput
-              style={[styles.value, editable && styles.editable]}
-              value={value !== 'Femenino' && value !== 'Masculino' ? value : ''}
-              editable={editable}
-              onChangeText={onChangeText}
-              underlineColorAndroid="transparent"
-              maxLength={60}
-              placeholder="Especifica tu género"
-            />
-          )}
         </>
       );
     } else if (label.toLowerCase() === 'teléfono') {
@@ -148,22 +139,42 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  datePickerContainer: {
+    width: "70%",
+    flexDirection: 'row',
     alignItems: 'center',
+  },
+  modalBackground: {
+    flex: 1,
+    width: '100%',
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    justifyContent: 'space-around',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContent: {
-    width: 300,
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  picker: {
+  modalContainer: {
     width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  optionButton: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#000',
   },
 });
 

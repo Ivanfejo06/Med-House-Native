@@ -157,12 +157,13 @@ const ProfileScreen = ({ navigation }) => {
               editable 
               onChangeText={(text) => setUserData({ ...userData, telefono: text })} 
             />
-
-            <Mini 
-              title="Guardar Cambios" 
-              onPress={openModal} 
-              disabled={!isButtonEnabled} // Usa el estado para habilitar/deshabilitar el botón
-            />
+            <View style={styles.right}>
+              <Mini 
+                title="Guardar Cambios" 
+                onPress={openModal} 
+                disabled={!isButtonEnabled} // Usa el estado para habilitar/deshabilitar el botón
+              />
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -297,6 +298,10 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50
   },
+  right:{
+    width: '100%',
+    alignContent: "flex-end"
+  }
 });
 
 export default ProfileScreen;
