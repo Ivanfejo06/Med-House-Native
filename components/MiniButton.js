@@ -1,15 +1,10 @@
 // Button.js
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const { height} = Dimensions.get('window');
-
-// Definir constantes para width y height en porcentaje
-const BORDER_RADIUS = height * 0.0176; // Ajustar el radio del borde como porcentaje de la altura del botón
-
-const Button = ({ title, onPress, style }) => {
+const Button = ({ title, onPress }) => {
   return (
-    <TouchableOpacity style={[styles.button, { borderRadius: BORDER_RADIUS }, style]} onPress={onPress}>
+    <TouchableOpacity style={[styles.button]} onPress={onPress}>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
@@ -20,9 +15,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1E98A8',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 10,
     paddingHorizontal: 10,
-    width: '100%'
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   text: {
     color: '#FFFFFF',

@@ -2,7 +2,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 
-const { height, width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 // Definir constantes para width y height en porcentaje
 const BUTTON_WIDTH = height * 0.3509; // Ajusta el porcentaje según lo necesario
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1E98A8',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 10
   },
   text: {
     color: '#FFFFFF',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert, Modal, TextInput, Animated, Easing, Platform, KeyboardAvoidingView, Button } from 'react-native';
+import { Image, View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert, Modal, TextInput, Animated, Easing, Platform, KeyboardAvoidingView, Button } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
 import UserInfo from '../../componentsHome/UserInfo'; // Importa el componente UserInfo
@@ -46,6 +46,10 @@ const ProfileScreen = ({ navigation }) => {
       Alert.alert('Error', 'Por favor ingrese la contraseña.');
       return;
     }
+    if (passwordInput != user.password) {
+      Alert.alert('Error', 'La constraseña ingresada no es la correcta.');
+      return;
+    }
 
     try {
       const response = await axios.put(
@@ -65,7 +69,7 @@ const ProfileScreen = ({ navigation }) => {
             dni: userData.dni, 
             password: passwordInput // Usa la contraseña proporcionada
           });
-    
+
           if (loginResponse.data.success) {
             const { token, user } = loginResponse.data;
             dispatch(setUser({ token, user }));
@@ -115,6 +119,10 @@ const ProfileScreen = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.center}>
           <View style={styles.content}>
+            <View style={styles.salute}>
+              <Image source={require('../../assets/Face.png')} style={styles.foto} />
+            </View>
+
             <UserInfo 
               label="Nombre" 
               value={userData.nombre || ''} 
@@ -127,13 +135,6 @@ const ProfileScreen = ({ navigation }) => {
               value={userData.apellido || ''} 
               editable 
               onChangeText={(text) => setUserData({ ...userData, apellido: text })} 
-            />
-
-            <UserInfo 
-              label="Email" 
-              value={userData.email || ''} 
-              editable 
-              onChangeText={(text) => setUserData({ ...userData, email: text })} 
             />
 
             <UserInfo 
@@ -195,7 +196,7 @@ const ProfileScreen = ({ navigation }) => {
                 <View style={styles.buttonContainer}>
                   <Boton 
                     title="Confirmar" 
-                    onPress={() => { setPassword(passwordInput); handleSubmit(); }} 
+                    onPress={handleSubmit} // Llama a handleSubmit directamente
                   />
                   <Button title="Cancelar" onPress={closeModal} />
                 </View>
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', 
     alignItems: 'center',
   },
-  center:{
+  center: {
     width: '100%',
     flexDirection: "row",
     paddingHorizontal: 15,
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 20,
     backgroundColor: "#FFFFFF",
-    borderRadius: 15,
+    borderRadius: 25,
     width: '100%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -285,6 +286,16 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     alignItems: 'center',
+  },
+  salute: {
+    flexDirection: 'row',
+    justifyContent: "center",
+    marginBottom: 40
+  },
+  foto: {
+    width: 100,
+    height: 100,
+    borderRadius: 50
   },
 });
 
