@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
 import axios from 'axios'; 
 import { setUser } from '../../store/userSlice'; 
-import Boton from '../../components/Button';
 import Mini from '../../components/MiniButton';
 
 const { width, height } = Dimensions.get('window');
@@ -17,29 +16,48 @@ const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newEmail, setNewEmail] = useState(user.email); 
   const [newPassword, setNewPassword] = useState(''); 
-  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState(''); // Nuevo estado para repetir contraseña
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [modalType, setModalType] = useState('email'); 
 
   const slideAnim = useRef(new Animated.Value(width)).current; 
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  
+  const validatePassword = (password) => {
+    const minLength = 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return password.length >= minLength && hasUpperCase && hasSpecialChar;
+  };
 
   useEffect(() => {
     setUserData({ email: user.email });
   }, [user]);
 
   useEffect(() => {
-    setIsButtonEnabled(newEmail !== user.email);
+    setIsEmailValid(validateEmail(newEmail));
   }, [newEmail]);
 
+  useEffect(() => {
+    setIsPasswordValid(validatePassword(newPassword));
+  }, [newPassword]);
+
   const handleEmailSubmit = async () => {
-    if (!newEmail) {
-      Alert.alert('Error', 'Por favor ingrese un email.');
+    if (!isEmailValid) {
+      Alert.alert('Error', 'El email no es válido.');
       return;
     }
 
     try {
+      const updatedUserData = { ...user, email: newEmail }; 
       const response = await axios.put(
         'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
-        { email: newEmail }, 
+        updatedUserData, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,24 +66,19 @@ const ProfileScreen = ({ navigation }) => {
       );
 
       if (response.data.success) {
-        try {
-          const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
-          const loginResponse = await axios.post(apiUrl, { 
-            dni: user.dni, 
-            password: user.password 
-          });
+        const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
+        const loginResponse = await axios.post(apiUrl, { 
+          dni: user.dni, 
+          password: user.password 
+        });
 
-          if (loginResponse.data.success) {
-            const { token, user } = loginResponse.data;
-            dispatch(setUser({ token, user }));
-            closeModal(); 
-            Alert.alert('Éxito', 'Email actualizado con éxito');
-          } else {
-            Alert.alert('Error', loginResponse.data.message);
-          }
-        } catch (error) {
-          Alert.alert('Error', 'Ocurrió un error al intentar iniciar sesión.');
-          console.error(error);
+        if (loginResponse.data.success) {
+          const { token, user } = loginResponse.data;
+          dispatch(setUser({ token, user }));
+          closeModal(); 
+          Alert.alert('Éxito', 'Email actualizado con éxito');
+        } else {
+          Alert.alert('Error', loginResponse.data.message);
         }
       } else {
         Alert.alert('Error', response.data.message);
@@ -77,15 +90,21 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handlePasswordSubmit = async () => {
-    if (!newPassword) {
-      Alert.alert('Error', 'Por favor ingrese una nueva contraseña.');
+    if (!isPasswordValid) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres, una mayúscula y un símbolo especial.');
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden.');
       return;
     }
 
     try {
+      const updatedUserData = { ...user, password: newPassword };
       const response = await axios.put(
         'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
-        { password: newPassword }, 
+        updatedUserData, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -144,7 +163,6 @@ const ProfileScreen = ({ navigation }) => {
               <Mini 
                 title="Modificar Email" 
                 onPress={() => openModal('email')} 
-                disabled={!isButtonEnabled} 
               />
             </View>
           </View>
@@ -190,9 +208,11 @@ const ProfileScreen = ({ navigation }) => {
                         onChangeText={setNewEmail}
                       />
                       <View>
-                        <Boton 
+                        <Mini
+                          style={[styles.button,{ backgroundColor: isEmailValid ? '#1E98A8' : '#B0B0B0' }]} 
                           title="Confirmar" 
                           onPress={handleEmailSubmit}
+                          disabled={!isEmailValid}
                         />
                         <Button title="Cancelar" onPress={closeModal} />
                       </View>
@@ -209,11 +229,19 @@ const ProfileScreen = ({ navigation }) => {
                         value={newPassword}
                         onChangeText={setNewPassword}
                       />
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder="Repetir Contraseña" // Campo para confirmar la contraseña
+                        secureTextEntry
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                      />
                       <View style={styles.buttonContainer}>
-                        <Boton
+                        <Mini
+                          style={[styles.button,{ backgroundColor: isPasswordValid ? '#1E98A8' : '#B0B0B0' }]}
                           title="Confirmar"
                           onPress={handlePasswordSubmit}
-                          style={styles.button}
+                          disabled={!isPasswordValid} 
                         />
                         <Button title="Cancelar" onPress={closeModal} />
                       </View>
@@ -222,7 +250,6 @@ const ProfileScreen = ({ navigation }) => {
                 </KeyboardAvoidingView>
               </Animated.View>
             </TouchableWithoutFeedback>
-            <View></View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -321,6 +348,9 @@ const styles = StyleSheet.create({
   button: {
     width: '100%', // Asegura que el botón ocupe todo el ancho disponible
   },
+  mini:{
+    marginBottom: 10
+  }
 });
 
 export default ProfileScreen;
