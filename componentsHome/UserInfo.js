@@ -49,9 +49,14 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
     } else if (label.toLowerCase() === 'género') {
       return (
         <>
-          <Text style={styles.value} onPress={() => setShowGenderPicker(true)}>
-            {selectedGender || 'Selecciona tu género'}
-          </Text>
+          <TextInput
+          style={styles.value}
+          onPress={() => setShowGenderPicker(true)}
+          value={selectedGender || 'Selecciona tu género'} // Asegúrate de que el valor no sea undefined o null
+          editable={false}
+          onChangeText={onChangeText}
+          underlineColorAndroid="transparent"
+        />
           {/* Modal personalizado para seleccionar género */}
           <Modal
             transparent={true}
@@ -113,7 +118,9 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>{label}</Text>
-        {renderInput()}
+        <View style={styles.info}>
+          {renderInput()}
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -124,6 +131,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 30,
+    justifyContent: "space-around"
   },
   label: {
     fontSize: 16,
@@ -133,14 +141,16 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: '#000',
-    flex: 1,
+    flex: 1
+  },
+  info: {
+    width: "60%"
   },
   editable: {
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
   datePickerContainer: {
-    width: "70%",
     flexDirection: 'row',
     alignItems: 'center',
   },

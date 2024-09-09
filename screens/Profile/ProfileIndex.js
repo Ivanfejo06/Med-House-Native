@@ -33,8 +33,8 @@ const ProfileIndex = ({ navigation }) => {
           <View style={styles.salute}>
             <Image source={require('../../assets/Face.png')} style={styles.foto} />
             <View style={styles.user}>
-              <Text style={styles.hello}>Hola!</Text>
-              <Text style={styles.name}>{user ? `${user.nombre} ${user.apellido}` : 'Invitado'}</Text>
+              <Text style={styles.hello}>Hola,</Text>
+              <Text style={styles.name}>{user ? `${user.nombre} ${user.apellido}` : 'Invitado'}!</Text>
             </View>
           </View>
 

@@ -28,11 +28,11 @@ const ProfileScreen = ({ navigation }) => {
     return emailRegex.test(email);
   };
   
-  const validatePassword = (password) => {
+  const validatePassword = (password, confirm) => {
     const minLength = 6;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    return password.length >= minLength && hasUpperCase && hasSpecialChar;
+    return password.length >= minLength && hasUpperCase && hasSpecialChar && password === confirm;
   };
 
   useEffect(() => {
@@ -40,39 +40,42 @@ const ProfileScreen = ({ navigation }) => {
   }, [newEmail]);
 
   useEffect(() => {
-    setIsPasswordValid(validatePassword(newPassword));
-  }, [newPassword]);
+    setIsPasswordValid(validatePassword(newPassword, confirmPassword));
+  }, [newPassword, confirmPassword]); // Observar también confirmPassword
 
   const handleEmailSubmit = async () => {
     if (!isEmailValid) {
       Alert.alert('Error', 'El email no es válido o no ha sido modificado.');
       return;
     }
-
+  
     try {
-      const updatedUserData = { ...user, email: newEmail }; 
+      const updatedUserData = { ...user, email: newEmail };
       const response = await axios.put(
         'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
-        updatedUserData, 
+        updatedUserData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
+  
       if (response.data.success) {
         const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
-        const loginResponse = await axios.post(apiUrl, { 
-          dni: user.dni, 
-          password: user.password 
+        const loginResponse = await axios.post(apiUrl, {
+          dni: user.dni,
+          password: user.password
         });
-
+  
         if (loginResponse.data.success) {
           const { token, user } = loginResponse.data;
           dispatch(setUser({ token, user }));
-          closeModal(); 
+          closeModal();
           Alert.alert('Éxito', 'Email actualizado con éxito');
+          // Resetear los estados
+          setNewEmail('');
+          setIsEmailValid(false);
         } else {
           Alert.alert('Error', loginResponse.data.message);
         }
@@ -84,33 +87,37 @@ const ProfileScreen = ({ navigation }) => {
       Alert.alert('Error', 'Error al actualizar el email');
     }
   };
-
+  
   const handlePasswordSubmit = async () => {
     if (!isPasswordValid) {
       Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres, una mayúscula y un símbolo especial.');
       return;
     }
     
-    if (newPassword !== confirmPassword) {
+    if (newPassword !== confirmPassword && newPassword.length !== 0) {
       Alert.alert('Error', 'Las contraseñas no coinciden.');
       return;
     }
-
+  
     try {
       const updatedUserData = { ...user, password: newPassword };
       const response = await axios.put(
         'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
-        updatedUserData, 
+        updatedUserData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
+  
       if (response.data.success) {
         Alert.alert('Éxito', 'Contraseña actualizada con éxito');
-        closeModal(); 
+        closeModal();
+        // Resetear los estados
+        setNewPassword('');
+        setConfirmPassword('');
+        setIsPasswordValid(false);
       } else {
         Alert.alert('Error', response.data.message);
       }
@@ -118,7 +125,7 @@ const ProfileScreen = ({ navigation }) => {
       console.error('Error al actualizar la contraseña:', error);
       Alert.alert('Error', 'Error al actualizar la contraseña');
     }
-  };
+  };  
 
   const openModal = (type) => {
     setModalType(type); 
@@ -225,20 +232,18 @@ const ProfileScreen = ({ navigation }) => {
                   )}
                   {modalType === 'password' && (
                     <>
-                      <Text style={styles.modalTitle}>Modificar Contraseña</Text>
+                      <Text style={styles.modalTitle}>Cambiar Contraseña</Text>
                       <Text style={styles.modalSubtitle}>Ingresa la nueva contraseña</Text>
                       <TextInput
                         style={styles.textInput}
                         placeholder="Nueva Contraseña"
                         secureTextEntry
-                        value={newPassword}
                         onChangeText={setNewPassword}
                       />
                       <TextInput
                         style={styles.textInput}
                         placeholder="Confirmar Contraseña"
                         secureTextEntry
-                        value={confirmPassword}
                         onChangeText={setConfirmPassword}
                       />
                       <View>
@@ -272,7 +277,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingHorizontal: 15,
     justifyContent: "center",
-    alignContent: "center"
+    alignContent: "center",
+    alignItems: "center"
   }, 
   content: {
     marginTop: 20,
