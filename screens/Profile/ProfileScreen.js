@@ -95,7 +95,7 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisible(true);
     Animated.timing(slideAnim, {
       toValue: 0,
-      duration: 400,
+      duration: 500,
       easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     }).start();
@@ -104,7 +104,7 @@ const ProfileScreen = ({ navigation }) => {
   const closeModal = () => {
     Animated.timing(slideAnim, {
       toValue: height,
-      duration: 400,
+      duration: 500,
       easing: Easing.in(Easing.ease),
       useNativeDriver: true,
     }).start(() => setModalVisible(false));

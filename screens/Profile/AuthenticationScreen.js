@@ -14,9 +14,9 @@ const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch(); 
   const [userData, setUserData] = useState({ email: user.email });
   const [modalVisible, setModalVisible] = useState(false);
-  const [newEmail, setNewEmail] = useState(user.email); 
+  const [newEmail, setNewEmail] = useState(''); 
   const [newPassword, setNewPassword] = useState(''); 
-  const [confirmPassword, setConfirmPassword] = useState(''); // Nuevo estado para repetir contraseña
+  const [confirmPassword, setConfirmPassword] = useState(''); 
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [modalType, setModalType] = useState('email'); 
@@ -36,11 +36,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setUserData({ email: user.email });
-  }, [user]);
-
-  useEffect(() => {
-    setIsEmailValid(validateEmail(newEmail));
+    setIsEmailValid(validateEmail(newEmail) && newEmail !== user.email); 
   }, [newEmail]);
 
   useEffect(() => {
@@ -49,7 +45,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleEmailSubmit = async () => {
     if (!isEmailValid) {
-      Alert.alert('Error', 'El email no es válido.');
+      Alert.alert('Error', 'El email no es válido o no ha sido modificado.');
       return;
     }
 
@@ -156,8 +152,17 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.textContainer}>
               <Text style={styles.infoTitle}>Email</Text>
               <Text style={styles.infoDescription}>
-                El mail con el cual te mandaremos actualizaciones sobre MedHouse
+                El mail con el cual te mandaremos actualizaciones mails de confirmacion sobre 
+                <Text style={styles.highlightedText}> MedHouse</Text>
               </Text>
+              <View style={styles.spacer}>
+                <Text style={styles.currentMail}>
+                  Email Actual:
+                </Text>
+                <Text style={styles.mail}>
+                  {user.email}
+                </Text>
+              </View>
             </View>
             <View style={styles.buttonContainer}>
               <Mini 
@@ -170,7 +175,8 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.textContainer}>
               <Text style={styles.infoTitle}>Contraseña</Text>
               <Text style={styles.infoDescription}>
-                Cambia tu contraseña para asegurar tu cuenta
+                Cambia tu contraseña para asegurar tu cuenta de
+                <Text style={styles.highlightedText}> MedHouse</Text>
               </Text>
             </View>
             <View style={styles.buttonContainer}>
@@ -191,25 +197,24 @@ const ProfileScreen = ({ navigation }) => {
       >
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalOverlay}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <Animated.View style={[styles.modalContainer, { transform: [{ translateX: slideAnim }] }]}>
-                <KeyboardAvoidingView
-                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                  style={styles.modalContent}
-                >
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={styles.modalContent}
+            >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <Animated.View style={[styles.modalContainer, { transform: [{ translateX: slideAnim }] }]}>
                   {modalType === 'email' && (
                     <>
                       <Text style={styles.modalTitle}>Modificar Email</Text>
                       <Text style={styles.modalSubtitle}>Ingresa el nuevo email</Text>
                       <TextInput
                         style={styles.textInput}
-                        placeholder="Nuevo Email"
-                        value={newEmail}
+                        placeholder={user.email}  
                         onChangeText={setNewEmail}
                       />
                       <View>
                         <Mini
-                          style={[styles.button,{ backgroundColor: isEmailValid ? '#1E98A8' : '#B0B0B0' }]} 
+                          style={[styles.button, { backgroundColor: isEmailValid ? '#1E98A8' : '#B0B0B0', marginBottom: 15 }]} 
                           title="Confirmar" 
                           onPress={handleEmailSubmit}
                           disabled={!isEmailValid}
@@ -231,25 +236,25 @@ const ProfileScreen = ({ navigation }) => {
                       />
                       <TextInput
                         style={styles.textInput}
-                        placeholder="Repetir Contraseña" // Campo para confirmar la contraseña
+                        placeholder="Confirmar Contraseña"
                         secureTextEntry
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
                       />
-                      <View style={styles.buttonContainer}>
+                      <View>
                         <Mini
-                          style={[styles.button,{ backgroundColor: isPasswordValid ? '#1E98A8' : '#B0B0B0' }]}
-                          title="Confirmar"
+                          style={[styles.button, { backgroundColor: isPasswordValid ? '#1E98A8' : '#B0B0B0', marginBottom: 15 }]} 
+                          title="Confirmar" 
                           onPress={handlePasswordSubmit}
-                          disabled={!isPasswordValid} 
+                          disabled={!isPasswordValid}
                         />
                         <Button title="Cancelar" onPress={closeModal} />
                       </View>
                     </>
                   )}
-                </KeyboardAvoidingView>
-              </Animated.View>
-            </TouchableWithoutFeedback>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -303,6 +308,32 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 20,
   },
+  currentMail: {
+    fontSize: 16,
+    color: 'gray',
+    textAlign: 'left',
+    color: "#1E98A8"
+  },
+  spacer: {
+    flexDirection: "row", 
+    backgroundColor: "#e6e6e6", // Color del borde
+    borderRadius: 15,       // Radio de las esquinas
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84, 
+    justifyContent: "space-around"
+  },
+  highlightedText: {
+    color: "#1E98A8",
+    fontWeight: "bold"
+  },
+  mail: {
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'left',
+  },
   modalOverlay: {
     flex: 1,
     width: '100%',
@@ -316,9 +347,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 20,
-    alignContent: "center",
-    justifyContent: "center",
-    alignItems: "center",
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
