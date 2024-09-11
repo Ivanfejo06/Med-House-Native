@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   navigatorContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginHorizontal: 40,
+    marginHorizontal: 30,
     marginTop: 30,
     borderBottomWidth: 2,
     borderBottomColor: '#A8A8A8',
