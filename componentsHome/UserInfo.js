@@ -6,7 +6,6 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showGenderPicker, setShowGenderPicker] = useState(false);
   const [selectedGender, setSelectedGender] = useState(value);
-  const [phoneNumber, setPhoneNumber] = useState(value || '');
   const [selectedDate, setSelectedDate] = useState(value ? new Date(value) : new Date());
 
   const handleDateChange = (event, selectedDate) => {
@@ -21,17 +20,6 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
     setSelectedGender(gender);
     onChangeText(gender);
     setShowGenderPicker(false); // Cierra el modal después de seleccionar
-  };
-
-  const formatPhoneNumber = (text) => {
-    // Elimina todos los caracteres que no sean números
-    return ('' + text).replace(/[^\d]/g, '');
-  };
-
-  const handlePhoneNumberChange = (text) => {
-    const cleaned = formatPhoneNumber(text);
-    setPhoneNumber(cleaned);
-    onChangeText(cleaned);
   };
 
   const renderInput = () => {
@@ -50,13 +38,13 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
       return (
         <>
           <TextInput
-          style={styles.value}
-          onPress={() => setShowGenderPicker(true)}
-          value={selectedGender || 'Selecciona tu género'} // Asegúrate de que el valor no sea undefined o null
-          editable={false}
-          onChangeText={onChangeText}
-          underlineColorAndroid="transparent"
-        />
+            style={styles.value}
+            onPress={() => setShowGenderPicker(true)}
+            value={selectedGender || 'Selecciona tu género'} // Asegúrate de que el valor no sea undefined o null
+            editable={false}
+            onChangeText={onChangeText}
+            underlineColorAndroid="transparent"
+          />
           {/* Modal personalizado para seleccionar género */}
           <Modal
             transparent={true}
@@ -86,21 +74,6 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
           </Modal>
         </>
       );
-    } else if (label.toLowerCase() === 'teléfono') {
-      return (
-        <>
-          <TextInput
-            style={[styles.value, editable && styles.editable]}
-            value={phoneNumber}
-            editable={editable}
-            onChangeText={handlePhoneNumberChange}
-            underlineColorAndroid="transparent"
-            keyboardType="numeric"
-            maxLength={15} // Ajusta según el formato esperado
-            placeholder="Número de teléfono"
-          />
-        </>
-      );
     } else {
       return (
         <TextInput
@@ -117,7 +90,7 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.label}>{label}:</Text>
         <View style={styles.info}>
           {renderInput()}
         </View>
@@ -128,27 +101,30 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
 
 const styles = StyleSheet.create({
   infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
-    justifyContent: "space-around"
+    flexDirection: "row", 
+    backgroundColor: "#e6e6e6", // Color del borde
+    borderRadius: 15,       // Radio de las esquinas
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.84, 
+    justifyContent: "space-between",
+    marginBottom: 20,
+    width: '100%'
   },
   label: {
     fontSize: 16,
-    color: '#888',
+    color: '#1E98A8',
     width: '30%',
   },
   value: {
     fontSize: 16,
     color: '#000',
-    flex: 1
+    flex: 1,
   },
   info: {
-    width: "60%"
-  },
-  editable: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    textDecoration: "none"
   },
   datePickerContainer: {
     flexDirection: 'row',

@@ -151,12 +151,6 @@ const ProfileScreen = ({ navigation }) => {
               onChangeText={(gender) => setUserData({ ...userData, genero: gender })} 
             />
 
-            <UserInfo 
-              label="Teléfono" 
-              value={(userData.telefono || '').toString()} // Convierte el número a string
-              editable 
-              onChangeText={(text) => setUserData({ ...userData, telefono: text })} 
-            />
             <View style={styles.right}>
               <Mini 
                 title="Guardar Cambios" 

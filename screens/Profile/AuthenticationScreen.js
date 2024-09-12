@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert, Modal, TextInput, Animated, Easing, Platform, KeyboardAvoidingView, Button } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert, Modal, TextInput, Animated, Easing, Platform, KeyboardAvoidingView, Button, ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
 import axios from 'axios'; 
@@ -17,8 +17,10 @@ const ProfileScreen = ({ navigation }) => {
   const [newEmail, setNewEmail] = useState(''); 
   const [newPassword, setNewPassword] = useState(''); 
   const [confirmPassword, setConfirmPassword] = useState(''); 
+  const [newPhone, setNewPhone] = useState(''); // Nuevo estado para teléfono
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isPhoneValid, setIsPhoneValid] = useState(false); // Nuevo estado de validación para teléfono
   const [modalType, setModalType] = useState('email'); 
 
   const slideAnim = useRef(new Animated.Value(width)).current; 
@@ -35,13 +37,22 @@ const ProfileScreen = ({ navigation }) => {
     return password.length >= minLength && hasUpperCase && hasSpecialChar && password === confirm;
   };
 
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^[0-9]{10,15}$/; // Ajusta según el formato esperado
+    return phoneRegex.test(phone);
+  };
+
   useEffect(() => {
     setIsEmailValid(validateEmail(newEmail) && newEmail !== user.email); 
   }, [newEmail]);
 
   useEffect(() => {
     setIsPasswordValid(validatePassword(newPassword, confirmPassword));
-  }, [newPassword, confirmPassword]); // Observar también confirmPassword
+  }, [newPassword, confirmPassword]); 
+
+  useEffect(() => {
+    setIsPhoneValid(validatePhoneNumber(newPhone)); // Validación de teléfono
+  }, [newPhone]);
 
   const handleEmailSubmit = async () => {
     if (!isEmailValid) {
@@ -73,7 +84,6 @@ const ProfileScreen = ({ navigation }) => {
           dispatch(setUser({ token, user }));
           closeModal();
           Alert.alert('Éxito', 'Email actualizado con éxito');
-          // Resetear los estados
           setNewEmail('');
           setIsEmailValid(false);
         } else {
@@ -87,7 +97,7 @@ const ProfileScreen = ({ navigation }) => {
       Alert.alert('Error', 'Error al actualizar el email');
     }
   };
-  
+
   const handlePasswordSubmit = async () => {
     if (!isPasswordValid) {
       Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres, una mayúscula y un símbolo especial.');
@@ -112,12 +122,24 @@ const ProfileScreen = ({ navigation }) => {
       );
   
       if (response.data.success) {
-        Alert.alert('Éxito', 'Contraseña actualizada con éxito');
-        closeModal();
-        // Resetear los estados
-        setNewPassword('');
-        setConfirmPassword('');
-        setIsPasswordValid(false);
+        // Ahora autenticar con la nueva contraseña
+        const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
+        const loginResponse = await axios.post(apiUrl, {
+          dni: user.dni,
+          password: newPassword
+        });
+  
+        if (loginResponse.data.success) {
+          const { token, user } = loginResponse.data;
+          dispatch(setUser({ token, user }));
+          closeModal();
+          Alert.alert('Éxito', 'Contraseña actualizada con éxito');
+          setNewPassword('');
+          setConfirmPassword('');
+          setIsPasswordValid(false);
+        } else {
+          Alert.alert('Error', loginResponse.data.message);
+        }
       } else {
         Alert.alert('Error', response.data.message);
       }
@@ -125,7 +147,52 @@ const ProfileScreen = ({ navigation }) => {
       console.error('Error al actualizar la contraseña:', error);
       Alert.alert('Error', 'Error al actualizar la contraseña');
     }
-  };  
+  };
+
+  const handlePhoneSubmit = async () => {
+    if (!isPhoneValid) {
+      Alert.alert('Error', 'El número de teléfono no es válido o no ha sido modificado.');
+      return;
+    }
+  
+    try {
+      const updatedUserData = { ...user, telefono: newPhone }; // Ajusta según el campo del teléfono en tu modelo de datos
+      const response = await axios.put(
+        'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
+        updatedUserData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.data.success) {
+        // Ahora autenticar con el mismo token ya que solo se actualiza el teléfono
+        const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
+        const loginResponse = await axios.post(apiUrl, {
+          dni: user.dni,
+          password: user.password
+        });
+  
+        if (loginResponse.data.success) {
+          const { token, user } = loginResponse.data;
+          dispatch(setUser({ token, user }));
+          closeModal();
+          Alert.alert('Éxito', 'Número de teléfono actualizado con éxito');
+          setNewPhone('');
+          setIsPhoneValid(false);
+        } else {
+          Alert.alert('Error', loginResponse.data.message);
+        }
+      } else {
+        Alert.alert('Error', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error al actualizar el número de teléfono:', error);
+      Alert.alert('Error', 'Error al actualizar el número de teléfono');
+    }
+  };
 
   const openModal = (type) => {
     setModalType(type); 
@@ -154,46 +221,71 @@ const ProfileScreen = ({ navigation }) => {
         title="Autenticación"
       />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.center}>
-          <View style={styles.content}>
-            <View style={styles.textContainer}>
-              <Text style={styles.infoTitle}>Email</Text>
-              <Text style={styles.infoDescription}>
-                El mail con el cual te mandaremos actualizaciones mails de confirmacion sobre 
-                <Text style={styles.highlightedText}> MedHouse</Text>
-              </Text>
-              <View style={styles.spacer}>
-                <Text style={styles.currentMail}>
-                  Email Actual:
+        <ScrollView style={styles.middle}>
+          <View style={styles.center}>
+            <View style={styles.content}>
+              <View style={styles.textContainer}>
+                <Text style={styles.infoTitle}>Email</Text>
+                <Text style={styles.infoDescription}>
+                  El mail con el cual te mandaremos actualizaciones mails de confirmacion sobre 
+                  <Text style={styles.highlightedText}> MedHouse</Text>
                 </Text>
-                <Text style={styles.mail}>
-                  {user.email}
-                </Text>
+                <View style={styles.spacer}>
+                  <Text style={styles.currentMail}>
+                    Email Actual:
+                  </Text>
+                  <Text style={styles.mail}>
+                    {user.email}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Mini 
+                  title="Modificar Email" 
+                  onPress={() => openModal('email')} 
+                />
               </View>
             </View>
-            <View style={styles.buttonContainer}>
-              <Mini 
-                title="Modificar Email" 
-                onPress={() => openModal('email')} 
-              />
+            <View style={styles.content}>
+              <View style={styles.textContainer}>
+                <Text style={styles.infoTitle}>Contraseña</Text>
+                <Text style={styles.infoDescription}>
+                  Cambia tu contraseña para asegurar tu cuenta de
+                  <Text style={styles.highlightedText}> MedHouse</Text>
+                </Text>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Mini 
+                  title="Cambiar Contraseña" 
+                  onPress={() => openModal('password')} 
+                />
+              </View>
+            </View>
+            <View style={styles.content}>
+              <View style={styles.textContainer}>
+                <Text style={styles.infoTitle}>Número de Teléfono</Text>
+                <Text style={styles.infoDescription}>
+                  Actualiza tu número de teléfono para mantener tu cuenta segura.
+                </Text>
+                <View style={styles.spacer}>
+                  <Text style={styles.currentMail}>
+                    Teléfono Actual:
+                  </Text>
+                  <Text style={styles.mail}>
+                    {user.telefono || 'No proporcionado'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Mini 
+                  title="Modificar Teléfono" 
+                  onPress={() => openModal('phone')} 
+                />
+              </View>
             </View>
           </View>
-          <View style={styles.content}>
-            <View style={styles.textContainer}>
-              <Text style={styles.infoTitle}>Contraseña</Text>
-              <Text style={styles.infoDescription}>
-                Cambia tu contraseña para asegurar tu cuenta de
-                <Text style={styles.highlightedText}> MedHouse</Text>
-              </Text>
-            </View>
-            <View style={styles.buttonContainer}>
-              <Mini 
-                title="Cambiar Contraseña" 
-                onPress={() => openModal('password')} 
-              />
-            </View>
-          </View>
-        </View>
+          <View style={styles.space}/>
+        </ScrollView>
       </TouchableWithoutFeedback>
 
       <Modal
@@ -210,6 +302,7 @@ const ProfileScreen = ({ navigation }) => {
             >
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <Animated.View style={[styles.modalContainer, { transform: [{ translateX: slideAnim }] }]}>
+
                   {modalType === 'email' && (
                     <>
                       <Text style={styles.modalTitle}>Modificar Email</Text>
@@ -257,6 +350,27 @@ const ProfileScreen = ({ navigation }) => {
                       </View>
                     </>
                   )}
+                  {modalType === 'phone' && (
+                    <>
+                      <Text style={styles.modalTitle}>Modificar Número de Teléfono</Text>
+                      <Text style={styles.modalSubtitle}>Ingresa el nuevo número de teléfono</Text>
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder="Nuevo Teléfono"
+                        keyboardType="phone-pad"
+                        onChangeText={setNewPhone}
+                      />
+                      <View>
+                        <Mini
+                          style={[styles.button, { backgroundColor: isPhoneValid ? '#1E98A8' : '#B0B0B0', marginBottom: 15 }]} 
+                          title="Confirmar" 
+                          onPress={handlePhoneSubmit}
+                          disabled={!isPhoneValid}
+                        />
+                        <Button title="Cancelar" onPress={closeModal} />
+                      </View>
+                    </>
+                  )}
                 </Animated.View>
               </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
@@ -271,6 +385,14 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between', 
     alignItems: 'center',
+  },
+  space:{
+    height: 150,
+    width: '100%'
+  },
+  middle:{
+    width: '100%',
+    height: '100%',
   },
   center: {
     width: '100%',
@@ -357,6 +479,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    marginBottom: 20
   },
   modalContent: {
     width: '100%',
