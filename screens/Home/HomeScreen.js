@@ -85,8 +85,9 @@ const HomeScreen = ({ navigation }) => {
             <FlatList
               data={donations}
               renderItem={({ item }) => (
-                <MedItem
-                  item={item}
+                <MedItem 
+                  item={item} 
+                  navigation={navigation} 
                 />
               )}
               keyExtractor={(item) => item.id}
@@ -102,9 +103,7 @@ const HomeScreen = ({ navigation }) => {
             <FlatList
               data={donations}
               renderItem={({ item }) => (
-                <HorizontalMedItem
-                  item={item}
-                />
+                <HorizontalMedItem item={item} navigation={navigation} />
               )}
               keyExtractor={(item) => item.id}
               contentContainerStyle={styles.HorizontalitemList}

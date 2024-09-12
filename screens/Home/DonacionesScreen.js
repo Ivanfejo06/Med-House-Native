@@ -49,6 +49,7 @@ const DonacionesScreen = ({ navigation }) => {
             renderItem={({ item }) => (
               <DonacionItem
                 item={item}
+                navigation={navigation}
               />
             )}
             keyExtractor={(item) => item.id}

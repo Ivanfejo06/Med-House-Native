@@ -4,9 +4,13 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import RemoveIcon from '../assets/RemoveIcon';
 
-const BolsaItem = ({ item, onRemove }) => {
+const BolsaItem = ({ item, onRemove,  navigation }) => {
+  const handleItemPress = (id) => {
+    navigation.navigate('Producto', { id });
+  };
+  
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => handleItemPress(item.id)}>
       <View style={styles.itemContainer}>
         <Image source={{ uri: item.image }} style={styles.itemImage}/>
         <View style={styles.itemDetails}>

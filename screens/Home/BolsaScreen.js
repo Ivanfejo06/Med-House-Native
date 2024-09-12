@@ -44,6 +44,7 @@ const BolsaScreen = ({ navigation }) => {
               <BolsaItem
                 item={item}
                 onRemove={handleRemove}
+                navigation={navigation}
               />
             )}
             keyExtractor={(item) => item.id}

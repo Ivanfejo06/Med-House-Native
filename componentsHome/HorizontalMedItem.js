@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const HorizontalMedItem = ({ item }) => {
+const HorizontalMedItem = ({ item, navigation }) => {
+  const handleItemPress = (id) => {
+    navigation.navigate('Producto', { id });
+  };
+  
   // Determinar el color de fondo según el estado
   let backgroundColor;
   let itemstockColor;
@@ -17,7 +21,7 @@ const HorizontalMedItem = ({ item }) => {
   }
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => handleItemPress(item.id)}>
         <View style={styles.itemContainer}>
         <Image source={{ uri: item.image }} style={styles.itemImage}/>
         <View style={styles.itemDetails}>

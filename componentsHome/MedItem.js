@@ -1,31 +1,34 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const MedItem = ({ item }) => {
-  // Determinar el color de fondo según el estado
+const MedItem = ({ item, navigation }) => {
+  const handleItemPress = (id) => {
+    navigation.navigate('Producto', { id });
+  };
+  
   let backgroundColor;
   let itemstockColor;
   let stockText;
 
   if (item.stock <= 0) {
-    itemstockColor = '#ED5046'; // Mismo color para el estado
+    itemstockColor = '#ED5046';
     stockText = 'Sin stock';
   }
 
   return (
-    <TouchableOpacity>
-        <View style={[styles.itemContainer, { backgroundColor }]}>
-        <Image source={{ uri: item.image }} style={styles.itemImage}/>
+    <TouchableOpacity onPress={() => handleItemPress(item.id)}>
+      <View style={[styles.itemContainer, { backgroundColor }]}>
+        <Image source={{ uri: item.image }} style={styles.itemImage} />
         <View style={styles.itemDetails}>
-            <Text style={styles.itemTitle}>{item.title}</Text>
-            <Text style={styles.itemDescription}>{item.description}</Text>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemDescription}>{item.description}</Text>
         </View>
         <View style={styles.itemstockContainer}>
-            <View style={[styles.itemstock, { backgroundColor: itemstockColor }]}>
-                <Text style={styles.itemstockText}>{stockText}</Text>
-            </View>
+          <View style={[styles.itemstock, { backgroundColor: itemstockColor }]}>
+            <Text style={styles.itemstockText}>{stockText}</Text>
+          </View>
         </View>
-        </View>
+      </View>
     </TouchableOpacity>
   );
 };

@@ -26,7 +26,6 @@ const items = [
 ];
 
 const DeseadosScreen = ({ navigation }) => {
-
   const handleRemove = (itemId) => {
     console.log(`Remove item ${itemId}`);
   };
@@ -45,6 +44,7 @@ const DeseadosScreen = ({ navigation }) => {
               <DeseadosItem
                 item={item}
                 onRemove={handleRemove}
+                navigation={navigation}
               />
             )}
             keyExtractor={(item) => item.id}

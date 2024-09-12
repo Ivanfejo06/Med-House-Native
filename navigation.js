@@ -15,7 +15,8 @@ import NotificacionesScreen from './screens/Home/NotificacionesScreen';
 import ProfileIndex from './screens/Profile/ProfileIndex';
 import ProfileScreen from './screens/Profile/ProfileScreen';
 import AuthenticationScreen from './screens/Profile/AuthenticationScreen';
-import DeseadosScreen from './screens/Home/Deseados';
+import DeseadosScreen from './screens/Home/DeseadosScreen';
+import ProductoScreen from './screens/Home/ProductoScreen';
 
 const Stack = createStackNavigator();
 
@@ -57,6 +58,7 @@ const AppNavigator = () => {
           component={NotificacionesScreen} 
           options={{ gestureEnabled: false, animationEnabled: false }} 
         />
+        <Stack.Screen name="Producto" component={ProductoScreen} />
 
         {/* SETTINGS ROUTES */}
         <Stack.Screen name="ProfileIndex" component={ProfileIndex} />

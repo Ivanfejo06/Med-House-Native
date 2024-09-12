@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const DonacionItem = ({ item }) => {
+const DonacionItem = ({ item, navigation }) => {
+  const handleItemPress = (id) => {
+    navigation.navigate('Producto', { id }); //Inventar nombre para pantalla de las request de mandar un medicamento
+  };
+  
   // Determinar el color de fondo según el estado
   let backgroundColor;
   let itemStateColor;
