@@ -79,6 +79,6 @@ const styles = StyleSheet.create({
       height: 24,
       resizeMode: 'contain',  // Asegurar que la imagen se ajuste correctamente
     }
-  });  
+});  
 
 export default DeseadosItem;
