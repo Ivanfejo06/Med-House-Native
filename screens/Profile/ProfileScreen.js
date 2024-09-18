@@ -7,6 +7,7 @@ import axios from 'axios'; // Importa Axios
 import { setUser } from '../../store/userSlice'; // Importa la acción para actualizar el usuario
 import Boton from '../../components/Button';
 import Mini from '../../components/MiniButton';
+import Logo from '../../assets/Logo'
 
 const { height } = Dimensions.get('window');
 
@@ -176,7 +177,7 @@ const ProfileScreen = ({ navigation }) => {
                 style={styles.modalContent}
               >
                 <View style={styles.logoContainer}>
-                  {/* Agrega el logo si es necesario */}
+                  <Logo height={25} width={63}/>
                 </View>
                 <Text style={styles.modalTitle}>Verifica tu identidad</Text>
                 <Text style={styles.modalSubtitle}>Ingresa nuevamente tu contraseña para efectuar los cambios</Text>

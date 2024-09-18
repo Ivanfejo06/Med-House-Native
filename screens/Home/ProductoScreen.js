@@ -1,27 +1,27 @@
-import React from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Dimensions, ScrollView, Text, Image } from 'react-native';
+import axios from 'axios';
 import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
-import DeseadosItem from '../../componentsHome/DeseadosItem';
 import AskButton from '../../components/AskButton';
 import DetailItem from '../../componentsHome/DetailItem';
 
-const { height, width } = Dimensions.get('window');
-
+const { height } = Dimensions.get('window');
 const NAVBAR_HEIGHT = height * 0.0974;
 
 const ProductoScreen = ({ navigation, id }) => {
+  const [productImage, setProductImage] = useState(null);
+
   const product = {
     nombre: 'Ibu 400 Ibuprofeno 400mg',
-    image: 'https://example.com/image.jpg',
     stock: 1,
     marca: 'ISA',
     forma_farm: 'Comprimidos',
     dosis: '400 mg',
     droga: 'Ibuprofeno',
   };
-  
-  const bagItems = []; // Este array debería contener los productos que ya están en la bolsa del cliente.
+
+  const bagItems = [];
   const productDetails = [
     { label: 'Marca', value: product.marca },
     { label: 'Forma farmacéutica', value: product.forma_farm },
@@ -29,44 +29,68 @@ const ProductoScreen = ({ navigation, id }) => {
     { label: 'Dosis', value: product.dosis },
   ];
 
-  const isProductInStock = (stock) => {
-    return stock > 0;
-  };
+  useEffect(() => {
+    const fetchImage = async () => {
+      const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
+      const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
+      const query = encodeURIComponent(product.nombre);
   
-  const isProductInBag = (productId, bagItems) => {
-    // Aquí compararías el id del producto con los productos que ya están en la bolsa del cliente.
-    return bagItems.some(item => item.id === productId);
-  }; 
+      try {
+        const response = await axios.get(`https://www.googleapis.com/customsearch/v1`, {
+          params: {
+            key: API_KEY,
+            cx: SEARCH_ENGINE_ID,
+            searchType: 'image',
+            q: query,
+            num: 1,
+          },
+        });
+  
+        console.log('Respuesta de la API:', response.data); // Imprime la respuesta
+  
+        if (response.data.items && response.data.items.length > 0) {
+          const imageUrl = response.data.items[0].link;
+          console.log('URL de la imagen:', imageUrl); // Imprime la URL de la imagen
+          setProductImage(imageUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+  
+    fetchImage();
+  }, []);  
+
+  const isProductInStock = (stock) => stock > 0;
+  const isProductInBag = (productId, bagItems) => bagItems.some(item => item.id === productId);
 
   const inStock = isProductInStock(product.stock);
-  const inBag = isProductInBag(id,bagItems)
+  const inBag = isProductInBag(id, bagItems);
 
   return (
     <View style={styles.container}>
       <BackTopBar navigation={() => navigation.goBack()} profile={() => navigation.navigate("ProfileIndex")}/>
       <ScrollView contentContainerStyle={styles.scrollcontainer}>
-        {/* main con imagen del producto */}
         <View style={styles.main}>
           <View style={styles.titleView}>
             <Text style={styles.title}>{product.nombre}</Text>
           </View>
           <View>
-            <Image source={{ uri: product.image }} style={styles.productImage} />
+            {productImage ? (
+              <Image source={{ uri: productImage }} style={styles.productImage} />
+            ) : (
+              <Text>Cargando imagen...</Text>
+            )}
           </View>
           <View style={styles.titleView}>
             <Text style={styles.stock}>Stock disponible</Text>
           </View>
-
-          {/* Botón de Solicitar */}
           <AskButton 
             title={inStock ? "Solicitar" : "Notificarme"}
             onPress={() => console.log("Solicitar producto")} 
             disabled={!inStock}
           />
-
           <View style={styles.space}></View>
-
-          {/* Botón de Producto en bolsa */}
           <AskButton 
             title={inBag ? "Producto en bolsa" : "Agregar a la bolsa"} 
             onPress={() => console.log(inBag ? "Producto en bolsa" : "Agregar a la bolsa")} 
@@ -78,7 +102,7 @@ const ProductoScreen = ({ navigation, id }) => {
           />
         </View>
 
-        {/* Características del producto */}
+        
         <View style={styles.main}>
           <View style={styles.titleView}>
             <Text style={styles.characteristics}>Características del producto</Text>
@@ -97,7 +121,9 @@ const ProductoScreen = ({ navigation, id }) => {
 
         {/* Preguntas y respuestas */}
         <View style={styles.main}>
-          <Text style={styles.questionsTitle}>Preguntas y respuestas</Text>
+          <View style={styles.titleView}>
+            <Text style={styles.characteristics}>Preguntas</Text>
+          </View>
           <AskButton 
             title="Preguntar" 
             onPress={() => console.log("Hacer pregunta")} 
@@ -109,33 +135,28 @@ const ProductoScreen = ({ navigation, id }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     height: height,
     backgroundColor: '#FFFFFF',
   },
-  scrollcontainer:{
-    paddingBottom: NAVBAR_HEIGHT
+  scrollcontainer: {
+    paddingBottom: NAVBAR_HEIGHT,
   },
   main: {
     padding: 15,
     alignItems: 'center',
     width: '100%',
     borderBottomWidth: 0.5,
-    borderColor: "#CCC",
+    borderColor: "#DDD",
     paddingBottom: 30,
   },
   space: {
     height: 10,
-    width: '100%'
-  },
-  spacer:{
-    height: NAVBAR_HEIGHT,
-    width: '100%'
+    width: '100%',
   },
   productImage: {
-    width: 150,
+    width: '100%',
     height: 150,
     resizeMode: 'contain',
     marginBottom: 10,
@@ -147,11 +168,11 @@ const styles = StyleSheet.create({
   characteristics: {
     fontSize: 18,
   },
-  titleView:{
+  titleView: {
     width: '100%',
     textAlign: "left",
     marginTop: 10,
-    marginBottom: 25
+    marginBottom: 25,
   },
   stock: {
     color: 'gray'
