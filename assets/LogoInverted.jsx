@@ -2,20 +2,21 @@ import * as React from "react";
 import { Dimensions } from "react-native";
 import Svg, { Rect, Path } from "react-native-svg";
 
-const { height } = Dimensions.get('window'); // Cambiamos a width
-const LOGO_HEIGHT = height * 0.1009; // Ajustamos la altura
-const LOGO_WIDTH = height * 0.24647; // Ajustamos el ancho
+const { height } = Dimensions.get('window');
+const LOGO_HEIGHT = height * 0.1009;
+const LOGO_WIDTH = height * 0.24647;
 const scaleX = 1;
 const scaleY = 1;
 
 const Logo = (props) => (
   <Svg
-    width={LOGO_WIDTH} // Ancho ajustado
-    height={LOGO_HEIGHT} // Altura ajustada
-    viewBox="0 0 2434 1000" // Cambiamos el viewBox para que esté en horizontal
+    width={LOGO_WIDTH}
+    height={LOGO_HEIGHT}
+    viewBox="0 0 2434 1000"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    style={{ transform: [{ rotate: '180deg' }] }} // Rotación de 180 grados
   >
     <Rect
       x={1433.33 * scaleX}

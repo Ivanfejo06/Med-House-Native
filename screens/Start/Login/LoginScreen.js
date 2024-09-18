@@ -3,12 +3,11 @@ import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard,
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import Button from '../../../components/Button';
-import Logo from '../../../components/Logo';
+import Logo from '../../../assets/Logo';
 import Entrada from '../../../components/Entrada';
 import SmallButton from '../../../components/SmallButton';
 import BackButton from '../../../components/BackButton';
 import { setUser } from '../../../store/userSlice';
-import LogoV from '../../../assets/LogoV';
 
 const { height } = Dimensions.get('window');
 const SPACE_HEIGHT = height * 0.195;

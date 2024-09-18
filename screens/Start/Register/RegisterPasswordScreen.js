@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
-import Logo from '../../../components/LogoInverted';
+import Logo from '../../../assets/LogoInverted';
 import BackButton from '../../../components/BackButton';
 
 // Obtener el tamaño de la pantalla

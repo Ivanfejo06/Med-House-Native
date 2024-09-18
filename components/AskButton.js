@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1E98A8',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 15,
     height: BUTTON_HEIGHT,
     width: '100%'
   },

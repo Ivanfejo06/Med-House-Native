@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard,
 import axios from 'axios'; // Importar axios
 import Button from '../../../components/Button';
 import Entrada from '../../../components/Entrada';
-import Logo from '../../../components/LogoInverted';
+import Logo from '../../../assets/LogoInverted';
 import BackButton from '../../../components/BackButton';
 
 // Obtener el tamaño de la pantalla

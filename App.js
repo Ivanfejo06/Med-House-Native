@@ -5,7 +5,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import AppNavigator from './navigation';
-import Logo from './components/LogoInverted';
+import Logo from './assets/LogoInverted';
 import store from './store/store'; // Asegúrate de ajustar la ruta
 
 SplashScreen.preventAutoHideAsync();

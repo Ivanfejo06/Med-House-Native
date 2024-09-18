@@ -5,15 +5,11 @@ const { height, width } = Dimensions.get('window');
 
 const SPEC_HEIGHT = height * 0.0352
 
-const DetailItem = ({ label, value, backgroundColor }) => {
+const DetailItem = ({ label, value }) => {
     return (
-        <View style={[styles.detailItem, { backgroundColor }]}>
-        <View style={styles.half}>
-            <Text style={styles.detailLabel}>{label}</Text>
-        </View>
-        <View style={styles.half}>
+        <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>{label}: </Text>
             <Text style={styles.detailValue}>{value}</Text>
-        </View>
         </View>
     );
 };
@@ -21,21 +17,20 @@ const DetailItem = ({ label, value, backgroundColor }) => {
 const styles = StyleSheet.create({
     detailItem: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        height: SPEC_HEIGHT,
+        justifyContent: 'flex-start',
         alignItems: "center",
-        paddingHorizontal: 5
+        padding: 10,
+        borderWidth: 0.5,
+        borderRadius: 15,
+        borderColor: "#CCC",
+        marginBottom: 10
     },
     detailLabel: {
         color: '#000',
-        fontWeight: 'bold'
     },
     detailValue: {
         color: '#000',
-    },
-    half: {
-        width: '50%',
-        textAlign: "left"
+        fontWeight: 'bold'
     },
 });
 

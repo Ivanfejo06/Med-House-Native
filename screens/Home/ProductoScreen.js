@@ -55,7 +55,7 @@ const ProductoScreen = ({ navigation, id }) => {
           {/* Características del producto */}
           <View style={styles.main}>
             <View style={styles.titleView}>
-              <Text style={styles.title}>Características del producto</Text>
+              <Text style={styles.characteristics}>Características del producto</Text>
             </View>
             <View style={styles.specs}>
               {productDetails.map((detail, index) => (
@@ -104,8 +104,9 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: 'center',
     width: '100%',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderColor: "#CCC",
+    paddingBottom: 30,
   },
   space: {
     height: 10,
@@ -120,6 +121,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  characteristics: {
+    fontSize: 18,
   },
   titleView:{
     width: '100%',
@@ -148,7 +152,6 @@ const styles = StyleSheet.create({
   },
   specs:{
     width: '100%',
-    borderRadius: 10,
     overflow: "hidden"
   },
   questionsContainer: {
