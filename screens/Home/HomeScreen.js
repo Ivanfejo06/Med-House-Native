@@ -9,6 +9,8 @@ import HeartIcon from '../../assets/HeartIcon';
 
 const { height } = Dimensions.get('window');
 
+const NAVBAR_HEIGHT = height * 0.0974;
+
 const donations = [
   {
     id: '1',
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     height: height,
   },
   scrollContainer: {
-    paddingBottom: 80, // Espacio para el NavBar
+    paddingBottom: NAVBAR_HEIGHT
   },
   top: {
     flexDirection: 'row',

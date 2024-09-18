@@ -8,97 +8,115 @@ import DetailItem from '../../componentsHome/DetailItem';
 
 const { height, width } = Dimensions.get('window');
 
+const NAVBAR_HEIGHT = height * 0.0974;
+
 const ProductoScreen = ({ navigation, id }) => {
   const product = {
     nombre: 'Ibu 400 Ibuprofeno 400mg',
-    image: 'https://example.com/image.jpg', // Usa la imagen que tengas
-    stock: 1000,
+    image: 'https://example.com/image.jpg',
+    stock: 1,
     marca: 'ISA',
     forma_farm: 'Comprimidos',
     dosis: '400 mg',
-    droga: 'Ibuprofeno'
+    droga: 'Ibuprofeno',
   };
+  
+  const bagItems = []; // Este array debería contener los productos que ya están en la bolsa del cliente.
   const productDetails = [
     { label: 'Marca', value: product.marca },
     { label: 'Forma farmacéutica', value: product.forma_farm },
     { label: 'Droga', value: product.droga },
     { label: 'Dosis', value: product.dosis },
   ];
+
+  const isProductInStock = (stock) => {
+    return stock > 0;
+  };
+  
+  const isProductInBag = (productId, bagItems) => {
+    // Aquí compararías el id del producto con los productos que ya están en la bolsa del cliente.
+    return bagItems.some(item => item.id === productId);
+  }; 
+
+  const inStock = isProductInStock(product.stock);
+  const inBag = isProductInBag(id,bagItems)
+
   return (
     <View style={styles.container}>
       <BackTopBar navigation={() => navigation.goBack()} profile={() => navigation.navigate("ProfileIndex")}/>
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.container}>
-          {/* main con imagen del producto */}
-          <View style={styles.main}>
-            <View style={styles.titleView}>
-              <Text style={styles.title}>{product.nombre}</Text>
-            </View>
-            <View>
-              {/* Hacer el slider */}
-              <Image source={{ uri: product.image }} style={styles.productImage} />
-            </View>
-            <View style={styles.titleView}>
-              <Text style={styles.stock}>Stock disponible</Text>
-            </View>
-            <AskButton 
-              title="Solicitar" 
-              onPress={() => console.log("messi")} 
-            />
-            <View style={styles.space}></View>
-            <AskButton 
-              title="Producto en bolsa" 
-              onPress={() => console.log("messi")} 
-            />
-          </View>     
-
-          {/* Características del producto */}
-          <View style={styles.main}>
-            <View style={styles.titleView}>
-              <Text style={styles.characteristics}>Características del producto</Text>
-            </View>
-            <View style={styles.specs}>
-              {productDetails.map((detail, index) => (
-                <DetailItem
-                  key={index}
-                  label={detail.label}
-                  value={detail.value}
-                  backgroundColor={index % 2 === 0 ? '#D9D9D9' : '#F1F1F1'}
-                />
-              ))}
-            </View>
+      <ScrollView contentContainerStyle={styles.scrollcontainer}>
+        {/* main con imagen del producto */}
+        <View style={styles.main}>
+          <View style={styles.titleView}>
+            <Text style={styles.title}>{product.nombre}</Text>
+          </View>
+          <View>
+            <Image source={{ uri: product.image }} style={styles.productImage} />
+          </View>
+          <View style={styles.titleView}>
+            <Text style={styles.stock}>Stock disponible</Text>
           </View>
 
-          {/* Preguntas y respuestas */}
-          <View style={styles.main}>
-            <Text style={styles.questionsTitle}>Preguntas y respuestas</Text>
-            <AskButton 
-              title="Preguntar" 
-              onPress={() => console.log("messi")} 
-            />
+          {/* Botón de Solicitar */}
+          <AskButton 
+            title={inStock ? "Solicitar" : "Notificarme"}
+            onPress={() => console.log("Solicitar producto")} 
+            disabled={!inStock}
+          />
 
-            {/* Preguntas recientes */}
-            <View style={styles.recentQuestions}>
-              <Text style={styles.questionText}>
-                Buenas, ¿hacen envío hasta Ma?
-              </Text>
-              <Text style={styles.answerText}>
-                No, acerca tu casa. 23/5/2024
-              </Text>
-            </View>
+          <View style={styles.space}></View>
+
+          {/* Botón de Producto en bolsa */}
+          <AskButton 
+            title={inBag ? "Producto en bolsa" : "Agregar a la bolsa"} 
+            onPress={() => console.log(inBag ? "Producto en bolsa" : "Agregar a la bolsa")} 
+            disabled={!inBag && inStock}
+            style={{
+              backgroundColor: !inBag && inStock ? '#DAF2F5' : '#ECF9FA',
+              color: !inBag && inStock ? '#1E98A8' : '#B8E0E5',
+            }}
+          />
+        </View>
+
+        {/* Características del producto */}
+        <View style={styles.main}>
+          <View style={styles.titleView}>
+            <Text style={styles.characteristics}>Características del producto</Text>
           </View>
-        </ScrollView>
-      </View>
+          <View style={styles.specs}>
+            {productDetails.map((detail, index) => (
+              <DetailItem
+                key={index}
+                label={detail.label}
+                value={detail.value}
+                backgroundColor={index % 2 === 0 ? '#D9D9D9' : '#F1F1F1'}
+              />
+            ))}
+          </View>
+        </View>
+
+        {/* Preguntas y respuestas */}
+        <View style={styles.main}>
+          <Text style={styles.questionsTitle}>Preguntas y respuestas</Text>
+          <AskButton 
+            title="Preguntar" 
+            onPress={() => console.log("Hacer pregunta")} 
+          />
+        </View>
+      </ScrollView>
       <NavBar navigation={navigation} selected="Deseados" />
     </View>
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     height: height,
-    backgroundColor: '#FFF',
-    width: '100%'
+    backgroundColor: '#FFFFFF',
+  },
+  scrollcontainer:{
+    paddingBottom: NAVBAR_HEIGHT
   },
   main: {
     padding: 15,
@@ -110,6 +128,10 @@ const styles = StyleSheet.create({
   },
   space: {
     height: 10,
+    width: '100%'
+  },
+  spacer:{
+    height: NAVBAR_HEIGHT,
     width: '100%'
   },
   productImage: {

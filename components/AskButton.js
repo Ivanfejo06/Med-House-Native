@@ -10,7 +10,7 @@ const BUTTON_HEIGHT = height * 0.04694; // Ajusta el porcentaje según lo necesa
 const SendButton = ({ title, onPress, style }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-      <Text style={styles.text}>{title}</Text>
+      <Text style={[styles.text, style]}>{title}</Text>
     </TouchableOpacity>
   );
 };
