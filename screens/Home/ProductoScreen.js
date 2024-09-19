@@ -5,131 +5,159 @@ import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
 import AskButton from '../../components/AskButton';
 import DetailItem from '../../componentsHome/DetailItem';
+import Carousel from 'react-native-snap-carousel';
+import { Flow } from 'react-native-animated-spinkit'; // Importa el Spinner
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 const NAVBAR_HEIGHT = height * 0.0974;
+const SLIDER_WIDTH = width;
+const ITEM_WIDTH = 300; // Puedes ajustar esto si es necesario
 
-const ProductoScreen = ({ navigation, id }) => {
-  const [productImage, setProductImage] = useState(null);
+const ProductoScreen = ({ route, navigation }) => {
+  const { id } = route.params; // Accede al id desde route.params
+  const [product, setProduct] = useState(null);
+  const [productImages, setProductImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const product = {
-    nombre: 'Ibu 400 Ibuprofeno 400mg',
-    stock: 1,
-    marca: 'ISA',
-    forma_farm: 'Comprimidos',
-    dosis: '400 mg',
-    droga: 'Ibuprofeno',
-  };
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const response = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${id}`);
+        const productData = response.data.datos;
 
-  const bagItems = [];
-  const productDetails = [
+        console.log("Product Data:", productData);
+
+        if (productData && productData.nombre) {
+          setProduct(productData);
+
+          const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
+          const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
+          const query = `${productData.nombre} ${productData.marca} ${productData.forma_farm}`;
+
+          try {
+            const imageResponse = await axios.get('https://www.googleapis.com/customsearch/v1', {
+              params: {
+                key: API_KEY,
+                cx: SEARCH_ENGINE_ID,
+                searchType: 'image',
+                q: query,
+                num: 1,
+                gl: 'ar',
+              },
+            });
+
+            if (imageResponse.data.items && imageResponse.data.items.length > 0) {
+              const imageUrls = imageResponse.data.items.map(item => item.link);
+              setProductImages(imageUrls);
+            }
+          } catch (imageError) {}
+        } else {
+          setError(true);
+        }
+      } catch (error) {
+        console.error('Error fetching product data: doesnt exist');
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductData();
+  }, [id]);
+
+  const renderCarouselItem = ({ item }) => (
+    <View style={styles.carouselItem}>
+      <Image source={{ uri: item }} style={styles.productImage} />
+    </View>
+  );
+
+  const productDetails = product ? [
     { label: 'Marca', value: product.marca },
     { label: 'Forma farmacéutica', value: product.forma_farm },
     { label: 'Droga', value: product.droga },
     { label: 'Dosis', value: product.dosis },
-  ];
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
-      const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
-      const query = encodeURIComponent(product.nombre);
-  
-      try {
-        const response = await axios.get(`https://www.googleapis.com/customsearch/v1`, {
-          params: {
-            key: API_KEY,
-            cx: SEARCH_ENGINE_ID,
-            searchType: 'image',
-            q: query,
-            num: 1,
-          },
-        });
-  
-        console.log('Respuesta de la API:', response.data); // Imprime la respuesta
-  
-        if (response.data.items && response.data.items.length > 0) {
-          const imageUrl = response.data.items[0].link;
-          console.log('URL de la imagen:', imageUrl); // Imprime la URL de la imagen
-          setProductImage(imageUrl);
-        }
-      } catch (error) {
-        console.error('Error fetching image:', error);
-      }
-    };
-  
-    fetchImage();
-  }, []);  
-
-  const isProductInStock = (stock) => stock > 0;
-  const isProductInBag = (productId, bagItems) => bagItems.some(item => item.id === productId);
-
-  const inStock = isProductInStock(product.stock);
-  const inBag = isProductInBag(id, bagItems);
+  ] : [];
 
   return (
     <View style={styles.container}>
-      <BackTopBar navigation={() => navigation.goBack()} profile={() => navigation.navigate("ProfileIndex")}/>
-      <ScrollView contentContainerStyle={styles.scrollcontainer}>
-        <View style={styles.main}>
-          <View style={styles.titleView}>
-            <Text style={styles.title}>{product.nombre}</Text>
-          </View>
-          <View>
-            {productImage ? (
-              <Image source={{ uri: productImage }} style={styles.productImage} />
-            ) : (
-              <Text>Cargando imagen...</Text>
-            )}
-          </View>
-          <View style={styles.titleView}>
-            <Text style={styles.stock}>Stock disponible</Text>
-          </View>
-          <AskButton 
-            title={inStock ? "Solicitar" : "Notificarme"}
-            onPress={() => console.log("Solicitar producto")} 
-            disabled={!inStock}
-          />
-          <View style={styles.space}></View>
-          <AskButton 
-            title={inBag ? "Producto en bolsa" : "Agregar a la bolsa"} 
-            onPress={() => console.log(inBag ? "Producto en bolsa" : "Agregar a la bolsa")} 
-            disabled={!inBag && inStock}
-            style={{
-              backgroundColor: !inBag && inStock ? '#DAF2F5' : '#ECF9FA',
-              color: !inBag && inStock ? '#1E98A8' : '#B8E0E5',
-            }}
-          />
-        </View>
+      <BackTopBar navigation={() => navigation.goBack()} profile={() => navigation.navigate("ProfileIndex")} />
 
-        
-        <View style={styles.main}>
-          <View style={styles.titleView}>
-            <Text style={styles.characteristics}>Características del producto</Text>
+      <View style={styles.content}>
+        {loading ? (
+          <View style={styles.loaderContainer}>
+            <Flow size={48} color="#1E98A8"/>
           </View>
-          <View style={styles.specs}>
-            {productDetails.map((detail, index) => (
-              <DetailItem
-                key={index}
-                label={detail.label}
-                value={detail.value}
-                backgroundColor={index % 2 === 0 ? '#D9D9D9' : '#F1F1F1'}
+        ) : error ? (
+          <Text>No se encontraron datos del producto.</Text>
+        ) : (
+          <ScrollView contentContainerStyle={styles.scrollcontainer}>
+            <View style={styles.main}>
+              <View style={styles.titleView}>
+                <Text style={styles.title}>{product.nombre}</Text>
+              </View>
+
+              {productImages.length > 0 ? (
+                <Carousel
+                  data={productImages}
+                  renderItem={renderCarouselItem}
+                  sliderWidth={SLIDER_WIDTH}
+                  itemWidth={ITEM_WIDTH}
+                  loop={true}
+                />
+              ) : (
+                <Text>Cargando imágenes...</Text>
+              )}
+
+              <View style={styles.titleView}>
+                <Text style={styles.stock}>Stock disponible</Text>
+              </View>
+              <AskButton
+                title={product.stock > 0 ? "Solicitar" : "Notificarme"}
+                onPress={() => console.log("Solicitar producto")}
+                disabled={product.stock <= 0}
               />
-            ))}
-          </View>
-        </View>
+              <View style={styles.space}></View>
+              <AskButton
+                title="Agregar a la bolsa"
+                onPress={() => console.log("Agregar a la bolsa")}
+                disabled={product.stock <= 0}
+                style={{
+                  backgroundColor: product.stock > 0 ? '#DAF2F5' : '#ECF9FA',
+                  color: product.stock > 0 ? '#1E98A8' : '#B8E0E5',
+                }}
+              />
+            </View>
 
-        {/* Preguntas y respuestas */}
-        <View style={styles.main}>
-          <View style={styles.titleView}>
-            <Text style={styles.characteristics}>Preguntas</Text>
-          </View>
-          <AskButton 
-            title="Preguntar" 
-            onPress={() => console.log("Hacer pregunta")} 
-          />
-        </View>
-      </ScrollView>
+            <View style={styles.main}>
+              <View style={styles.titleView}>
+                <Text style={styles.characteristics}>Características del producto</Text>
+              </View>
+              <View style={styles.specs}>
+                {productDetails.map((detail, index) => (
+                  <DetailItem
+                    key={index}
+                    label={detail.label}
+                    value={detail.value}
+                    backgroundColor={index % 2 === 0 ? '#D9D9D9' : '#F1F1F1'}
+                  />
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.main}>
+              <View style={styles.titleView}>
+                <Text style={styles.characteristics}>Preguntas</Text>
+              </View>
+              <AskButton
+                title="Preguntar"
+                onPress={() => console.log("Hacer pregunta")}
+              />
+            </View>
+          </ScrollView>
+        )}
+      </View>
+
       <NavBar navigation={navigation} selected="Deseados" />
     </View>
   );
@@ -137,8 +165,17 @@ const ProductoScreen = ({ navigation, id }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: height,
+    flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  content: {
+    flex: 1,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 80
   },
   scrollcontainer: {
     paddingBottom: NAVBAR_HEIGHT,
@@ -156,10 +193,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   productImage: {
-    width: '100%',
+    width: 300,
     height: 150,
     resizeMode: 'contain',
     marginBottom: 10,
+  },
+  carouselItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 16,
@@ -175,7 +216,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   stock: {
-    color: 'gray'
+    color: 'gray',
   },
   button: {
     backgroundColor: '#1E98A8',
@@ -193,9 +234,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 16,
   },
-  specs:{
+  specs: {
     width: '100%',
-    overflow: "hidden"
+    overflow: "hidden",
   },
   questionsContainer: {
     backgroundColor: '#FFF',

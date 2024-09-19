@@ -80,11 +80,17 @@ const styles = StyleSheet.create({
     borderRadius: PUBLISH_HEIGHT / 2,
     flex: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, // Añade esta línea para Android
   },
   textPublish: {
     color: "#FFFFFF",
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: 'bold'
   },
 });
 

@@ -2,17 +2,21 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 const MedItem = ({ item, navigation }) => {
+  
   const handleItemPress = (id) => {
     navigation.navigate('Producto', { id });
   };
-  
-  let backgroundColor;
+
+  let backgroundColor = '#FFFFFF'; // Establece un valor por defecto si es necesario
   let itemstockColor;
   let stockText;
 
   if (item.stock <= 0) {
     itemstockColor = '#ED5046';
     stockText = 'Sin stock';
+  } else {
+    itemstockColor = '#4CAF50'; // Ajusta según tu diseño
+    stockText = 'En stock'; // Ajusta según tu diseño
   }
 
   return (

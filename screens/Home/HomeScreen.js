@@ -13,35 +13,35 @@ const NAVBAR_HEIGHT = height * 0.0974;
 
 const donations = [
   {
-    id: '1',
+    id: 1,
     title: 'Donación 1',
     description: 'Descripción de la donación 1',
     image: 'https://your-image-url.com/Med1.png',
     stock: 1
   },
   {
-    id: '2',
+    id: 2,
     title: 'Donación 2',
     description: 'Descripción de la donación 2',
     image: 'https://your-image-url.com/Med2.png',
     stock: 1
   },
   {
-    id: '3',
+    id: 3,
     title: 'Donación 3',
     description: 'Descripción de la donación 3',
     image: 'https://your-image-url.com/Med3.png',
     stock: 0
   },
   {
-    id: '4',
+    id: 4,
     title: 'Donación 4',
     description: 'Descripción de la donación 4',
     image: 'https://your-image-url.com/Med4.png',
     stock: 0
   },
   {
-    id: '5',
+    id: 5,
     title: 'Donación 5',
     description: 'Descripción de la donación 5',
     image: 'https://your-image-url.com/Med5.png',
@@ -92,7 +92,7 @@ const HomeScreen = ({ navigation }) => {
                   navigation={navigation} 
                 />
               )}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.id.toString()} // Asegúrate de convertir el ID a string
               contentContainerStyle={styles.itemList}
             />
           </View>
