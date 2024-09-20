@@ -12,7 +12,7 @@ const DeseadosItem = ({ item, onRemove, navigation }) => {
   return (
     <TouchableOpacity onPress={() => handleItemPress(item.id)}>
       <View style={styles.itemContainer}>
-        <Image source={{ uri: item.image }} style={styles.itemImage}/>
+        <Image source={{ uri: item.imagen }} style={styles.itemImage}/>
         <View style={styles.itemDetails}>
           <Text style={styles.itemTitle}>{item.nombre}</Text>
           <Text style={styles.itemDescription}>{item.droga} {item.dosis}</Text>
