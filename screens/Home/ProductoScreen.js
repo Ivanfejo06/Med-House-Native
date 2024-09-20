@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
@@ -8,6 +8,7 @@ import DetailItem from '../../componentsHome/DetailItem';
 import Carousel from 'react-native-snap-carousel';
 import { useSelector } from 'react-redux';
 import { Flow } from 'react-native-animated-spinkit'; // Importa el Spinner
+import HeartIcon from '../../assets/HeartIcon';
 
 const { height, width } = Dimensions.get('window');
 const NAVBAR_HEIGHT = height * 0.0974;
@@ -32,7 +33,7 @@ const ProductoScreen = ({ route, navigation }) => {
 
         console.log("Product Data:", productData);
 
-        if (productData.nombre) {
+        if (productData && productData.nombre) {
           setProduct(productData);
 
           // Check if product image exists
@@ -105,7 +106,7 @@ const ProductoScreen = ({ route, navigation }) => {
       );
   
       // Check if the response indicates success
-      if (response.data.datos === true) {
+      if (response.data.success) {
         setAddedToNecesitado(true);
         setIsInNecesitados(true); // Update state to reflect that the product is now added
         console.log('Producto agregado a necesitados.');
@@ -131,6 +132,45 @@ const ProductoScreen = ({ route, navigation }) => {
     { label: 'Dosis', value: product.dosis },
   ] : [];
 
+  const handleRemove = async () => {
+    Alert.alert(
+      'Confirmar Eliminación',
+      '¿Estás seguro de que deseas eliminar este item de tus deseados?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          onPress: async () => {
+            try {
+              const response = await axios.delete('https://hopeful-emerging-snapper.ngrok-free.app/necesitados', {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+                data: { idMedicamento: product.id },
+              });
+  
+              const result = response.data;
+  
+              if (result.success) {
+                setIsInNecesitados(false); // Update state to reflect that the product is no longer in "Necesitados"
+                console.log('Producto eliminado de necesitados.');
+              } else {
+                Alert.alert('Error', result.message || 'Hubo un problema al eliminar el item.');
+              }
+            } catch (error) {
+              console.error('Error removing item:', error);
+              Alert.alert('Error', 'Hubo un problema al eliminar el item.');
+            }
+          },
+        },
+      ],
+    );
+  };  
+
   return (
     <View style={styles.container}>
       <BackTopBar navigation={() => navigation.goBack()} profile={() => navigation.navigate("ProfileIndex")} />
@@ -147,6 +187,15 @@ const ProductoScreen = ({ route, navigation }) => {
             <View style={styles.main}>
               <View style={styles.titleView}>
                 <Text style={styles.title}>{product.nombre}</Text>
+                <TouchableOpacity
+                  onPress={isInNecesitados ? handleRemove : handleAddToNecesitado} 
+                  style={[styles.addButton, isInNecesitados && styles.addedButton]}
+                >
+                  <HeartIcon 
+                    tintColor={isInNecesitados ? '#1E98A8' : null} 
+                    strokecolor={isInNecesitados ? null : '#BBB'} 
+                  />
+                </TouchableOpacity>
               </View>
 
               {productImages.length > 0 ? (
@@ -160,16 +209,6 @@ const ProductoScreen = ({ route, navigation }) => {
               ) : (
                 <Text>Cargando imágenes...</Text>
               )}
-
-              <TouchableOpacity 
-                onPress={isInNecesitados ? null : handleAddToNecesitado} 
-                style={[styles.addButton, isInNecesitados && styles.addedButton]}
-                disabled={isInNecesitados} // Disable button if product is already in "Necesitados"
-              >
-                <Text style={styles.addButtonText}>
-                  {isInNecesitados ? 'Ya en Necesitados' : 'Agregar a Necesitados'}
-                </Text>
-              </TouchableOpacity>
 
               <View style={styles.titleView}>
                 <Text style={styles.stock}>Stock disponible</Text>
@@ -273,24 +312,13 @@ const styles = StyleSheet.create({
   },
   titleView: {
     width: '100%',
-    textAlign: "left",
     marginTop: 10,
     marginBottom: 25,
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   stock: {
     color: 'gray',
-  },
-  addButton: {
-    backgroundColor: '#1E98A8',
-    padding: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  addedButton: {
-    backgroundColor: '#B0B0B0', // Change color when added
-  },
-  addButtonText: {
-    color: '#FFF',
   },
   productDetails: {
     backgroundColor: '#FFF',
