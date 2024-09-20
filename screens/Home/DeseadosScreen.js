@@ -4,40 +4,57 @@ import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
 import DeseadosItem from '../../componentsHome/DeseadosItem';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { Flow } from 'react-native-animated-spinkit'; // Importa el Spinner
 
 const { height } = Dimensions.get('window');
 
 const DeseadosScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const token = useSelector(state => state.user.token); 
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Función para obtener los items desde la API
-  const fetchItems = async (pageNum) => {
+  const fetchItems = async () => {
+    if (loading || !hasMore) return; // Evitar múltiples llamadas simultáneas
+
     setLoading(true);
-
+  
     try {
-      const response = await fetch(`https://hopeful-emerging-snapper.ngrok-free.app/necesitados?page=${pageNum}&limit=10`, {
-        method: 'GET',
+      const response = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/necesitados`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          page: currentPage,
+          limit: 10,
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      const ids = response.data.datos;
 
-      const data = await response.json();
-      if (data.length > 0) {
-        setItems(prevItems => [...prevItems, ...data]);
-        if (data.length < 10) {
-          setHasMore(false);
+      if (ids.length > 0) {
+        const allDetails = await Promise.all(
+          ids.map(async (item) => {
+            const detailResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${item.id_medicamento}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            return detailResponse.data.datos; // Asegúrate de que estás accediendo a los datos correctos
+          })
+        );
+
+        setItems(prevItems => [...prevItems, ...allDetails]); // Agrega nuevos detalles a los existentes
+
+        if (ids.length < 10) {
+          setHasMore(false); // Si la longitud es menor que 10, no hay más ítems
+        } else {
+          setCurrentPage(prevPage => prevPage + 1); // Incrementa la página solo si hay más ítems
         }
       } else {
-        setHasMore(false);
+        setHasMore(false); // No hay más ítems si la respuesta está vacía
       }
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -47,13 +64,11 @@ const DeseadosScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchItems(page);
-  }, [page]);
+    fetchItems();
+  }, [currentPage]); // Se ejecuta cada vez que currentPage cambia
 
   const handleLoadMore = () => {
-    if (hasMore && !loading) {
-      setPage(prevPage => prevPage + 1);
-    }
+    fetchItems(); // Carga más ítems
   };
 
   const handleRemove = async (itemId) => {
@@ -69,20 +84,18 @@ const DeseadosScreen = ({ navigation }) => {
           text: 'Eliminar',
           onPress: async () => {
             try {
-              const response = await fetch('https://hopeful-emerging-snapper.ngrok-free.app/necesitados', {
-                method: 'DELETE',
+              const response = await axios.delete('https://hopeful-emerging-snapper.ngrok-free.app/necesitados', {
                 headers: {
                   'Authorization': `Bearer ${token}`,
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ idMedicamento: itemId }),
+                data: { idMedicamento: itemId },
               });
 
-              const result = await response.json();
+              const result = response.data;
 
               if (result.success) {
                 setItems(prevItems => prevItems.filter(item => item.id !== itemId));
-                Alert.alert('Éxito', 'El item ha sido eliminado.');
               } else {
                 Alert.alert('Error', result.message || 'Hubo un problema al eliminar el item.');
               }
@@ -104,7 +117,11 @@ const DeseadosScreen = ({ navigation }) => {
           <View style={styles.DeseadosTitleContainer}>
             <Text style={styles.DeseadosTitle}>Deseados</Text>
           </View>
-          {items.length === 0 ? (
+          {loading && items.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Flow size={48} color="#1E98A8"/>
+            </View>
+          ) : items.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No tienes ningún deseado</Text>
             </View>
@@ -114,7 +131,7 @@ const DeseadosScreen = ({ navigation }) => {
               renderItem={({ item }) => (
                 <DeseadosItem
                   item={item}
-                  onRemove={handleRemove}
+                  onRemove={() => handleRemove(item.id)}
                   navigation={navigation}
                 />
               )}
@@ -146,12 +163,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5, // Añade esta línea para Android
+    elevation: 5,
   },
   DeseadosContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 15,
-    overflow: 'hidden', // Se mantiene en el contenedor interno
+    overflow: 'hidden',
     maxHeight: 515,
   },
   DeseadosTitleContainer: {
@@ -168,12 +185,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 100,
-    width: '100%'
+    width: '100%',
   },
   emptyText: {
     fontSize: 14,
     color: '#1E98A8',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 });
 

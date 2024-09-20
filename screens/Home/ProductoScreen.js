@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, Text, Image } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
 import AskButton from '../../components/AskButton';
 import DetailItem from '../../componentsHome/DetailItem';
 import Carousel from 'react-native-snap-carousel';
+import { useSelector } from 'react-redux';
 import { Flow } from 'react-native-animated-spinkit'; // Importa el Spinner
 
 const { height, width } = Dimensions.get('window');
@@ -19,6 +20,8 @@ const ProductoScreen = ({ route, navigation }) => {
   const [productImages, setProductImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [addedToNecesitado, setAddedToNecesitado] = useState(false);
+  const token = useSelector(state => state.user.token); 
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -66,6 +69,31 @@ const ProductoScreen = ({ route, navigation }) => {
     fetchProductData();
   }, [id]);
 
+  const handleAddToNecesitado = async () => {
+    if (!product) return;
+  
+    try {
+      const response = await axios.post(
+        'https://hopeful-emerging-snapper.ngrok-free.app/necesitados',
+        { idMedicamento: product.id }, // Asegúrate de que 'product.id' sea el ID correcto
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Reemplaza con tu token
+          },
+        }
+      );
+  
+      if (response.data.success) {
+        setAddedToNecesitado(true);
+        console.log('Producto agregado a necesitados.');
+      } else {
+        console.error('Error al agregar el producto:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error al hacer la solicitud:', error);
+    }
+  };
+
   const renderCarouselItem = ({ item }) => (
     <View style={styles.carouselItem}>
       <Image source={{ uri: item }} style={styles.productImage} />
@@ -108,6 +136,12 @@ const ProductoScreen = ({ route, navigation }) => {
               ) : (
                 <Text>Cargando imágenes...</Text>
               )}
+
+              <TouchableOpacity onPress={handleAddToNecesitado} style={styles.addButton}>
+                <Text style={styles.addButtonText}>
+                  {addedToNecesitado ? 'Agregado a Necesitados' : 'Agregar a Necesitados'}
+                </Text>
+              </TouchableOpacity>
 
               <View style={styles.titleView}>
                 <Text style={styles.stock}>Stock disponible</Text>
