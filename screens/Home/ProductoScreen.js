@@ -21,6 +21,7 @@ const ProductoScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [addedToNecesitado, setAddedToNecesitado] = useState(false);
+  const [isInNecesitados, setIsInNecesitados] = useState(false); // New state for checking if product is in "Necesitados"
   const token = useSelector(state => state.user.token); 
 
   useEffect(() => {
@@ -31,35 +32,55 @@ const ProductoScreen = ({ route, navigation }) => {
 
         console.log("Product Data:", productData);
 
-        if (productData && productData.nombre) {
+        if (productData.nombre) {
           setProduct(productData);
 
-          const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
-          const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
-          const query = `${productData.nombre} ${productData.marca} ${productData.forma_farm}`;
+          // Check if product image exists
+          if (productData.imagen != null) {
+            setProductImages([productData.imagen]);
+          } else {
+            const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
+            const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
+            const query = `${productData.nombre} ${productData.marca} ${productData.forma_farm}`;
 
-          try {
-            const imageResponse = await axios.get('https://www.googleapis.com/customsearch/v1', {
-              params: {
-                key: API_KEY,
-                cx: SEARCH_ENGINE_ID,
-                searchType: 'image',
-                q: query,
-                num: 1,
-                gl: 'ar',
-              },
-            });
+            try {
+              const imageResponse = await axios.get('https://www.googleapis.com/customsearch/v1', {
+                params: {
+                  key: API_KEY,
+                  cx: SEARCH_ENGINE_ID,
+                  searchType: 'image',
+                  q: query,
+                  num: 1,
+                  gl: 'ar',
+                },
+              });
 
-            if (imageResponse.data.items && imageResponse.data.items.length > 0) {
-              const imageUrls = imageResponse.data.items.map(item => item.link);
-              setProductImages(imageUrls);
+              if (imageResponse.data.items && imageResponse.data.items.length > 0) {
+                const imageUrl = imageResponse.data.items[0].link;
+                setProductImages([imageUrl]);
+
+                // Update the product image in the database
+                await axios.put(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${id}`, {
+                  url: [imageUrl]
+                });
+              }
+            } catch (imageError) {
+              console.error("Error fetching image from Google:", imageError);
             }
-          } catch (imageError) {}
+          }
+
+          // Check if product is already in "Necesitados"
+          const necesitaResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/necesitados/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setIsInNecesitados(!necesitaResponse.data.datos); // Update state based on response
         } else {
           setError(true);
         }
       } catch (error) {
-        console.error('Error fetching product data: doesnt exist');
+        console.error('Error fetching product data: does not exist', error);
         setError(true);
       } finally {
         setLoading(false);
@@ -67,7 +88,7 @@ const ProductoScreen = ({ route, navigation }) => {
     };
 
     fetchProductData();
-  }, [id]);
+  }, [id, token]);
 
   const handleAddToNecesitado = async () => {
     if (!product) return;
@@ -75,16 +96,18 @@ const ProductoScreen = ({ route, navigation }) => {
     try {
       const response = await axios.post(
         'https://hopeful-emerging-snapper.ngrok-free.app/necesitados',
-        { idMedicamento: product.id }, // Asegúrate de que 'product.id' sea el ID correcto
+        { idMedicamento: product.id },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Reemplaza con tu token
+            Authorization: `Bearer ${token}`,
           },
         }
       );
   
-      if (response.data.success) {
+      // Check if the response indicates success
+      if (response.data.datos === true) {
         setAddedToNecesitado(true);
+        setIsInNecesitados(true); // Update state to reflect that the product is now added
         console.log('Producto agregado a necesitados.');
       } else {
         console.error('Error al agregar el producto:', response.data.message);
@@ -93,6 +116,7 @@ const ProductoScreen = ({ route, navigation }) => {
       console.error('Error al hacer la solicitud:', error);
     }
   };
+  
 
   const renderCarouselItem = ({ item }) => (
     <View style={styles.carouselItem}>
@@ -137,9 +161,13 @@ const ProductoScreen = ({ route, navigation }) => {
                 <Text>Cargando imágenes...</Text>
               )}
 
-              <TouchableOpacity onPress={handleAddToNecesitado} style={styles.addButton}>
+              <TouchableOpacity 
+                onPress={isInNecesitados ? null : handleAddToNecesitado} 
+                style={[styles.addButton, isInNecesitados && styles.addedButton]}
+                disabled={isInNecesitados} // Disable button if product is already in "Necesitados"
+              >
                 <Text style={styles.addButtonText}>
-                  {addedToNecesitado ? 'Agregado a Necesitados' : 'Agregar a Necesitados'}
+                  {isInNecesitados ? 'Ya en Necesitados' : 'Agregar a Necesitados'}
                 </Text>
               </TouchableOpacity>
 
@@ -252,15 +280,17 @@ const styles = StyleSheet.create({
   stock: {
     color: 'gray',
   },
-  button: {
+  addButton: {
     backgroundColor: '#1E98A8',
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',
   },
-  buttonText: {
+  addedButton: {
+    backgroundColor: '#B0B0B0', // Change color when added
+  },
+  addButtonText: {
     color: '#FFF',
-    fontWeight: 'bold',
   },
   productDetails: {
     backgroundColor: '#FFF',
