@@ -23,69 +23,79 @@ const ProductoScreen = ({ route, navigation }) => {
   const [error, setError] = useState(false);
   const [addedToNecesitado, setAddedToNecesitado] = useState(false);
   const [isInNecesitados, setIsInNecesitados] = useState(false); // New state for checking if product is in "Necesitados"
+  const [addedToBolsa, setAddedToBolsa] = useState(false); // Nuevo estado para manejar si está en la bolsa
   const token = useSelector(state => state.user.token); 
 
   useEffect(() => {
     const fetchProductData = async () => {
-      try {
-        const response = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${id}`);
-        const productData = response.data.datos;
+        try {
+            // Obtiene los datos del producto
+            const response = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${id}`);
+            const productData = response.data.datos;
 
         console.log("Product Data:", productData);
 
-        if (productData && productData.nombre) {
-          setProduct(productData);
+            if (productData && productData.nombre) {
+                setProduct(productData);
 
-          // Check if product image exists
-          if (productData.imagen != null) {
-            setProductImages([productData.imagen]);
-          } else {
-            const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
-            const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
-            const query = `${productData.nombre} ${productData.dosis} ${productData.marca} ${productData.forma_farm}`;
+                // Verifica si la imagen del producto existe
+                if (productData.imagen != null) {
+                    setProductImages([productData.imagen]);
+                } else {
+                    const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
+                    const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
+                    const query = `${productData.nombre} ${productData.dosis} ${productData.marca} ${productData.forma_farm}`;
 
-            try {
-              const imageResponse = await axios.get('https://www.googleapis.com/customsearch/v1', {
-                params: {
-                  key: API_KEY,
-                  cx: SEARCH_ENGINE_ID,
-                  searchType: 'image',
-                  q: query,
-                  num: 1,
-                  gl: 'ar',
-                },
-              });
+                    try {
+                        const imageResponse = await axios.get('https://www.googleapis.com/customsearch/v1', {
+                            params: {
+                                key: API_KEY,
+                                cx: SEARCH_ENGINE_ID,
+                                searchType: 'image',
+                                q: query,
+                                num: 1,
+                                gl: 'ar',
+                            },
+                        });
 
-              if (imageResponse.data.items && imageResponse.data.items.length > 0) {
-                const imageUrl = imageResponse.data.items[0].link;
-                setProductImages([imageUrl]);
+                        if (imageResponse.data.items && imageResponse.data.items.length > 0) {
+                            const imageUrl = imageResponse.data.items[0].link;
+                            setProductImages([imageUrl]);
 
-                // Update the product image in the database
-                await axios.put(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${id}`, {
-                  url: [imageUrl]
+                            // Actualiza la imagen del producto en la base de datos
+                            await axios.put(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${id}`, {
+                                url: [imageUrl]
+                            });
+                        }
+                    } catch (imageError) {
+                        console.error("Error fetching image from Google:", imageError);
+                    }
+                }
+
+                // Verifica si el producto está en "Necesitados"
+                const necesitaResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/necesitados/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
-              }
-            } catch (imageError) {
-              console.error("Error fetching image from Google:", imageError);
-            }
-          }
+                setIsInNecesitados(!necesitaResponse.data.datos);
 
-          // Check if product is already in "Necesitados"
-          const necesitaResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/necesitados/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setIsInNecesitados(!necesitaResponse.data.datos); // Update state based on response
-        } else {
-          setError(true);
+                // Nueva consulta para verificar si el producto está en la bolsa
+                const bolsaResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/bolsa/check/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setAddedToBolsa(bolsaResponse.data.datos); // Asume que la API devuelve un campo "success"
+            } else {
+                setError(true);
+            }
+        } catch (error) {
+            console.error('Error fetching product data: does not exist', error);
+            setError(true);
+        } finally {
+            setLoading(false);
         }
-      } catch (error) {
-        console.error('Error fetching product data: does not exist', error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
     };
 
     fetchProductData();
@@ -118,6 +128,29 @@ const ProductoScreen = ({ route, navigation }) => {
     }
   };
   
+  const handleAddToBolsa = async () => {
+    try {
+        const response = await axios.post(
+            `https://hopeful-emerging-snapper.ngrok-free.app/bolsa/${id}`, // Endpoint de agregar a bolsa
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Autenticación Bearer token
+                },
+            }
+        );
+
+        if (response.data.success) {
+            setAddedToBolsa(true);
+            Alert.alert('Éxito', 'Producto agregado a la bolsa.');
+        } else {
+            Alert.alert('Error', response.data.message || 'No se pudo agregar a la bolsa.');
+        }
+    } catch (error) {
+        console.error('Error al agregar a la bolsa:', error);
+        Alert.alert('Error', 'Ocurrió un error al agregar el producto a la bolsa.');
+    }
+};
 
   const renderCarouselItem = ({ item }) => (
     <View style={styles.carouselItem}>
@@ -211,7 +244,7 @@ const ProductoScreen = ({ route, navigation }) => {
               )}
 
               <View style={styles.titleView}>
-                <Text style={styles.stock}>Stock disponible</Text>
+                <Text style={styles.stock}>{product.stock > 0 ? "Stock disponible" : "Sin stock"}</Text>
               </View>
               <AskButton
                 title={product.stock > 0 ? "Solicitar" : "Notificarme"}
@@ -220,12 +253,28 @@ const ProductoScreen = ({ route, navigation }) => {
               />
               <View style={styles.space}></View>
               <AskButton
-                title="Agregar a la bolsa"
-                onPress={() => console.log("Agregar a la bolsa")}
-                disabled={product.stock <= 0}
+                title={
+                    product.stock <= 0
+                        ? "Sin stock"
+                        : addedToBolsa
+                            ? "Producto en Bolsa"
+                            : "Agregar a la bolsa"
+                }
+                onPress={product.stock > 0 && !addedToBolsa ? handleAddToBolsa : null} // Evita la acción si ya está en la bolsa
+                disabled={product.stock <= 0 || addedToBolsa}
                 style={{
-                  backgroundColor: product.stock > 0 ? '#DAF2F5' : '#ECF9FA',
-                  color: product.stock > 0 ? '#1E98A8' : '#B8E0E5',
+                    backgroundColor:
+                        product.stock <= 0
+                            ? '#DAF2F5'
+                            : addedToBolsa
+                                ? '#ECF9FA'
+                                : '#DAF2F5',
+                    color:
+                        product.stock <= 0
+                            ? '#B8E0E5'
+                            : addedToBolsa
+                                ? '#B8E0E5'
+                                : '#1E98A8',
                 }}
               />
             </View>

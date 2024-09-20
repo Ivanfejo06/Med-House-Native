@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
   const handleLiked = () => {
     navigation.navigate('Deseados');
   };
-
+  
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1, // Cambia la opacidad a 1

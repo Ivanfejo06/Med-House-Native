@@ -123,7 +123,7 @@ const DeseadosScreen = ({ navigation }) => {
             </View>
           ) : items.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No tienes ningún deseado</Text>
+              <Text style={styles.emptyText}>No tienes ningún deseado, intenta agregar alguno!</Text>
             </View>
           ) : (
             <FlatList
@@ -184,13 +184,15 @@ const styles = StyleSheet.create({
   emptyContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 81,
     width: '100%',
+    paddingHorizontal: 30,
+    paddingVertical: 21
   },
   emptyText: {
-    fontSize: 14,
-    color: '#1E98A8',
+    fontSize: 16,
+    color: 'gray',
     fontWeight: 'bold',
+    textAlign: "center"
   },
 });
 
