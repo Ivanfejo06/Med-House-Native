@@ -206,7 +206,7 @@ const ProductoScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <BackTopBar navigation={() => navigation.goBack()} profile={() => navigation.navigate("ProfileIndex")} />
+      <BackTopBar navigation={navigation} profile={() => navigation.navigate("ProfileIndex")} />
 
       <View style={styles.content}>
         {loading ? (

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
+import SearchBar from './SearchBar';
 
 const { height } = Dimensions.get('window');
 
@@ -12,7 +13,7 @@ const TopBar = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>
-        <View style={styles.searchBar}></View>
+        <SearchBar navigation={navigation}></SearchBar>
         <TouchableOpacity style={styles.pfp} onPress={() => navigation.navigate('ProfileIndex')}>
           <Image source={require('../assets/Face.png')} style={styles.pfp}/>
         </TouchableOpacity>
@@ -54,13 +55,6 @@ const styles = StyleSheet.create({
     height: HEIGHT,
     borderRadius: HEIGHT/2
   },
-  searchBar: {
-    flex: 1,
-    height: HEIGHT,
-    marginRight: 15, // Espacio entre la barra de búsqueda y el botón de perfil
-    borderRadius: HEIGHT / 2,
-    backgroundColor: "#FFFFFF",
-  }
 });
 
 export default TopBar;

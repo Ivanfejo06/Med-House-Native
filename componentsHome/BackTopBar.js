@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 import BackButton from '../components/BackButtonNormal';
+import SearchBar from './SearchBar';
 
 const { height } = Dimensions.get('window');
 
@@ -13,8 +14,8 @@ const BackTopBar = ({ navigation, profile }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>
-        <BackButton onPress={navigation} color={"#FFFFFF"}/>
-        <View style={styles.searchBar}></View>
+        <BackButton onPress={() => navigation.goBack()} color={"#FFFFFF"}/>
+        <SearchBar navigation={navigation}></SearchBar>
         <TouchableOpacity style={styles.pfp} onPress={profile}>
           <Image source={require('../assets/Face.png')} style={styles.pfp} />
         </TouchableOpacity>
@@ -56,13 +57,6 @@ const styles = StyleSheet.create({
     height: HEIGHT,
     borderRadius: HEIGHT/2
   },
-  searchBar: {
-    flex: 1,
-    height: HEIGHT,
-    marginHorizontal: 15, // Espacio entre la barra de búsqueda y el botón de perfil
-    borderRadius: HEIGHT / 2,
-    backgroundColor: "#FFFFFF",
-  }
 });
 
 export default BackTopBar;

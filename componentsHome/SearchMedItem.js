@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const HorizontalMedItem = ({ item, navigation }) => {
+const SearchMedItem = ({ item, navigation }) => {
   const handleItemPress = (id) => {
     navigation.navigate('Producto', { id });
   };
@@ -22,16 +22,16 @@ const HorizontalMedItem = ({ item, navigation }) => {
   return (
     <TouchableOpacity onPress={() => handleItemPress(item.id)}>
         <View style={styles.itemContainer}>
-        <Image source={{ uri: item.imagen }} style={styles.itemImage}/>
-        <View style={styles.itemDetails}>
-            <Text style={styles.itemTitle}>{item.nombre}</Text>
-            <Text style={styles.itemDescription}>{item.droga} {item.dosis}</Text>
-        </View>
-        <View style={styles.itemstockContainer}>
-            <View style={[styles.itemstock, { backgroundColor: itemstockColor }]}>
-                <Text style={styles.itemstockText}>{stockText}</Text>
+            <Image source={{ uri: item.imagen }} style={styles.itemImage}/>
+            <View style={styles.itemDetails}>
+                <Text style={styles.itemTitle}>{item.nombre}</Text>
+                <Text style={styles.itemDescription}>{item.droga} {item.dosis}</Text>
             </View>
-        </View>
+            <View style={styles.itemstockContainer}>
+                <View style={[styles.itemstock, { backgroundColor: itemstockColor }]}>
+                    <Text style={styles.itemstockText}>{stockText}</Text>
+                </View>
+            </View>
         </View>
     </TouchableOpacity>
   );
@@ -44,10 +44,7 @@ const styles = StyleSheet.create({
     width: 150,
     alignItems: "flex-start",
     backgroundColor: "#FFFFFF",
-    margin: 5,
-    marginBottom: 10,
     borderRadius: 15,
-    padding: 10
   },
   itemImage: {
     width: 130,
@@ -86,4 +83,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HorizontalMedItem;
+export default SearchMedItem;
