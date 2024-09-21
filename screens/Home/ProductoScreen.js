@@ -44,7 +44,7 @@ const ProductoScreen = ({ route, navigation }) => {
                 } else {
                     const API_KEY = 'AIzaSyDLleYgDPK6K_cXnskOcousP4guhqGYyLU';
                     const SEARCH_ENGINE_ID = '42faa62ac6f3f4ded';
-                    const query = `${productData.nombre} ${productData.dosis} ${productData.marca} ${productData.forma_farm}`;
+                    const query = `${productData.nombre} ${productData.droga} ${productData.dosis} ${productData.forma_farm}`;
 
                     try {
                         const imageResponse = await axios.get('https://www.googleapis.com/customsearch/v1', {

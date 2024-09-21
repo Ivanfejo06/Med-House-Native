@@ -37,36 +37,34 @@ const SearchScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-        <BackTopBar navigation={navigation} profile={() => navigation.navigate("ProfileIndex")} />
-        <View style={styles.content}>
-            {loading ? (
-                <View style={styles.loaderContainer}>
-                    <Flow size={48} color="#1E98A8" />
-                </View>
-            ) : error ? (
-                <Text style={styles.errorText}>No se encontraron datos del producto.</Text>
-            ) : results.length > 0 ? (
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.main}>
-                    <FlatList
-                        data={results}
-                        keyExtractor={(item) => item.id.toString()} // Asegúrate de que 'id' sea único
-                        renderItem={({ item }) => (
-                        <SearchMedItem item={item} navigation={navigation} />
-                        )}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
-                </ScrollView>
-            ) : (
-                <View style={styles.loaderContainer}>
-                    <Text>No se encontraron resultados para la búsqueda de "{query}".</Text>
-                </View>
-                )
-            }
-        </View>
-        <NavBar navigation={navigation}/>
+      <BackTopBar navigation={navigation} search={query} profile={() => navigation.navigate("ProfileIndex")}/>
+      <View style={styles.content}>
+        
+        {loading ? (
+          <View style={styles.loaderContainer}>
+            <Flow size={48} color="#1E98A8" />
+          </View>
+        ) : error ? (
+          <Text style={styles.errorText}>No se encontraron datos del producto.</Text>
+        ) : results.length > 0 ? (
+          <FlatList
+            data={results}
+            keyExtractor={(item) => item.id.toString()} // Asegúrate de que 'id' sea único
+            renderItem={({ item }) => (
+              <SearchMedItem item={item} navigation={navigation} />
+            )}
+            numColumns={2} // Especifica el número de columnas
+            columnWrapperStyle={styles.columnWrapper} // Opcional, para estilos entre columnas
+            contentContainerStyle={styles.flatListContainer}
+            showsVerticalScrollIndicator={true}
+          />
+        ) : (
+          <View style={styles.loaderContainer}>
+            <Text style={styles.loaderText}>No se encontraron resultados para "{query}".</Text>
+          </View>
+        )}
+      </View>
+      <NavBar navigation={navigation} />
     </View>
   );
 };
@@ -77,24 +75,34 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingHorizontal: 15, // Espacio entre los elementos y los bordes laterales
   },
-  scrollContainer: {
-    paddingBottom: NAVBAR_HEIGHT,
+  flatListContainer: {
+    paddingTop: 15
   },
-  loader: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  errorText: {
-    textAlign: 'center',
-    color: 'red',
-    marginTop: 20,
+  columnWrapper: {
+    justifyContent: 'space-between', // Distribuir columnas de manera uniforme
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 80,
+  },
+  loaderText:{
+    fontWeight: "bold",
+    color: "gray"
+  },
+  errorText: {
+    textAlign: 'center',
+    color: 'red',
+    marginTop: 20,
+  },
+  title:{
+    textAlign: "center",
+    padding: 15,
+    fontWeight: "bold",
+    color: "gray"
   }
 });
 

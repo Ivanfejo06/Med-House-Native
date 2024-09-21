@@ -1,5 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+
+const { height, width } = Dimensions.get('window');
+
+const SEARCH_WIDTH = width * 0.5;
 
 const SearchMedItem = ({ item, navigation }) => {
   const handleItemPress = (id) => {
@@ -41,17 +45,17 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'column',
     padding: 10,
-    width: 150,
+    width: SEARCH_WIDTH-20,
     alignItems: "flex-start",
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
+    marginBottom: 10,
   },
   itemImage: {
-    width: 130,
-    height: 130,
+    width: SEARCH_WIDTH-40,
+    height: SEARCH_WIDTH-40,
     borderRadius: 5,
     resizeMode: 'contain',
-    
   },
   itemDetails: {
     flex: 1,

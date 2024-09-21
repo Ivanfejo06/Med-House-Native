@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Modal, FlatList, TextInput } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux'; // Suponiendo que usas Redux para manejar el token
+import Cross from '../assets/Cross';
+import Reverse from '../assets/Reverse';
 
 const { height } = Dimensions.get('window');
 
@@ -10,7 +12,7 @@ const LINER_HEIGHT = height * 0.03521;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
 
-const SearchBar = ({ navigation }) => {
+const SearchBar = ({ navigation, search }) => {
   const [query, setQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [searchHistory, setSearchHistory] = useState([]);
@@ -23,7 +25,7 @@ const SearchBar = ({ navigation }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
-        setSearchHistory(response.data.datos); // Asume que "datos" es la clave con el array
+        setSearchHistory(response.data.datos.reverse()); // Asume que "datos" es la clave con el array
       }
     } catch (error) {
       console.error(error);
@@ -97,59 +99,60 @@ const SearchBar = ({ navigation }) => {
 
   return (
     <View style={styles.conteiner}>
-      <View style={styles.searchBar}>
-        <TouchableOpacity onPress={openModal}>
-          <Text style={styles.placeholderText}>Buscar en MedHouse</Text>
+        <TouchableOpacity onPress={openModal} style={styles.searchBar}>
+            <Text style={styles.placeholderText}>
+                {search ? search : 'Buscar en MedHouse'}
+            </Text>
         </TouchableOpacity>
-      </View>
 
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <View style={styles.container}>
-              <View style={styles.liner}>
-                <View style={styles.searchBar}>
-                  <TextInput
-                    ref={textInputRef}
-                    placeholder='Buscar en MedHouse'
-                    value={query}
-                    onChangeText={setQuery}
-                    onSubmitEditing={handleSearch}
-                    style={styles.input}
-                    returnKeyType="search"
-                  />
+        <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+        >
+            <View style={styles.modalOverlay}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.container}>
+                        <View style={styles.liner}>
+                            <View style={styles.searchBar}>
+                                <TextInput
+                                    ref={textInputRef}
+                                    placeholder='Buscar en MedHouse'
+                                    value={query}
+                                    onChangeText={setQuery}
+                                    onSubmitEditing={handleSearch}
+                                    style={styles.input}
+                                    returnKeyType="search"
+                                />
+                            </View>
+                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>Cerrar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <TouchableOpacity onPress={deleteAllSearches}>
+                        <Text style={styles.deleteAllButton}>Borrar historial</Text>
+                    </TouchableOpacity>
+                    <FlatList
+                        data={searchHistory}
+                        keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()} // Asegúrate de que cada item tenga un id único
+                        renderItem={({ item }) => (
+                        <View style={styles.flexer}>
+                            <TouchableOpacity onPress={() => handleSearchTouch(item.busqueda)} style={styles.history}>
+                                <Reverse tintColor="gray" width={25} height={25} style={styles.spacer}></Reverse>
+                                <Text style={styles.texto}>{item.busqueda}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => deleteSearch(item.id)}>
+                                <Cross tintColor="#ED5046" width={30} height={20}></Cross>
+                            </TouchableOpacity>
+                        </View>
+                        )}
+                        contentContainerStyle={styles.historyList}
+                    />
                 </View>
-                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-                  <Text style={styles.closeButtonText}>Cerrar</Text>
-                </TouchableOpacity>
-              </View>
             </View>
-            <TouchableOpacity onPress={deleteAllSearches}>
-              <Text style={styles.deleteAllButton}>Borrar historial</Text>
-            </TouchableOpacity>
-            <FlatList
-              data={searchHistory}
-              keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()} // Asegúrate de que cada item tenga un id único
-              renderItem={({ item }) => (
-                <View style={styles.flexer}>
-                  <TouchableOpacity onPress={() => handleSearchTouch(item.busqueda)}>
-                    <Text>{item.busqueda}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteSearch(item.id)}>
-                    <Text style={styles.deleteButton}>Eliminar</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-              contentContainerStyle={styles.historyList}
-            />
-          </View>
-        </View>
-      </Modal>
+        </Modal>
     </View>
   );
 };
@@ -211,6 +214,17 @@ const styles = StyleSheet.create({
   },
   historyList: {
     flexGrow: 1,
+  },
+  history:{
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  spacer:{
+    marginRight: 10
+  },
+  texto:{
+    fontSize: 16
   },
   closeButton: {
     alignItems: "center",

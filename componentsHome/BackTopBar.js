@@ -10,12 +10,12 @@ const LINER_HEIGHT = height * 0.03521;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
 
-const BackTopBar = ({ navigation, profile }) => {
+const BackTopBar = ({ navigation, search, profile }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>
         <BackButton onPress={() => navigation.goBack()} color={"#FFFFFF"}/>
-        <SearchBar navigation={navigation}></SearchBar>
+        <SearchBar navigation={navigation} search={search}></SearchBar>
         <TouchableOpacity style={styles.pfp} onPress={profile}>
           <Image source={require('../assets/Face.png')} style={styles.pfp} />
         </TouchableOpacity>
