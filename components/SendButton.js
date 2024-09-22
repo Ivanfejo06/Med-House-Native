@@ -1,4 +1,3 @@
-// Button.js
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 
@@ -7,9 +6,13 @@ const { height, width } = Dimensions.get('window');
 // Definir constantes para width y height en porcentaje
 const BUTTON_HEIGHT = height * 0.04694; // Ajusta el porcentaje según lo necesario
 
-const SendButton = ({ title, onPress }) => {
+const SendButton = ({ title, onPress, disabled }) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.button, disabled && styles.disabledButton]}
+      onPress={disabled ? null : onPress}
+      disabled={disabled}
+    >
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
@@ -20,10 +23,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1E98A8',
     alignItems: 'center',
-    marginVertical: 10,
-    margin: 15,
+    marginBottom: 10,
+    marginHorizontal: 15,
     borderRadius: 15,
-    height: BUTTON_HEIGHT
+    height: BUTTON_HEIGHT,
+  },
+  disabledButton: {
+    backgroundColor: '#B0B0B0', // Color del botón cuando está deshabilitado
   },
   text: {
     color: '#FFFFFF',
