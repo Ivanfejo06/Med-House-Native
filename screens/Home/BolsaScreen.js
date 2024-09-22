@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, FlatList, Text, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, FlatList, Text, Alert, ScrollView } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
 import BolsaItem from '../../componentsHome/BolsaItem';
@@ -53,8 +53,6 @@ const BolsaScreen = ({ navigation }) => {
 
         setItems([...allDetails]);
         setHasOutOfStockItems(checkOutOfStockItems(allDetails)); // Actualiza el estado según el stock
-        console.log(allDetails)
-        console.log(hasOutOfStockItems)
       }
     } catch (error) {
       console.error('Error fetching bolsa items:', error);
@@ -109,35 +107,38 @@ const BolsaScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TopBar navigation={navigation} />
-      <View style={styles.bolsaShadowContainer}>
-        <View style={styles.bolsaContainer}>
-          <View style={styles.bolsaTitleContainer}>
-            <Text style={styles.bolsaTitle}>Mi bolsa</Text>
+      <ScrollView>
+        <View style={styles.bolsaShadowContainer}>
+          <View style={styles.bolsaContainer}>
+            <View style={styles.bolsaTitleContainer}>
+              <Text style={styles.bolsaTitle}>Mi bolsa</Text>
+            </View>
+            {loading ? (
+              <View style={styles.emptyContainer}>
+                <Flow size={48} color="#1E98A8"/>
+              </View>
+            ) : items.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No tienes productos en la bolsa, intenta agregar alguno!</Text>
+              </View>
+            ) : (
+              <FlatList
+                data={items}
+                renderItem={({ item }) => (
+                  <BolsaItem
+                    item={item}
+                    onRemove={() => handleRemove(item.id)}
+                    navigation={navigation}
+                  />
+                )}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.itemList}
+                scrollEnabled={false}
+              />
+            )}
           </View>
-          {loading ? (
-            <View style={styles.emptyContainer}>
-              <Flow size={48} color="#1E98A8"/>
-            </View>
-          ) : items.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No tienes productos en la bolsa, intenta agregar alguno!</Text>
-            </View>
-          ) : (
-            <FlatList
-              data={items}
-              renderItem={({ item }) => (
-                <BolsaItem
-                  item={item}
-                  onRemove={() => handleRemove(item.id)}
-                  navigation={navigation}
-                />
-              )}
-              keyExtractor={(item) => item.id.toString()}
-              contentContainerStyle={styles.itemList}
-            />
-          )}
         </View>
-      </View>
+      </ScrollView>
       <View style={styles.buttonContainer}>
         {hasOutOfStockItems && ( // Muestra el mensaje si hay productos sin stock
           <View style={styles.outofcontainer}>

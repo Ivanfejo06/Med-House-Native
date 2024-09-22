@@ -94,6 +94,7 @@ const HomeScreen = ({ navigation }) => {
               )}
               keyExtractor={(item) => item.id.toString()} // Asegúrate de convertir el ID a string
               contentContainerStyle={styles.itemList}
+              scrollEnabled={false} // Desactiva el scroll
             />
           </View>
         </View>

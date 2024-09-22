@@ -14,9 +14,6 @@ const MedItem = ({ item, navigation }) => {
   if (item.stock <= 0) {
     itemstockColor = '#ED5046';
     stockText = 'Sin stock';
-  } else {
-    itemstockColor = '#4CAF50'; // Ajusta según tu diseño
-    stockText = 'En stock'; // Ajusta según tu diseño
   }
 
   return (
