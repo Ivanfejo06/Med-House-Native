@@ -18,6 +18,7 @@ import AuthenticationScreen from './screens/Profile/AuthenticationScreen';
 import DeseadosScreen from './screens/Home/DeseadosScreen';
 import ProductoScreen from './screens/Home/ProductoScreen';
 import SearchScreen from './screens/Home/SearchScreen';
+import DonateScreen from './screens/Home/DonateScreen'
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,7 @@ const AppNavigator = () => {
         />
         <Stack.Screen name="Deseados" component={DeseadosScreen}/>
         <Stack.Screen name="Search" component={SearchScreen}/>
+        <Stack.Screen name="Donate" component={DonateScreen}/>
         <Stack.Screen 
           name="Bolsa" 
           component={BolsaScreen} 

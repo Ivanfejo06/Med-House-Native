@@ -20,7 +20,9 @@ const TopBarWhite = ({ navigation, title }) => {
         <View style={styles.section}>
           <Text style={styles.title}>{title}</Text>
         </View>
-        <View style={styles.section}></View>
+        <View style={styles.sectionRight}>
+          <Text></Text>
+        </View>
       </View>
     </View>
   );
@@ -52,12 +54,17 @@ const styles = StyleSheet.create({
     marginRight: 15
   },
   section: {
-    flex: 1,
-    alignItems: 'center',
-  },
+    alignItems: 'center', // Centra los elementos horizontalmente
+    justifyContent: 'flex-start', // Asegura que ocupe el espacio solo según su contenido
+    flex: 0, // Establece flex en 0 para que no ocupe más espacio del necesario
+  },  
   sectionLeft: {
-    flex: 1,
     alignItems: 'left',
+    width: "20%"
+  },
+  sectionRight: {
+    alignItems: 'left',
+    width: "20%"
   },
   title: {
     fontWeight: 'bold',

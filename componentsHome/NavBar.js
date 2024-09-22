@@ -25,9 +25,9 @@ const NavBar = ({ navigation, selected }) => {
           <BolsaIcon width={BORDERRADIUS} height={BORDERRADIUS} tintColor={selected === 'bolsa' ? '#1E98A8' : '#A8A8A8'} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Publish Pressed')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Donate')}>
           <View style={styles.publish}>
-            <Text style={styles.textPublish}>Publicar</Text>
+            <Text style={styles.textPublish}>Donar</Text>
           </View>
         </TouchableOpacity>
         

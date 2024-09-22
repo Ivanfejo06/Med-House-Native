@@ -23,7 +23,7 @@ const UserInfo = ({ label, value, editable = false, onChangeText }) => {
   };
 
   const renderInput = () => {
-    if (label.toLowerCase() === 'fecha de nacimiento') {
+    if (label.toLowerCase() === 'fecha de nacimiento' || label.toLowerCase() === 'fecha de apertura' || label.toLowerCase() === 'fecha de caducidad ') {
       return (
         <View style={styles.datePickerContainer}>
           <DateTimePicker

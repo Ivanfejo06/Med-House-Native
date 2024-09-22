@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux'; // Suponiendo que usas Redux para manejar el token
 import Cross from '../assets/Cross';
 import Reverse from '../assets/Reverse';
+import SearchIcon from '../assets/SearchIcon';
 
 const { height } = Dimensions.get('window');
 
@@ -25,7 +26,11 @@ const SearchBar = ({ navigation, search }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
-        setSearchHistory(response.data.datos.reverse()); // Asume que "datos" es la clave con el array
+        if(response.data.datos){
+          setSearchHistory(response.data.datos.reverse());
+        }else{
+          setSearchHistory(response.data.datos); // Asume que "datos" es la clave con el array
+        }
       }
     } catch (error) {
       console.error(error);
@@ -100,6 +105,7 @@ const SearchBar = ({ navigation, search }) => {
   return (
     <View style={styles.conteiner}>
         <TouchableOpacity onPress={openModal} style={styles.searchBar}>
+            <SearchIcon width={11} height={11} tintColor={"#aaa"}></SearchIcon>
             <Text style={styles.placeholderText}>
                 {search ? search : 'Buscar en MedHouse'}
             </Text>
@@ -202,6 +208,7 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     color: '#aaa',
+    marginLeft: 5
   },
   modalOverlay: {
     flex: 1,
