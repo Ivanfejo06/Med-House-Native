@@ -1,26 +1,48 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableWithoutFeedback, Keyboard, Alert, Text } from 'react-native';
 import TopBarWhite from '../../componentsHome/TopBarWhite';
-import UserInfo from '../../componentsHome/UserInfo'; // Asegúrate de que UserInfo maneje adecuadamente las fechas
 import Mini from '../../components/MiniButton';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import MedSearch from '../../componentsHome/MedSearch';
+import MedSelector from '../../componentsHome/MedSelector';
 
 const { height } = Dimensions.get('window');
+const CONTENT_HEIGHT = height * 0.8;
 
 const DonateScreen = ({ navigation }) => {
   const [medicationData, setMedicationData] = useState({
-    fecha_apertura: '',
-    fecha_caducidad: '',
+    selectedMedication: null,
+    fecha_apertura: new Date(),
+    fecha_caducidad: new Date(),
   });
 
+  const handleOpenDateChange = (event, selectedDate) => {
+    setMedicationData({ ...medicationData, fecha_apertura: selectedDate || medicationData.fecha_apertura });
+  };
+
+  const handleExpireDateChange = (event, selectedDate) => {
+    setMedicationData({ ...medicationData, fecha_caducidad: selectedDate || medicationData.fecha_caducidad });
+  };
+
   const handleSubmit = () => {
-    if (!medicationData.fecha_apertura || !medicationData.fecha_caducidad) {
+    const { selectedMedication, fecha_apertura, fecha_caducidad } = medicationData;
+
+    if (!selectedMedication || !fecha_apertura || !fecha_caducidad) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
 
-    // Aquí podrías hacer una llamada a una API para enviar los datos
+    if (fecha_caducidad < fecha_apertura) {
+      Alert.alert('Error', 'La fecha de caducidad debe ser posterior a la fecha de apertura.');
+      return;
+    }
+
     Alert.alert('Éxito', 'Datos del medicamento recolectados con éxito');
-    console.log(medicationData); // Muestra los datos en consola (o envíalos a tu API)
+    console.log(medicationData);
+  };
+
+  const handleSelectMedication = (item) => {
+    setMedicationData({ ...medicationData, selectedMedication: item });
   };
 
   return (
@@ -32,18 +54,41 @@ const DonateScreen = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.center}>
           <View style={styles.content}>
-            <UserInfo 
-              label="Fecha de apertura" 
-              value={medicationData.fecha_apertura} 
-              editable 
-              onChangeText={(date) => setMedicationData({ ...medicationData, fecha_apertura: date })} 
-            />
-            <UserInfo 
-              label="Fecha de caducidad" 
-              value={medicationData.fecha_caducidad} 
-              editable 
-              onChangeText={(date) => setMedicationData({ ...medicationData, fecha_caducidad: date })} 
-            />
+            <MedSearch onSelect={handleSelectMedication} />
+
+            {medicationData.selectedMedication && (
+              <View style={styles.selectedMedicationContainer}>
+                <Text style={styles.selectedMedicationTitle}>
+                  Medicamento seleccionado:
+                </Text>
+                <View style={styles.info}>
+                  <View style={styles.hiddenTop}>
+                    <MedSelector item={medicationData.selectedMedication}></MedSelector>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            <View style={styles.input}>
+              <Text style={styles.label}>Fecha de apertura:</Text>
+              <DateTimePicker
+                value={medicationData.fecha_apertura}
+                mode="date"
+                display="default"
+                onChange={handleOpenDateChange}
+              />
+            </View>
+
+            <View style={styles.input}>
+              <Text style={styles.label}>Fecha de caducidad:</Text>
+              <DateTimePicker
+                value={medicationData.fecha_caducidad}
+                mode="date"
+                display="default"
+                onChange={handleExpireDateChange}
+              />
+            </View>
+
             <Mini 
               title="Enviar" 
               onPress={handleSubmit} 
@@ -64,13 +109,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 15,
     justifyContent: "center",
-    alignContent: "center"
+    alignContent: "center",
   }, 
   content: {
     marginTop: 20,
     backgroundColor: "#FFFFFF",
     borderRadius: 25,
-    width: '100%',
+    height: CONTENT_HEIGHT,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -79,7 +124,52 @@ const styles = StyleSheet.create({
     maxWidth: 700,
     flex: 1,
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+  },
+  label: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#1E98A8",
+  },
+  input: {
+    flexDirection: "row", 
+    backgroundColor: "#e6e6e6",
+    borderRadius: 15,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.84, 
+    justifyContent: "space-between",
+    marginBottom: 20,
+    width: '100%',
+    alignItems: "center",
+  },
+  selectedMedicationContainer: {
+    backgroundColor: "#e6e6e6",
+    borderRadius: 15,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.84, 
+    justifyContent: "space-between",
+    marginBottom: 20,
+    width: '100%',
+    alignItems: "center",
+  },
+  selectedMedicationTitle: {
+    fontSize: 16,
+    color: "#1E98A8",
+    marginBottom: 12
+  },
+  info:{
+    borderRadius: 15,
+    overflow: "hidden"
+  },
+  hiddenTop: {
+    marginTop: -1, // Mueve hacia arriba un pixel
+    paddingTop: 0, // Ajusta el padding para compensar el desplazamiento
   },
 });
 
