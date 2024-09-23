@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, FlatList, Text, ActivityIndicator, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, FlatList, Text, Alert, ScrollView } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
 import DeseadosItem from '../../componentsHome/DeseadosItem';
@@ -112,40 +112,40 @@ const DeseadosScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <BackTopBar navigation={navigation} profile={() => navigation.navigate("ProfileIndex")}/>
-      <View style={styles.DeseadosShadowContainer}>
-        <View style={styles.DeseadosContainer}>
-          <View style={styles.DeseadosTitleContainer}>
-            <Text style={styles.DeseadosTitle}>Deseados</Text>
+      <ScrollView>
+        <View style={styles.DeseadosShadowContainer}>
+          <View style={styles.DeseadosContainer}>
+            <View style={styles.DeseadosTitleContainer}>
+              <Text style={styles.DeseadosTitle}>Deseados</Text>
+            </View>
+            {loading && items.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Flow size={48} color="#1E98A8"/>
+              </View>
+            ) : items.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No tienes ningún deseado, intenta agregar alguno!</Text>
+              </View>
+            ) : (
+              <FlatList
+                data={items}
+                renderItem={({ item }) => (
+                  <DeseadosItem
+                    item={item}
+                    onRemove={() => handleRemove(item.id)}
+                    navigation={navigation}
+                  />
+                )}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.itemList}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                scrollEnabled={false}
+              />
+            )}
           </View>
-          {loading && items.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Flow size={48} color="#1E98A8"/>
-            </View>
-          ) : items.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No tienes ningún deseado, intenta agregar alguno!</Text>
-            </View>
-          ) : (
-            <FlatList
-              data={items}
-              renderItem={({ item }) => (
-                <DeseadosItem
-                  item={item}
-                  onRemove={() => handleRemove(item.id)}
-                  navigation={navigation}
-                />
-              )}
-              keyExtractor={(item) => item.id.toString()}
-              contentContainerStyle={styles.itemList}
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                loading ? <ActivityIndicator size="large" color="#1E98A8" /> : null
-              }
-            />
-          )}
         </View>
-      </View>
+      </ScrollView>
       <NavBar navigation={navigation} selected="Deseados" />
     </View>
   );
