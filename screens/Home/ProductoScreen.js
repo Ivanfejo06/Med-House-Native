@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity, Alert, Modal, TouchableWithoutFeedback, Animated } from 'react-native';
+import { PanGestureHandler, GestureHandlerRootView, State } from 'react-native-gesture-handler';
 import axios from 'axios';
 import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
@@ -9,11 +10,14 @@ import Carousel from 'react-native-snap-carousel';
 import { useSelector } from 'react-redux';
 import { Flow } from 'react-native-animated-spinkit'; // Importa el Spinner
 import HeartIcon from '../../assets/HeartIcon';
+import Hang from '../../assets/hang';
+import HorizontalMedScroll from '../../componentsHome/HorizontalMedScroll';
 
 const { height, width } = Dimensions.get('window');
 const NAVBAR_HEIGHT = height * 0.0974;
 const SLIDER_WIDTH = width;
 const ITEM_WIDTH = 300; // Puedes ajustar esto si es necesario
+const MODAL_HEIGHT = height * 0.6455;
 
 const ProductoScreen = ({ route, navigation }) => {
   const { id } = route.params; // Accede al id desde route.params
@@ -24,7 +28,10 @@ const ProductoScreen = ({ route, navigation }) => {
   const [addedToNecesitado, setAddedToNecesitado] = useState(false);
   const [isInNecesitados, setIsInNecesitados] = useState(false); // New state for checking if product is in "Necesitados"
   const [addedToBolsa, setAddedToBolsa] = useState(false); // Nuevo estado para manejar si está en la bolsa
-  const token = useSelector(state => state.user.token); 
+  const token = useSelector(state => state.user.token);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTranslateY] = useState(new Animated.Value(MODAL_HEIGHT));
+  const [donations, setDonations] = useState([]);
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -32,12 +39,14 @@ const ProductoScreen = ({ route, navigation }) => {
             // Obtiene los datos del producto
             const response = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/medicamento/${id}`);
             const productData = response.data.datos;
+            const response2 = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/busqueda/${productData.droga}`);
+            const donations = response2.data.datos;
+            console.log("Product Data:", productData);
+            console.log("Donations:", donations[0]);
 
-        console.log("Product Data:", productData);
-
-            if (productData && productData.nombre) {
+            if (productData && productData.nombre && donations) {
                 setProduct(productData);
-
+                setDonations(donations);
                 // Verifica si la imagen del producto existe
                 if (productData.imagen != null) {
                     setProductImages([productData.imagen]);
@@ -142,7 +151,7 @@ const ProductoScreen = ({ route, navigation }) => {
 
         if (response.data.success) {
             setAddedToBolsa(true);
-            Alert.alert('Éxito', 'Producto agregado a la bolsa.');
+            openModal();
         } else {
             Alert.alert('Error', response.data.message || 'No se pudo agregar a la bolsa.');
         }
@@ -203,6 +212,42 @@ const ProductoScreen = ({ route, navigation }) => {
       ],
     );
   };  
+
+  const openModal = () => {
+    setModalVisible(true);
+    Animated.spring(modalTranslateY, {
+      toValue: 0, // Posición original del modal
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(modalTranslateY, {
+      toValue: MODAL_HEIGHT, // Mueve el modal fuera de la vista
+      duration: 300, // Cambia la duración para que sea más rápida
+      useNativeDriver: true,
+    }).start(() => {
+      setModalVisible(false);
+    });
+  };  
+
+  const onGestureEvent = Animated.event(
+    [{ nativeEvent: { translationY: modalTranslateY } }],
+    { useNativeDriver: true }
+  );
+
+  const onHandlerStateChange = event => {
+    if (event.nativeEvent.state === State.END) {
+      if (event.nativeEvent.translationY > 100) { // Umbral para cerrar el modal
+        closeModal();
+      } else {
+        Animated.spring(modalTranslateY, {
+          toValue: 0, // Regresa a la posición original
+          useNativeDriver: true,
+        }).start();
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -304,10 +349,62 @@ const ProductoScreen = ({ route, navigation }) => {
                 onPress={() => console.log("Hacer pregunta")}
               />
             </View>
+
+            <Modal
+              animationType="none"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={closeModal}
+              >
+              <TouchableWithoutFeedback onPress={closeModal}>
+                <View style={styles.modalOverlay}>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <PanGestureHandler onGestureEvent={onGestureEvent} onHandlerStateChange={onHandlerStateChange}>
+                      <Animated.View style={[styles.modalContainer, { transform: [{ translateY: modalTranslateY }] }]}>
+                        <Hang width={'100%'}></Hang>
+                        <View style={styles.itemContainer}>
+                          <Image source={{ uri: product.imagen }} style={styles.itemImage} />
+                          <View style={styles.itemDetails}>
+                              <Text style={styles.itemTitle}>Agregado a la Bolsa!</Text>
+                              <Text style={styles.itemDescription}>{product.nombre} {product.droga} {product.dosis}</Text>
+                          </View>
+                        </View>
+                        <View style={styles.itemContainer2}>
+                          <Text style={styles.itemDescription}>
+                            ¡Ahora te falta retirarlo en los depósitos! Para ello, no te olvides de{' '}
+                            <Text style={{ fontWeight: 'bold' }}>sacar turno en la pestaña de mi bolsa.</Text>
+                          </Text>
+                        </View>
+                        <HorizontalMedScroll donations={donations} navigation={navigation} title={product.droga}></HorizontalMedScroll>
+                        <View style={styles.itemContainer3}>
+                          <AskButton
+                            title="Seguir viendo producto"
+                            onPress={closeModal}
+                          />
+                          <View style={styles.space}></View>
+                          <AskButton
+                            title="Ir a mi bolsa"
+                            style={{ 
+                              backgroundColor: '#DAF2F5', // Cambia el color de fondo a verde, por ejemplo
+                              color: '#1E98A8' // Cambia el color del texto a blanco
+                            }}
+                            onPress={() => {
+                              closeModal(); // Cierra el modal
+                              navigation.navigate("Bolsa"); // Navega a la pantalla "Bolsa"
+                            }}
+                          />
+                          <View style={styles.space}></View>
+                          <View style={styles.space}></View>
+                        </View>
+                      </Animated.View>
+                    </PanGestureHandler>
+                  </GestureHandlerRootView>
+                </View>
+              </TouchableWithoutFeedback>
+            </Modal>
           </ScrollView>
         )}
       </View>
-
       <NavBar navigation={navigation} selected="Deseados" />
     </View>
   );
@@ -410,6 +507,65 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontSize: 12,
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end', // Asegura que el modal se sitúe en la parte inferior
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    // Asegura que se posicione en la parte inferior
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingTop: 5,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderColor: "#EEE"
+  },
+  itemContainer2: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: "center",
+  },
+  itemContainer3: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: "center",
+  },
+  itemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 5,
+    resizeMode: 'contain',
+  },
+  itemDetails: {
+    marginLeft: 10,
+  },
+  itemTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 2
+  },
+  itemDescription: {
+    fontSize: 14,
+    color: '#000',
+  }
 });
 
 export default ProductoScreen;

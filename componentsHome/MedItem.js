@@ -19,10 +19,12 @@ const MedItem = ({ item, navigation }) => {
   return (
     <TouchableOpacity onPress={() => handleItemPress(item.id)}>
       <View style={[styles.itemContainer, { backgroundColor }]}>
-        <Image source={{ uri: item.image }} style={styles.itemImage} />
+        <View style={styles.image}>
+          <Image source={{ uri: item.imagen }} style={styles.itemImage} />
+        </View>
         <View style={styles.itemDetails}>
-          <Text style={styles.itemTitle}>{item.title}</Text>
-          <Text style={styles.itemDescription}>{item.description}</Text>
+          <Text style={styles.itemTitle}>{item.nombre}</Text>
+          <Text style={styles.itemDescription}>{item.droga} {item.dosis}</Text>
         </View>
         <View style={styles.itemstockContainer}>
           <View style={[styles.itemstock, { backgroundColor: itemstockColor }]}>
@@ -48,6 +50,13 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 5,
     resizeMode: 'contain',
+  },
+  image:{
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 1.5,
+    elevation: 5, // Añade esta línea para Android
   },
   itemDetails: {
     flex: 1,

@@ -2,44 +2,38 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 const HorizontalMedItem = ({ item, navigation }) => {
+  // Validar que item esté definido antes de acceder a sus propiedades
+  if (!item) {
+    return null; // O renderiza un mensaje de error, como "Item no disponible".
+  }
+
   const handleItemPress = (id) => {
     navigation.navigate('Producto', { id });
   };
-  
-  // Determinar el color de fondo según el estado
-  let itemstockColor;
-  let stockText; 
-
-  if (item.stock <= 0) {
-    itemstockColor = '#ED5046'; // Mismo color para el estado
-    stockText = 'Sin stock';
-  }
-  if (item.stock > 0) {
-    itemstockColor = '#FFFFFF'; // Mismo color para el estado
-    stockText = 'Sin stock';
-  }
 
   return (
-    <TouchableOpacity onPress={() => handleItemPress(item.id)}>
-        <View style={styles.itemContainer}>
-        <Image source={{ uri: item.imagen }} style={styles.itemImage}/>
-        <View style={styles.itemDetails}>
-            <Text style={styles.itemTitle}>{item.nombre}</Text>
-            <Text style={styles.itemDescription}>{item.droga} {item.dosis}</Text>
-        </View>
+    <TouchableOpacity style={styles.itemContainer} onPress={() => handleItemPress(item.id)}>
+      <View style={styles.image}>
+        <Image source={{ uri: item.imagen }} style={styles.itemImage} />
+      </View>
+      
+      <View style={styles.itemDetails}>
+        <Text style={styles.itemTitle}>{item.nombre}</Text>
+        <Text style={styles.itemDescription}>{item.droga} {item.dosis}</Text>
+      </View>
+      {item.stock <= 0 && (
         <View style={styles.itemstockContainer}>
-            <View style={[styles.itemstock, { backgroundColor: itemstockColor }]}>
-                <Text style={styles.itemstockText}>{stockText}</Text>
-            </View>
+          <View style={styles.itemstock}>
+            <Text style={styles.itemstockText}>Sin stock</Text>
+          </View>
         </View>
-        </View>
+      )}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   itemContainer: {
-    flexDirection: 'column',
     padding: 10,
     width: 150,
     alignItems: "flex-start",
@@ -47,18 +41,23 @@ const styles = StyleSheet.create({
     margin: 5,
     marginBottom: 10,
     borderRadius: 15,
-    padding: 10
   },
   itemImage: {
     width: 130,
     height: 130,
-    borderRadius: 5,
+    borderRadius: 10,
     resizeMode: 'contain',
-    
+  },
+  image:{
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 1.5,
+    elevation: 5, // Añade esta línea para Android
   },
   itemDetails: {
-    flex: 1,
-    marginLeft: 10,
+    marginVertical: 5,
+    marginTop: 15
   },
   itemTitle: {
     fontSize: 16,
@@ -70,20 +69,21 @@ const styles = StyleSheet.create({
   },
   itemstockContainer: {
     flexDirection: 'row',
-    justifyContent: 'center', // Asegura que el contenido se centre horizontalmente
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10, // Opcional, para un poco de separación
-    width: '100%', // Asegura que el contenedor use el ancho completo del elemento padre
+    marginTop: 10,
+    width: '100%',
   },
   itemstock: {
     padding: 5,
     borderRadius: 8,
+    backgroundColor: '#ED5046'
   },
   itemstockText: {
     color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
 
 export default HorizontalMedItem;

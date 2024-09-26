@@ -3,7 +3,8 @@ import { View, StyleSheet, Dimensions, TouchableOpacity, Animated, Text, FlatLis
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
 import MedItem from '../../componentsHome/MedItem';
-import HorizontalMedItem from '../../componentsHome/HorizontalMedItem';
+import HorizontalMedScroll from '../../componentsHome/HorizontalMedScroll';
+import VerticalMedScroll from '../../componentsHome/VerticalMedScroll';
 import OptionsIcon from '../../assets/OptionsIcon';
 import HeartIcon from '../../assets/HeartIcon';
 
@@ -27,11 +28,7 @@ const donations = [
     stock: 1
   },
   {
-    id: 3,
-    title: 'Donación 3',
-    description: 'Descripción de la donación 3',
-    image: 'https://your-image-url.com/Med3.png',
-    stock: 0
+    "descripcion": "si", "dosis": "500mg", "droga": "Paracetamol", "forma_farm": "Comprimidos x30", "id": 3, "id_categoria": 1, "imagen": "https://www.farmaciassanchezantoniolli.com.ar/10123-medium_default/tafirol-x30-comp.jpg", "marca": "Genomma Lab", "nombre": "Tafirol", "stock": 1
   },
   {
     id: 4,
@@ -79,41 +76,8 @@ const HomeScreen = ({ navigation }) => {
             <HeartIcon width={27} height={27}></HeartIcon>
           </TouchableOpacity>
         </View>
-        <View style={styles.MedesShadowContainer}>
-          <View style={styles.MedesContainer}>
-            <View style={styles.MedesTitleContainer}>
-              <Text style={styles.MedesTitle}>Mis Medes</Text>
-            </View>
-            <FlatList
-              data={donations}
-              renderItem={({ item }) => (
-                <MedItem 
-                  item={item} 
-                  navigation={navigation} 
-                />
-              )}
-              keyExtractor={(item) => item.id.toString()} // Asegúrate de convertir el ID a string
-              contentContainerStyle={styles.itemList}
-              scrollEnabled={false} // Desactiva el scroll
-            />
-          </View>
-        </View>
-        <View style={styles.HorizontalMedesShadowContainer}>
-          <View style={styles.HorizontalMedesContainer}>
-            <View style={styles.MedesTitleContainer}>
-              <Text style={styles.MedesTitle}>Mis Medes</Text>
-            </View>
-            <FlatList
-              data={donations}
-              renderItem={({ item }) => (
-                <HorizontalMedItem item={item} navigation={navigation} />
-              )}
-              keyExtractor={(item) => item.id}
-              contentContainerStyle={styles.HorizontalitemList}
-              horizontal
-            />
-          </View>
-        </View>
+        <VerticalMedScroll donations={donations} navigation={navigation} title={"Mis medes"}></VerticalMedScroll>
+        <HorizontalMedScroll donations={donations} navigation={navigation} title={"Mis medes"}></HorizontalMedScroll>
       </ScrollView>
       <NavBar navigation={navigation} selected="home" />
     </Animated.View>
