@@ -10,22 +10,21 @@ const { height, width } = Dimensions.get('window');
 
 const DonateScreen = ({ navigation }) => {
   const [medicationData, setMedicationData] = useState({
-    selectedMedication: null,
+    selectedMedicationId: null,
     fecha_apertura: new Date(),
     fecha_caducidad: new Date(),
     descripcion: '',
     cantidad: '',
   });
-  
-  // Empieza en el segundo paso (1 en lugar de 0)
-  const [step, setStep] = useState(-1); 
-  const slideAnim = useState(new Animated.Value(-width))[0]; // Desplaza el contenedor al segundo paso
+
+  const [medications, setMedications] = useState([]); // Suponiendo que tienes un array de medicamentos
+  const [step, setStep] = useState(-1);
+  const slideAnim = useState(new Animated.Value(-width))[0];
 
   useEffect(() => {
-    // Mueve el contenedor animado al segundo paso al iniciar la pantalla
     Animated.timing(slideAnim, {
       toValue: -(width * step),
-      duration: 0, // Sin animación al cargar, para que comience directamente en el segundo paso
+      duration: 0,
       useNativeDriver: true,
     }).start();
   }, [step]);
@@ -39,9 +38,9 @@ const DonateScreen = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    const { selectedMedication, fecha_apertura, fecha_caducidad, descripcion, cantidad } = medicationData;
+    const { selectedMedicationId, fecha_apertura, fecha_caducidad, descripcion, cantidad } = medicationData;
 
-    if (!selectedMedication || !fecha_apertura || !fecha_caducidad || !descripcion || !cantidad) {
+    if (!selectedMedicationId || !fecha_apertura || !fecha_caducidad || !descripcion || !cantidad) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
@@ -56,7 +55,11 @@ const DonateScreen = ({ navigation }) => {
   };
 
   const handleSelectMedication = (item) => {
-    setMedicationData({ ...medicationData, selectedMedication: item });
+    setMedicationData({ ...medicationData, selectedMedicationId: item.id }); // Guardar solo el ID
+  };
+
+  const getSelectedMedication = () => {
+    return medications.find(med => med.id === medicationData.selectedMedicationId); // Obtener el objeto del medicamento
   };
 
   const handleNextStep = () => {
@@ -81,6 +84,8 @@ const DonateScreen = ({ navigation }) => {
     }
   };
 
+  const selectedMedication = getSelectedMedication();
+
   return (
     <View style={styles.container}>
       <TopBarWhite 
@@ -94,14 +99,14 @@ const DonateScreen = ({ navigation }) => {
             <View style={styles.step}>
               <View>
                 <MedSearch onSelect={handleSelectMedication} />
-                {medicationData.selectedMedication && (
+                {selectedMedication && (
                   <View style={styles.selectedMedicationContainer}>
                     <Text style={styles.selectedMedicationTitle}>
                       Medicamento seleccionado:
                     </Text>
                     <View style={styles.info}>
                       <View style={styles.hiddenTop}>
-                        <MedSelector item={medicationData.selectedMedication}></MedSelector>
+                        <MedSelector item={selectedMedication}></MedSelector>
                       </View>
                     </View>
                   </View>
@@ -144,8 +149,9 @@ const DonateScreen = ({ navigation }) => {
                     value={medicationData.descripcion}
                   />
                 </View>
-                
+
                 <View style={styles.input}>
+                  <Text style={styles.label}>Cantidad {selectedMedication ? selectedMedication.forma_farm : ''}: </Text>
                   <TextInput
                     style={styles.inputField}
                     placeholder="Cantidad de medicina"
@@ -194,7 +200,7 @@ const styles = StyleSheet.create({
   },
   animatedContainer: {
     flexDirection: "row",
-    width: width * 3, // Aumenta el tamaño para tener el espacio de los 3 pasos
+    width: width * 3,
   },
   step: {
     marginTop: 20,
@@ -209,7 +215,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
-    width: width, // Cada paso ocupa el ancho completo de la pantalla
+    width: width,
     justifyContent: "space-between"
   },
   input: {
@@ -242,7 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 15,
     padding: 12,
-    width: '100%',
   },
   selectedMedicationContainer: {
     backgroundColor: "#e6e6e6",
@@ -267,8 +272,8 @@ const styles = StyleSheet.create({
     overflow: "hidden"
   },
   hiddenTop: {
-    marginTop: -1, // Mueve hacia arriba un pixel
-    paddingTop: 0, // Ajusta el padding para compensar el desplazamiento
+    marginTop: -1,
+    paddingTop: 0,
   },
   rower:{
     flexDirection: "row",

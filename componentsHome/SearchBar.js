@@ -14,7 +14,7 @@ const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
 
 const SearchBar = ({ navigation, search }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchHistory, setSearchHistory] = useState([]);
   const textInputRef = useRef(null);
@@ -28,8 +28,6 @@ const SearchBar = ({ navigation, search }) => {
       if (response.data.success) {
         if(response.data.datos){
           setSearchHistory(response.data.datos.reverse());
-        }else{
-          setSearchHistory(response.data.datos); // Asume que "datos" es la clave con el array
         }
       }
     } catch (error) {
