@@ -75,7 +75,7 @@ const MedSearch = ({ onSelect }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#e6e6e6",
+    backgroundColor: "#FFF",
     borderRadius: 15,
     padding: 12,
     shadowColor: '#000',
@@ -86,6 +86,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#1E98A8"
   },
   input: {
     flex: 1,

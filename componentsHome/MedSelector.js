@@ -22,9 +22,10 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderTopWidth: 0.5,
-    borderTopColor: "#D3D3D3",
-    width: '100%'
+    borderWidth: 3,
+    borderColor: "#1E98A8",
+    width: '100%',
+    borderRadius: 15
   },
   itemImage: {
     width: 60,

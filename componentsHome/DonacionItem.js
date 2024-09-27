@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const DonacionItem = ({ item, navigation }) => {
+const DonacionItem = ({ item, navigation, med }) => {
   const handleItemPress = (id) => {
-    navigation.navigate('Producto', { id }); //Inventar nombre para pantalla de las request de mandar un medicamento
+    navigation.navigate('Request', { id, med }); //Inventar nombre para pantalla de las request de mandar un medicamento
   };
   
   // Determinar el color de fondo según el estado
@@ -11,10 +11,10 @@ const DonacionItem = ({ item, navigation }) => {
   let itemStateColor;
   let stateText;
 
-  if (item.state === true) {
+  if (item.estado === true) {
     itemStateColor = '#1EA82C'; // Mismo color para el estado
     stateText = 'Validado';
-  } else if (item.state === false) {
+  } else if (item.estado === false) {
     itemStateColor = '#ED5046'; // Mismo color para el estado
     stateText = 'Rechazado';
   } else {
@@ -23,12 +23,12 @@ const DonacionItem = ({ item, navigation }) => {
   }
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => handleItemPress(item.id)}>
       <View style={[styles.itemContainer, { backgroundColor }]}>
-        <Image source={{ uri: item.image }} style={styles.itemImage}/>
+        <Image source={{ uri: med.imagen }} style={styles.itemImage}/>
         <View style={styles.itemDetails}>
-          <Text style={styles.itemTitle}>{item.title}</Text>
-          <Text style={styles.itemDescription}>{item.description}</Text>
+          <Text style={styles.itemTitle}>{med.nombre}</Text>
+          <Text style={styles.itemDescription}>{med.droga} {med.dosis}</Text>
         </View>
         <View style={styles.itemStateContainer}>
           <View style={[styles.itemState, { backgroundColor: itemStateColor }]}>

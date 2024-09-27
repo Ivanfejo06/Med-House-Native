@@ -5,26 +5,30 @@ import Mini from '../../components/MiniButton';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MedSearch from '../../componentsHome/MedSearch';
 import MedSelector from '../../componentsHome/MedSelector';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const { height, width } = Dimensions.get('window');
 
 const DonateScreen = ({ navigation }) => {
   const [medicationData, setMedicationData] = useState({
-    selectedMedicationId: null,
+    selectedMedication: null,
     fecha_apertura: new Date(),
     fecha_caducidad: new Date(),
     descripcion: '',
     cantidad: '',
   });
-
-  const [medications, setMedications] = useState([]); // Suponiendo que tienes un array de medicamentos
-  const [step, setStep] = useState(-1);
-  const slideAnim = useState(new Animated.Value(-width))[0];
+  const token = useSelector(state => state.user.token);
+  
+  // Empieza en el segundo paso (1 en lugar de 0)
+  const [step, setStep] = useState(-1); 
+  const slideAnim = useState(new Animated.Value(-width))[0]; // Desplaza el contenedor al segundo paso
 
   useEffect(() => {
+    // Mueve el contenedor animado al segundo paso al iniciar la pantalla
     Animated.timing(slideAnim, {
       toValue: -(width * step),
-      duration: 0,
+      duration: 0, // Sin animación al cargar, para que comience directamente en el segundo paso
       useNativeDriver: true,
     }).start();
   }, [step]);
@@ -37,29 +41,45 @@ const DonateScreen = ({ navigation }) => {
     setMedicationData({ ...medicationData, fecha_caducidad: selectedDate || medicationData.fecha_caducidad });
   };
 
-  const handleSubmit = () => {
-    const { selectedMedicationId, fecha_apertura, fecha_caducidad, descripcion, cantidad } = medicationData;
-
-    if (!selectedMedicationId || !fecha_apertura || !fecha_caducidad || !descripcion || !cantidad) {
+  const handleSubmit = async () => {
+    const { selectedMedication, fecha_apertura, fecha_caducidad, descripcion, cantidad } = medicationData;
+    if (!selectedMedication || !fecha_apertura || !fecha_caducidad || !descripcion || !cantidad) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
-
+  
     if (fecha_caducidad < fecha_apertura) {
       Alert.alert('Error', 'La fecha de caducidad debe ser posterior a la fecha de apertura.');
       return;
     }
-
-    Alert.alert('Éxito', 'Datos del medicamento recolectados con éxito');
-    console.log(medicationData);
-  };
+    try {
+      // Aquí debes ajustar la URL a la de tu API
+      const response = await axios.post('https://hopeful-emerging-snapper.ngrok-free.app/request', {
+        medId: selectedMedication.id,
+        fecha_apertura: fecha_apertura.toISOString().split('T')[0],
+        fecha_caducidad: fecha_caducidad.toISOString().split('T')[0],
+        descripcion: descripcion,
+        cantidad: cantidad,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,  // Se usa el token desde Redux
+        }
+      });      
+  
+      if (response.status === 201) {
+        Alert.alert('Éxito', 'Donación realizada con éxito');
+        navigation.goBack();
+      } else {
+        Alert.alert('Error', 'Hubo un problema al enviar los datos.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Ocurrió un error al conectar con el servidor.');
+    }
+  };  
 
   const handleSelectMedication = (item) => {
-    setMedicationData({ ...medicationData, selectedMedicationId: item.id }); // Guardar solo el ID
-  };
-
-  const getSelectedMedication = () => {
-    return medications.find(med => med.id === medicationData.selectedMedicationId); // Obtener el objeto del medicamento
+    setMedicationData({ ...medicationData, selectedMedication: item });
   };
 
   const handleNextStep = () => {
@@ -83,8 +103,10 @@ const DonateScreen = ({ navigation }) => {
       }).start(() => setStep(step - 1));
     }
   };
+  
+  const messi = () => {
 
-  const selectedMedication = getSelectedMedication();
+  }
 
   return (
     <View style={styles.container}>
@@ -99,16 +121,12 @@ const DonateScreen = ({ navigation }) => {
             <View style={styles.step}>
               <View>
                 <MedSearch onSelect={handleSelectMedication} />
-                {selectedMedication && (
+                {medicationData.selectedMedication && (
                   <View style={styles.selectedMedicationContainer}>
                     <Text style={styles.selectedMedicationTitle}>
                       Medicamento seleccionado:
                     </Text>
-                    <View style={styles.info}>
-                      <View style={styles.hiddenTop}>
-                        <MedSelector item={selectedMedication}></MedSelector>
-                      </View>
-                    </View>
+                    <MedSelector item={medicationData.selectedMedication} onSelect={messi}></MedSelector>
                   </View>
                 )}
 
@@ -138,8 +156,9 @@ const DonateScreen = ({ navigation }) => {
 
             {/* Segundo paso: Descripción y cantidad */}
             <View style={styles.step}>
-              <View>
-                <View style={styles.input}>
+              <View style={styles.wit}>
+                <View style={styles.selectedMedicationContainer}>
+                  <Text style={styles.selectedMedicationTitle}>Descripción:</Text>
                   <TextInput
                     style={styles.textarea}
                     placeholder="Descripción del medicamento"
@@ -149,13 +168,14 @@ const DonateScreen = ({ navigation }) => {
                     value={medicationData.descripcion}
                   />
                 </View>
-
-                <View style={styles.input}>
-                  <Text style={styles.label}>Cantidad {selectedMedication ? selectedMedication.forma_farm : ''}: </Text>
+                
+                <View style={styles.selectedMedicationContainer}>
+                  <Text style={styles.selectedMedicationTitle}>Cantidad:</Text>
                   <TextInput
-                    style={styles.inputField}
-                    placeholder="Cantidad de medicina"
-                    keyboardType="numeric"
+                    style={styles.textarea}
+                    placeholder="Escribe cuanta medicina queda de como vino el paquete de fabrica"
+                    multiline
+                    numberOfLines={4}
                     onChangeText={(text) => setMedicationData({ ...medicationData, cantidad: text })}
                     value={medicationData.cantidad}
                   />
@@ -173,7 +193,7 @@ const DonateScreen = ({ navigation }) => {
                 <Text style={styles.label}>Subir fotos del medicamento</Text>
                 {/* Aquí podrías agregar la lógica para enviar fotos */}
               </View>
-              
+
               <View style={styles.rower}>
                 <Mini title="Anterior" onPress={handlePrevStep} />
                 <Mini title="Enviar" onPress={handleSubmit} />
@@ -200,7 +220,7 @@ const styles = StyleSheet.create({
   },
   animatedContainer: {
     flexDirection: "row",
-    width: width * 3,
+    width: width * 3, // Aumenta el tamaño para tener el espacio de los 3 pasos
   },
   step: {
     marginTop: 20,
@@ -215,12 +235,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
-    width: width,
+    width: width, // Cada paso ocupa el ancho completo de la pantalla
     justifyContent: "space-between"
+  },
+  wit:{
+    width: "100%"
   },
   input: {
     flexDirection: "row", 
-    backgroundColor: "#e6e6e6",
+    backgroundColor: "#FFF",
     borderRadius: 15,
     padding: 12,
     shadowColor: '#000',
@@ -231,9 +254,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#1E98A8"
   },
   label: {
     fontSize: 16,
+    fontWeight: "bold",
     textAlign: "center",
     color: "#1E98A8",
   },
@@ -243,14 +269,19 @@ const styles = StyleSheet.create({
     padding: 12,
     width: '100%',
     height: 100,
+    borderWidth: 3,
+    borderColor: "#1E98A8"
   },
   inputField: {
     backgroundColor: '#FFF',
     borderRadius: 15,
     padding: 12,
+    width: '100%',
+    borderWidth: 3,
+    borderColor: "#1E98A8"
   },
   selectedMedicationContainer: {
-    backgroundColor: "#e6e6e6",
+    backgroundColor: "#FFF",
     borderRadius: 15,
     padding: 12,
     shadowColor: '#000',
@@ -261,19 +292,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#1E98A8"
   },
   selectedMedicationTitle: {
     fontSize: 16,
     color: "#1E98A8",
-    marginBottom: 12
-  },
-  info:{
-    borderRadius: 15,
-    overflow: "hidden"
-  },
-  hiddenTop: {
-    marginTop: -1,
-    paddingTop: 0,
+    marginBottom: 12,
+    fontWeight: "bold"
   },
   rower:{
     flexDirection: "row",

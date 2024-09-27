@@ -19,6 +19,7 @@ import DeseadosScreen from './screens/Home/DeseadosScreen';
 import ProductoScreen from './screens/Home/ProductoScreen';
 import SearchScreen from './screens/Home/SearchScreen';
 import DonateScreen from './screens/Home/DonateScreen'
+import RequestScreen from './screens/Home/RequestScreen';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,7 @@ const AppNavigator = () => {
           options={{ gestureEnabled: false, animationEnabled: false }} 
         />
         <Stack.Screen name="Producto" component={ProductoScreen} />
+        <Stack.Screen name="Request" component={RequestScreen} />
 
         {/* SETTINGS ROUTES */}
         <Stack.Screen name="ProfileIndex" component={ProfileIndex} />
