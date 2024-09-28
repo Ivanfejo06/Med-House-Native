@@ -16,6 +16,10 @@ const StartScreen = ({ navigation }) => {
         title="Crear cuenta"
         onPress={() => navigation.navigate('RegisterName') }
       />
+      <Button
+        title="Qr"
+        onPress={() => navigation.navigate('Codigo') }
+      />
       <Text style={styles.question}>¿Sos medico?</Text>
     </View>
   );

@@ -20,6 +20,7 @@ import ProductoScreen from './screens/Home/ProductoScreen';
 import SearchScreen from './screens/Home/SearchScreen';
 import DonateScreen from './screens/Home/DonateScreen'
 import RequestScreen from './screens/Home/RequestScreen';
+import QRScannerScreen from './screens/Start/QrScannerScreen';
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ const AppNavigator = () => {
         <Stack.Screen name="RegisterDNI" component={RegisterDNIScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+        <Stack.Screen name="Codigo" component={QRScannerScreen} />
 
         {/* NAVBAR ROUTES */}
         <Stack.Screen 
