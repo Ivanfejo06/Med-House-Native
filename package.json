@@ -22,6 +22,7 @@
     "expo": "^51.0.26",
     "expo-barcode-scanner": "~13.0.1",
     "expo-camera": "~15.0.16",
+    "expo-image-picker": "^15.0.7",
     "expo-router": "^3.5.23",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",

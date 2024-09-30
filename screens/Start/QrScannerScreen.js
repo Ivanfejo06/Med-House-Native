@@ -31,7 +31,6 @@ const QrScannerScreen = () => {
         style={styles.camera} // Asegúrate de que la cámara ocupe el espacio completo
         cameraType={'back'}
         onBarcodeScanned={handleBarcodeScanned} // Manejo de datos escaneados
-        barcodeType={'pdf417'}
         FocusMode={'off'}
       />
       <Overlay />
@@ -67,4 +66,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QrScannerScreen; 
+export default QrScannerScreen;

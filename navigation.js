@@ -21,6 +21,7 @@ import SearchScreen from './screens/Home/SearchScreen';
 import DonateScreen from './screens/Home/DonateScreen'
 import RequestScreen from './screens/Home/RequestScreen';
 import QRScannerScreen from './screens/Start/QrScannerScreen';
+import QrHome from './screens/Start/QrHome';
 
 const Stack = createStackNavigator();
 
@@ -40,6 +41,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="Codigo" component={QRScannerScreen} />
+        <Stack.Screen name="QrHome" component={QrHome}/>
 
         {/* NAVBAR ROUTES */}
         <Stack.Screen 

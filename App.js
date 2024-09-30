@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { View, StyleSheet, Animated, AppRegistry } from 'react-native';
 import { Provider } from 'react-redux';
 import Entypo from '@expo/vector-icons/Entypo';
 import * as SplashScreen from 'expo-splash-screen';
@@ -7,6 +7,7 @@ import * as Font from 'expo-font';
 import AppNavigator from './navigation';
 import Logo from './assets/LogoInverted';
 import store from './store/store'; // Asegúrate de ajustar la ruta
+import { name as appName } from './app.json'; // Asegúrate de que este archivo existe y tiene el nombre correcto
 
 SplashScreen.preventAutoHideAsync();
 
@@ -68,6 +69,9 @@ const App = () => {
     </Provider>
   );
 };
+
+// Registra el componente principal de la aplicación
+AppRegistry.registerComponent(appName, () => App);
 
 const styles = StyleSheet.create({
   container: {

@@ -18,7 +18,7 @@ const StartScreen = ({ navigation }) => {
       />
       <Button
         title="Qr"
-        onPress={() => navigation.navigate('Codigo') }
+        onPress={() => navigation.navigate('QrHome') }
       />
       <Text style={styles.question}>¿Sos medico?</Text>
     </View>

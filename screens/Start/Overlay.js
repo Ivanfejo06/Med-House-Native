@@ -28,8 +28,6 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'black', // Color del fondo
-    opacity: 0.5, // Opacidad de la capa exterior
   },
   inner: {
     position: 'absolute',
