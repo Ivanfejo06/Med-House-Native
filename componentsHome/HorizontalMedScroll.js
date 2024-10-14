@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#1E98A8"
     },
     HorizontalitemList:{
-        paddingHorizontal: 5
+        paddingHorizontal: 3
     },
     MedesTitleContainer: {
         backgroundColor: '#1E98A8',

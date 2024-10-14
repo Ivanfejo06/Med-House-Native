@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.84,
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 15,
     width: '100%',
     alignItems: "center",
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: "#1E98A8"
   },
   input: {

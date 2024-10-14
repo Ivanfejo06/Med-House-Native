@@ -122,10 +122,7 @@ const DonateScreen = ({ navigation }) => {
               <View>
                 <MedSearch onSelect={handleSelectMedication} />
                 {medicationData.selectedMedication && (
-                  <View style={styles.selectedMedicationContainer}>
-                    <Text style={styles.selectedMedicationTitle}>
-                      Medicamento seleccionado:
-                    </Text>
+                  <View style={styles.selectedMedication}>
                     <MedSelector item={medicationData.selectedMedication} onSelect={messi}></MedSelector>
                   </View>
                 )}
@@ -158,7 +155,6 @@ const DonateScreen = ({ navigation }) => {
             <View style={styles.step}>
               <View style={styles.wit}>
                 <View style={styles.selectedMedicationContainer}>
-                  <Text style={styles.selectedMedicationTitle}>Descripción:</Text>
                   <TextInput
                     style={styles.textarea}
                     placeholder="Descripción del medicamento"
@@ -170,10 +166,9 @@ const DonateScreen = ({ navigation }) => {
                 </View>
                 
                 <View style={styles.selectedMedicationContainer}>
-                  <Text style={styles.selectedMedicationTitle}>Cantidad:</Text>
                   <TextInput
                     style={styles.textarea}
-                    placeholder="Escribe cuanta medicina queda de como vino el paquete de fabrica"
+                    placeholder="Cantidad de medicina restante"
                     multiline
                     numberOfLines={4}
                     onChangeText={(text) => setMedicationData({ ...medicationData, cantidad: text })}
@@ -254,7 +249,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     alignItems: "center",
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: "#1E98A8"
   },
   label: {
@@ -268,32 +263,38 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 12,
     width: '100%',
-    height: 100,
-    borderWidth: 3,
-    borderColor: "#1E98A8"
+    height: 100
   },
   inputField: {
     backgroundColor: '#FFF',
     borderRadius: 15,
     padding: 12,
     width: '100%',
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: "#1E98A8"
   },
   selectedMedicationContainer: {
     backgroundColor: "#FFF",
     borderRadius: 15,
-    padding: 12,
+    padding: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.84, 
     justifyContent: "space-between",
     marginBottom: 20,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#1E98A8"
+  },
+  selectedMedication: {
+    backgroundColor: "#FFF",
+    borderRadius: 15,
+    paddingVertical: 5,
+    justifyContent: "space-between",
+    marginBottom: 15,
     width: '100%',
     alignItems: "center",
-    borderWidth: 3,
-    borderColor: "#1E98A8"
   },
   selectedMedicationTitle: {
     fontSize: 16,
