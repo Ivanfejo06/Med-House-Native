@@ -19,7 +19,7 @@ const MedItem = ({ item, navigation }) => {
   return (
     <TouchableOpacity onPress={() => handleItemPress(item.id)}>
       <View style={[styles.itemContainer, { backgroundColor }]}>
-        <View style={styles.image}>
+        <View>
           <Image source={{ uri: item.imagen }} style={styles.itemImage} />
         </View>
         <View style={styles.itemDetails}>

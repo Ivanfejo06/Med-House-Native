@@ -12,6 +12,7 @@ import { Flow } from 'react-native-animated-spinkit'; // Importa el Spinner
 import HeartIcon from '../../assets/HeartIcon';
 import Hang from '../../assets/hang';
 import HorizontalMedScroll from '../../componentsHome/HorizontalMedScroll';
+import Warning from '../../assets/Warning';
 
 const { height, width } = Dimensions.get('window');
 const NAVBAR_HEIGHT = height * 0.0974;
@@ -208,6 +209,7 @@ const ProductoScreen = ({ route, navigation }) => {
               Alert.alert('Error', 'Hubo un problema al eliminar el item.');
             }
           },
+          style: "destructive"
         },
       ],
     );
@@ -287,9 +289,18 @@ const ProductoScreen = ({ route, navigation }) => {
               ) : (
                 <Text>Cargando imágenes...</Text>
               )}
-
               <View style={styles.titleView}>
-                <Text style={styles.stock}>{product.stock > 0 ? "Stock disponible" : "Sin stock"}</Text>
+                <View style={styles.rower}>
+                  {product.stock <= 0 && (
+                    <>
+                      <Warning width={20} height={20} />
+                      <View style={styles.spacer} />
+                    </>
+                  )}
+                  <Text style={styles.stock}>
+                    {product.stock > 0 ? "Stock disponible" : "Sin stock"}
+                  </Text>
+                </View>
               </View>
               <AskButton
                 title={product.stock > 0 ? "Solicitar" : "Notificarme"}
@@ -463,8 +474,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between"
   },
+  rower:{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  spacer:{
+    width: 5
+  },
   stock: {
+    fontSize: 14,
     color: 'gray',
+    fontWeight: "bold"
   },
   productDetails: {
     backgroundColor: '#FFF',

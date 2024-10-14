@@ -104,6 +104,7 @@ const DeseadosScreen = ({ navigation }) => {
               Alert.alert('Error', 'Hubo un problema al eliminar el item.');
             }
           },
+          style: "destructive"
         },
       ],
     );

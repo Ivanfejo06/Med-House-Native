@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, FlatList, Text, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Dimensions, FlatList, Text, ScrollView } from 'react-native';
 import NavBar from '../../componentsHome/NavBar';
 import TopBar from '../../componentsHome/TopBar';
 import DonacionItem from '../../componentsHome/DonacionItem';
 import axios from 'axios'; 
 import { useSelector } from 'react-redux';
 import { Flow } from 'react-native-animated-spinkit';
+import { useFocusEffect } from '@react-navigation/native'; // Importa el hook
 
-const { height, width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 const DonacionesScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);  // Estado para almacenar los ítems
@@ -44,9 +45,12 @@ const DonacionesScreen = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    fetchItems(); // Llama a la API cuando el componente se monta
-  }, []);
+  // Usa useFocusEffect para cargar datos al enfocar la pantalla
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchItems(); // Llama a la API cuando el componente se monta o se vuelve a enfocar
+    }, [token]) // Agrega el token como dependencia
+  );
 
   return (
     <View style={styles.container}>
@@ -147,7 +151,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   outof: {
-    alignSelf: 'center',  // Asegura que el ancho se ajuste al contenido
+    alignSelf: 'center',
     backgroundColor: "#FFF",
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,

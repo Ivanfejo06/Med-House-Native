@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Image, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import NavBar from '../../componentsHome/NavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
@@ -43,6 +43,34 @@ const RequestScreen = ({ route, navigation }) => {
     };
     fetchrequestData();
   }, [id, token]);
+
+  const handleDelete = async () => {
+    Alert.alert(
+      "Confirmar eliminación",
+      "¿Estás seguro de que deseas eliminar esta solicitud?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Eliminar",
+          onPress: async () => {
+            try {
+              await axios.delete(`https://hopeful-emerging-snapper.ngrok-free.app/request/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              navigation.goBack(); // Regresa a la pantalla anterior
+            } catch (error) {
+              console.error('Error deleting request:', error);
+              alert('Error al eliminar la solicitud. Por favor, inténtalo de nuevo.');
+            }
+          },
+          style: "destructive"
+        }
+      ]
+    );
+  };  
 
   // Determinar el color y texto basado en el estado del request
   const itemStateColor = request?.estado === true
@@ -98,15 +126,20 @@ const RequestScreen = ({ route, navigation }) => {
               )}
             </View>
 
-            
-
             <View style={styles.MedesShadowContainer}>
               <View style={styles.MedesContainer}>
                 <View style={styles.MedesTitleContainer}>
-                  <Image source={require('../../assets/Face.png')} style={styles.foto} />
-                  <Text style={styles.MedesTitle}>{nombre} {apellido}</Text>
+                  <View style={styles.MedesNameContainer}>
+                    <Image source={require('../../assets/Face.png')} style={styles.foto} />
+                    <Text style={styles.MedesTitle}>{nombre} {apellido}</Text>
+                  </View>
+                  {request?.estado === null && ( // Cambia aquí para verificar si el estado es "En proceso"
+                    <TouchableOpacity style={styles.itemDelete} onPress={handleDelete}>
+                      <Text style={styles.itemDeleteText}>Cancelar</Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
-                <MedItem navigation={navigation} item={med} />
+                <MedItem navigation={navigation} item={med}/>
                 <View style={styles.main}>
                   <View style={styles.specs}>
                     {requestDetails.map((detail, index) => (
@@ -130,8 +163,7 @@ const RequestScreen = ({ route, navigation }) => {
           </ScrollView>
         )}
       </View>
-
-      <NavBar navigation={navigation} selected="Deseados" />
+      <NavBar navigation={navigation} selected="donaciones" />
     </View>
   );
 };
@@ -139,7 +171,6 @@ const RequestScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   content: {
     flex: 1,
@@ -200,6 +231,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  itemDelete: {
+    padding: 7,
+    borderRadius: 20,
+    backgroundColor: "#ED5046"
+  },
+  itemDeleteText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
   MedesShadowContainer: {
     marginVertical: 20,
     margin: 15,
@@ -224,8 +265,14 @@ const styles = StyleSheet.create({
   MedesTitleContainer: {
     flexDirection: "row",
     backgroundColor: '#1E98A8',
-    padding: 5,
-    paddingHorizontal: 5,
+    padding: 8,
+    paddingHorizontal: 8,
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  MedesNameContainer:{
+    flexDirection: "row",
+    display: "flex",
     alignItems: "center"
   },
   specs: {
