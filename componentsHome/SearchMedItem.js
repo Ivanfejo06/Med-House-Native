@@ -50,6 +50,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
     marginBottom: 10,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 1.84,
+    elevation: 5, // Añade esta línea para Android
   },
   itemImage: {
     width: SEARCH_WIDTH-40,

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Modal, FlatList, TextInput } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux'; // Suponiendo que usas Redux para manejar el token
+import { useFocusEffect } from '@react-navigation/native'; // Importa useFocusEffect
 import Cross from '../assets/Cross';
 import Reverse from '../assets/Reverse';
 import SearchIcon from '../assets/SearchIcon';
@@ -26,22 +27,31 @@ const SearchBar = ({ navigation, search }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
-        if(response.data.datos){
+        if (response.data.datos) {
           setSearchHistory(response.data.datos.reverse());
         }
       }
     } catch (error) {
       console.error(error);
     }
-  };  
+  };
+
+  // Usar useFocusEffect para cargar el historial al enfocar el componente
+  useFocusEffect(
+    React.useCallback(() => {
+      if (modalVisible) {
+        fetchSearchHistory(); // Cargar historial al abrir el modal
+      }
+    }, [modalVisible])
+  );
 
   const handleSearch = async () => {
     if (query) {
       try {
         // Verifica si la búsqueda ya existe en el historial
         let searchExists = false;
-        if(searchHistory){
-            searchExists = searchHistory.some(item => item.busqueda.toLowerCase() === query.toLowerCase());
+        if (searchHistory) {
+          searchExists = searchHistory.some(item => item.busqueda.toLowerCase() === query.toLowerCase());
         }
 
         if (!searchExists) {
@@ -59,7 +69,7 @@ const SearchBar = ({ navigation, search }) => {
       }
     }
     setModalVisible(false);
-  };  
+  };
 
   const handleSearchTouch = async (busqueda) => {
     if (busqueda) {
@@ -94,7 +104,6 @@ const SearchBar = ({ navigation, search }) => {
   const openModal = async () => {
     setModalVisible(true);
     setQuery('');
-    await fetchSearchHistory(); // Cargar historial al abrir el modal
     setTimeout(() => {
       textInputRef.current.focus();
     }, 100);
@@ -102,61 +111,61 @@ const SearchBar = ({ navigation, search }) => {
 
   return (
     <View style={styles.conteiner}>
-        <TouchableOpacity onPress={openModal} style={styles.searchBar}>
-            <SearchIcon width={11} height={11} tintColor={"#aaa"}></SearchIcon>
-            <Text style={styles.placeholderText}>
-                {search ? search : 'Buscar en MedHouse'}
-            </Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={openModal} style={styles.searchBar}>
+        <SearchIcon width={11} height={11} tintColor={"#aaa"}></SearchIcon>
+        <Text style={styles.placeholderText}>
+          {search ? search : 'Buscar en MedHouse'}
+        </Text>
+      </TouchableOpacity>
 
-        <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-        >
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalContainer}>
-                    <View style={styles.container}>
-                        <View style={styles.liner}>
-                            <View style={styles.searchBar}>
-                                <TextInput
-                                    ref={textInputRef}
-                                    placeholder='Buscar en MedHouse'
-                                    value={query}
-                                    onChangeText={setQuery}
-                                    onSubmitEditing={handleSearch}
-                                    style={styles.input}
-                                    returnKeyType="search"
-                                />
-                            </View>
-                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-                                <Text style={styles.closeButtonText}>Cerrar</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <TouchableOpacity onPress={deleteAllSearches}>
-                        <Text style={styles.deleteAllButton}>Borrar historial</Text>
-                    </TouchableOpacity>
-                    <FlatList
-                        data={searchHistory}
-                        keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()} // Asegúrate de que cada item tenga un id único
-                        renderItem={({ item }) => (
-                        <View style={styles.flexer}>
-                            <TouchableOpacity onPress={() => handleSearchTouch(item.busqueda)} style={styles.history}>
-                                <Reverse tintColor="gray" width={25} height={25} style={styles.spacer}></Reverse>
-                                <Text style={styles.texto}>{item.busqueda}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => deleteSearch(item.id)}>
-                                <Cross tintColor="#ED5046" width={30} height={20}></Cross>
-                            </TouchableOpacity>
-                        </View>
-                        )}
-                        contentContainerStyle={styles.historyList}
-                    />
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.container}>
+              <View style={styles.liner}>
+                <View style={styles.searchBar}>
+                  <TextInput
+                    ref={textInputRef}
+                    placeholder='Buscar en MedHouse'
+                    value={query}
+                    onChangeText={setQuery}
+                    onSubmitEditing={handleSearch}
+                    style={styles.input}
+                    returnKeyType="search"
+                  />
                 </View>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                  <Text style={styles.closeButtonText}>Cerrar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-        </Modal>
+            <TouchableOpacity onPress={deleteAllSearches}>
+              <Text style={styles.deleteAllButton}>Borrar historial</Text>
+            </TouchableOpacity>
+            <FlatList
+              data={searchHistory}
+              keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()} // Asegúrate de que cada item tenga un id único
+              renderItem={({ item }) => (
+                <View style={styles.flexer}>
+                  <TouchableOpacity onPress={() => handleSearchTouch(item.busqueda)} style={styles.history}>
+                    <Reverse tintColor="gray" width={25} height={25} style={styles.spacer}></Reverse>
+                    <Text style={styles.texto}>{item.busqueda}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteSearch(item.id)}>
+                    <Cross tintColor="#ED5046" width={30} height={20}></Cross>
+                  </TouchableOpacity>
+                </View>
+              )}
+              contentContainerStyle={styles.historyList}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

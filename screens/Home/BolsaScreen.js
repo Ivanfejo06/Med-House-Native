@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Flow } from 'react-native-animated-spinkit';
 import Warning from '../../assets/Warning';
+import { useFocusEffect } from '@react-navigation/native'; // Importa el hook
 
 const { height, width } = Dimensions.get('window');
 
@@ -61,9 +62,11 @@ const BolsaScreen = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    fetchItems(); // Llama a la API cuando el componente se monta
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchItems(); // Llama a la API cuando el componente se monta o se vuelve a enfocar
+    }, [token]) // Agrega el token como dependencia
+  );
 
   // Función para eliminar un ítem de la bolsa
   const handleRemove = async (itemId) => {

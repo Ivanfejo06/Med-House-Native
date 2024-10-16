@@ -75,13 +75,14 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 15, // Espacio entre los elementos y los bordes laterales
+    paddingHorizontal: 12, // Espacio entre los elementos y los bordes laterales
   },
   flatListContainer: {
-    paddingTop: 15
+    paddingTop: 15,
   },
   columnWrapper: {
     justifyContent: 'space-between', // Distribuir columnas de manera uniforme
+    paddingHorizontal: 3,
   },
   loaderContainer: {
     flex: 1,
