@@ -22,6 +22,7 @@ import DonateScreen from './screens/Home/DonateScreen'
 import RequestScreen from './screens/Home/RequestScreen';
 import QRScannerScreen from './screens/Start/QrScannerScreen';
 import QrHome from './screens/Start/QrHome';
+import SolicitarScreen from './screens/Home/SolicitarScreen';
 
 const Stack = createStackNavigator();
 
@@ -69,6 +70,7 @@ const AppNavigator = () => {
         />
         <Stack.Screen name="Producto" component={ProductoScreen} />
         <Stack.Screen name="Request" component={RequestScreen} />
+        <Stack.Screen name="Solicitar" component={SolicitarScreen} />
 
         {/* SETTINGS ROUTES */}
         <Stack.Screen name="ProfileIndex" component={ProfileIndex} />

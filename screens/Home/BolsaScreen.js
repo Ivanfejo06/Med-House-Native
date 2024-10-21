@@ -154,7 +154,7 @@ const BolsaScreen = ({ navigation }) => {
         )}
         <SendButton 
           title="Solicitar" 
-          onPress={() => console.log("Solicitud enviada")} 
+          onPress={() => navigation.navigate('Solicitar')} 
           disabled={hasOutOfStockItems || items.length === 0} // Desactiva si no hay productos o hay productos sin stock
         />
       </View>

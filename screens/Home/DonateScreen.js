@@ -18,6 +18,13 @@ const DonateScreen = ({ navigation }) => {
     descripcion: '',
     cantidad: '',
   });
+  const [errors, setErrors] = useState({
+    selectedMedication: false,
+    fecha_apertura: false,
+    fecha_caducidad: false,
+    descripcion: false,
+    cantidad: false,
+  });
   const token = useSelector(state => state.user.token);
   
   // Empieza en el segundo paso (1 en lugar de 0)
@@ -32,14 +39,6 @@ const DonateScreen = ({ navigation }) => {
       useNativeDriver: true,
     }).start();
   }, [step]);
-
-  const handleOpenDateChange = (event, selectedDate) => {
-    setMedicationData({ ...medicationData, fecha_apertura: selectedDate || medicationData.fecha_apertura });
-  };
-
-  const handleExpireDateChange = (event, selectedDate) => {
-    setMedicationData({ ...medicationData, fecha_caducidad: selectedDate || medicationData.fecha_caducidad });
-  };
 
   const handleSubmit = async () => {
     const { selectedMedication, fecha_apertura, fecha_caducidad, descripcion, cantidad } = medicationData;
@@ -108,6 +107,31 @@ const DonateScreen = ({ navigation }) => {
 
   }
 
+  const validateField = (field, minLength = 3) => {
+    if (!medicationData[field] || medicationData[field].length < minLength) {
+      setErrors(prev => ({ ...prev, [field]: true }));
+    } else {
+      setErrors(prev => ({ ...prev, [field]: false }));
+    }
+  };  
+
+  const handleFieldChange = (field, value) => {
+    setMedicationData({ ...medicationData, [field]: value });
+    validateField(field);
+  };
+
+  const handleOpenDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || medicationData.fecha_apertura;
+    setMedicationData({ ...medicationData, fecha_apertura: new Date(currentDate) });
+    validateField('fecha_apertura');
+  };
+  
+  const handleExpireDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || medicationData.fecha_caducidad;
+    setMedicationData({ ...medicationData, fecha_caducidad: new Date(currentDate) });
+    validateField('fecha_caducidad');
+  };  
+
   return (
     <View style={styles.container}>
       <TopBarWhite 
@@ -127,7 +151,7 @@ const DonateScreen = ({ navigation }) => {
                   </View>
                 )}
 
-                <View style={styles.input}>
+                <View style={[styles.input, errors.fecha_apertura ? styles.errorBorder : styles.validBorder]}>
                   <Text style={styles.label}>Fecha de apertura:</Text>
                   <DateTimePicker
                     value={medicationData.fecha_apertura}
@@ -137,7 +161,7 @@ const DonateScreen = ({ navigation }) => {
                   />
                 </View>
 
-                <View style={styles.input}>
+                <View style={[styles.input, errors.fecha_caducidad ? styles.errorBorder : styles.validBorder]}>
                   <Text style={styles.label}>Fecha de caducidad:</Text>
                   <DateTimePicker
                     value={medicationData.fecha_caducidad}
@@ -154,24 +178,24 @@ const DonateScreen = ({ navigation }) => {
             {/* Segundo paso: Descripción y cantidad */}
             <View style={styles.step}>
               <View style={styles.wit}>
-                <View style={styles.selectedMedicationContainer}>
+                <View style={[styles.selectedMedicationContainer, errors.descripcion ? styles.errorBorder : styles.validBorder]}>
                   <TextInput
                     style={styles.textarea}
                     placeholder="Descripción del medicamento"
                     multiline
                     numberOfLines={4}
-                    onChangeText={(text) => setMedicationData({ ...medicationData, descripcion: text })}
+                    onChangeText={(text) => handleFieldChange('descripcion', text)}
                     value={medicationData.descripcion}
                   />
                 </View>
                 
-                <View style={styles.selectedMedicationContainer}>
+                <View style={[styles.selectedMedicationContainer, errors.cantidad ? styles.errorBorder : styles.validBorder]}>
                   <TextInput
                     style={styles.textarea}
                     placeholder="Cantidad de medicina restante"
                     multiline
                     numberOfLines={4}
-                    onChangeText={(text) => setMedicationData({ ...medicationData, cantidad: text })}
+                    onChangeText={(text) => handleFieldChange('cantidad', text)}
                     value={medicationData.cantidad}
                   />
                 </View>
@@ -249,8 +273,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#1E98A8"
   },
   label: {
     fontSize: 16,
@@ -270,8 +292,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 12,
     width: '100%',
-    borderWidth: 2,
-    borderColor: "#1E98A8"
   },
   selectedMedicationContainer: {
     backgroundColor: "#FFF",
@@ -284,8 +304,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 20,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#1E98A8"
   },
   selectedMedication: {
     backgroundColor: "#FFF",
@@ -306,6 +324,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%"
+  },
+  validBorder: {
+    borderColor: '#1E98A8',
+    borderWidth: 2,
+  },
+  errorBorder: {
+    borderColor: '#F00',
+    borderWidth: 2,
   }
 });
 

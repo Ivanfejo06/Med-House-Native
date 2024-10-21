@@ -13,10 +13,7 @@ const HorizontalMedItem = ({ item, navigation }) => {
 
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={() => handleItemPress(item.id)}>
-      <View style={styles.image}>
-        <Image source={{ uri: item.imagen }} style={styles.itemImage} />
-      </View>
-      
+      <Image source={{ uri: item.imagen }} style={styles.itemImage} />
       <View style={styles.itemDetails}>
         <Text style={styles.itemTitle}>{item.nombre}</Text>
         <Text style={styles.itemDescription}>{item.droga} {item.dosis}</Text>
@@ -47,13 +44,6 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 10,
     resizeMode: 'contain',
-  },
-  image:{
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 1.5,
-    elevation: 5, // Añade esta línea para Android
   },
   itemDetails: {
     marginVertical: 5,
