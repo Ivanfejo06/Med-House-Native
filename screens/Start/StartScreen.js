@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Button from '../../components/Button';
 import MedHouse from '../../components/MedHouse';
+import SmallButton from '../../components/SmallButton';
 
 const StartScreen = ({ navigation }) => {
   return (
@@ -20,7 +21,7 @@ const StartScreen = ({ navigation }) => {
         title="Qr"
         onPress={() => navigation.navigate('QrHome') }
       />
-      <Text style={styles.question}>¿Sos medico?</Text>
+      <SmallButton title="¿Sos medico?" onPress={() => navigation.navigate('FarmLogin')} style={styles.forgotPasswordButton} textStyle={styles.forgotPasswordText} color="#1E98A8" />
     </View>
   );
 };

@@ -66,7 +66,7 @@ const SolicitarScreen = ({ navigation }) => {
                 </View>
             </View>
             <View style={styles.bottomDetails}>
-                <Text style={styles.bottomDetailsText}>Lun-Vie 09:00-19:00 - Sab 10:00-18:00</Text>
+                <Text style={styles.bottomDetailsText}>Lun-Vie 09:00-19:00</Text>
             </View>
         </TouchableOpacity>
 
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: "center",
     alignContent: "center",
+    paddingTop: 20
   },
   box:{
     width: "100%",
@@ -109,7 +110,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2.5,
     borderRadius: 15,
     height: 160,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginBottom: 15
   },
   details:{
     padding: 20

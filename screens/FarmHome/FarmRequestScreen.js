@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, Image, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
-import NavBar from '../../componentsHome/NavBar';
+import FarmNavBar from '../../componentsHome/FarmNavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
 import DetailItem from '../../componentsHome/DetailItem';
 import Carousel from 'react-native-snap-carousel';
@@ -13,7 +13,7 @@ const { height, width } = Dimensions.get('window');
 const SLIDER_WIDTH = width;
 const ITEM_WIDTH = 300; // Puedes ajustar esto si es necesario
 
-const RequestScreen = ({ route, navigation }) => {
+const FarmRequestScreen = ({ route, navigation }) => {
   const { id, med } = route.params;
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);  // Estado para manejar el loading
@@ -42,17 +42,17 @@ const RequestScreen = ({ route, navigation }) => {
     fetchrequestData();
   }, [id, token]);
 
-  const handleDelete = async () => {
+  const handleReject = async () => {
     Alert.alert(
-      "Confirmar eliminación",
-      "¿Estás seguro de que deseas eliminar esta solicitud?",
+      "Confirmar rechazo de solicitud",
+      "¿Estás seguro de que deseas rechazar esta solicitud?",
       [
         {
           text: "Cancelar",
           style: "cancel"
         },
         {
-          text: "Eliminar",
+          text: "Rechazar",
           onPress: async () => {
             try {
               await axios.delete(`https://hopeful-emerging-snapper.ngrok-free.app/request/${id}`, {
@@ -131,11 +131,6 @@ const RequestScreen = ({ route, navigation }) => {
                     <Image source={require('../../assets/Face.png')} style={styles.foto} />
                     <Text style={styles.MedesTitle}>{nombre} {apellido}</Text>
                   </View>
-                  {request?.estado === null && ( // Cambia aquí para verificar si el estado es "En proceso"
-                    <TouchableOpacity style={styles.itemDelete} onPress={handleDelete}>
-                      <Text style={styles.itemDeleteText}>Cancelar</Text>
-                    </TouchableOpacity>
-                  )}
                 </View>
                 <MedItem navigation={navigation} item={med}/>
                 <View style={styles.main}>
@@ -161,7 +156,7 @@ const RequestScreen = ({ route, navigation }) => {
           </ScrollView>
         )}
       </View>
-      <NavBar navigation={navigation} selected="donaciones" />
+      <FarmNavBar navigation={navigation} selected="donaciones" />
     </View>
   );
 };
@@ -282,4 +277,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RequestScreen;
+export default FarmRequestScreen;

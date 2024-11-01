@@ -24,6 +24,12 @@ import QRScannerScreen from './screens/Start/QrScannerScreen';
 import QrHome from './screens/Start/QrHome';
 import SolicitarScreen from './screens/Home/SolicitarScreen';
 
+import FarmLoginScreen from './screens/Start/Login/FarmLoginScreen';
+import FarmHomeScreen from './screens/FarmHome/FarmHomeScreen';
+import FarmResetPasswordScreen from './screens/Start/Login/FarmResetPasswordScreen';
+import FarmNotificacionesScreen from './screens/FarmHome/FarmNotificacionesScreen';
+import FarmHistoryScreen from './screens/FarmHome/FarmHistoryScreen';
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -76,6 +82,24 @@ const AppNavigator = () => {
         <Stack.Screen name="ProfileIndex" component={ProfileIndex} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen name="AuthenticationScreen" component={AuthenticationScreen} />
+
+        <Stack.Screen name="FarmLogin" component={FarmLoginScreen} />
+        <Stack.Screen name="FarmForgot" component={FarmResetPasswordScreen} />
+        <Stack.Screen 
+          name="FarmHome" 
+          component={FarmHomeScreen} 
+          options={{ gestureEnabled: false, animationEnabled: false }} 
+        />
+        <Stack.Screen 
+          name="FarmNotificaciones" 
+          component={FarmNotificacionesScreen} 
+          options={{ gestureEnabled: false, animationEnabled: false }} 
+        />
+        <Stack.Screen 
+          name="FarmHistory" 
+          component={FarmHistoryScreen} 
+          options={{ gestureEnabled: false, animationEnabled: false }} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
