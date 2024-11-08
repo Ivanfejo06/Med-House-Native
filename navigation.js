@@ -29,6 +29,7 @@ import FarmHomeScreen from './screens/FarmHome/FarmHomeScreen';
 import FarmResetPasswordScreen from './screens/Start/Login/FarmResetPasswordScreen';
 import FarmNotificacionesScreen from './screens/FarmHome/FarmNotificacionesScreen';
 import FarmHistoryScreen from './screens/FarmHome/FarmHistoryScreen';
+import FarmRequestScreen from './screens/FarmHome/FarmRequestScreen';
 
 const Stack = createStackNavigator();
 
@@ -100,6 +101,7 @@ const AppNavigator = () => {
           component={FarmHistoryScreen} 
           options={{ gestureEnabled: false, animationEnabled: false }} 
         />
+        <Stack.Screen name="FarmRequest" component={FarmRequestScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

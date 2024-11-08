@@ -19,16 +19,17 @@ const RequestScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);  // Estado para manejar el loading
   const [error, setError] = useState(false);
   const token = useSelector(state => state.user.token);
-  const nombre = useSelector(state => state.user.user.nombre);
-  const apellido = useSelector(state => state.user.user.apellido);
 
   useEffect(() => {
-    const fetchrequestData = async () => {
+    const fetchRequestData = async () => {
       try {
         const response = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/request/${id}`);
         const requestData = response.data.datos;
         if (requestData) {
           setRequest(requestData);
+          const userId = requestData.id_usuario;
+          const userResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/usuario/${userId}`);
+          setUserData(userResponse.datos);
         } else {
           setError(true);
         }
@@ -39,7 +40,7 @@ const RequestScreen = ({ route, navigation }) => {
         setLoading(false);
       }
     };
-    fetchrequestData();
+    fetchRequestData();
   }, [id, token]);
 
   const handleDelete = async () => {
@@ -94,6 +95,7 @@ const RequestScreen = ({ route, navigation }) => {
         { label: 'Cantidad', value: request.cantidad },
         { label: 'Fecha de apertura', value: request.fecha_apertura.split('T')[0] },
         { label: 'Fecha de caducidad', value: request.fecha_caducidad.split('T')[0] },
+        { label: 'Descripcion', value: request.descripcion},
       ]
     : [];
 
@@ -129,7 +131,11 @@ const RequestScreen = ({ route, navigation }) => {
                 <View style={styles.MedesTitleContainer}>
                   <View style={styles.MedesNameContainer}>
                     <Image source={require('../../assets/Face.png')} style={styles.foto} />
-                    <Text style={styles.MedesTitle}>{nombre} {apellido}</Text>
+                    {userData ? (
+                      <Text style={styles.MedesTitle}>{userData.nombre} {userData.apellido}</Text>
+                    ) : (
+                      <Text style={styles.MedesTitle}>Cargando datos del usuario...</Text>
+                    )}
                   </View>
                   {request?.estado === null && ( // Cambia aquí para verificar si el estado es "En proceso"
                     <TouchableOpacity style={styles.itemDelete} onPress={handleDelete}>
@@ -144,17 +150,25 @@ const RequestScreen = ({ route, navigation }) => {
                       <DetailItem key={index} label={detail.label} value={detail.value} />
                     ))}
                   </View>
-                  <View style={styles.titleView}>
-                    <Text style={styles.characteristics}>Descripción</Text>
+                  <View style={[styles.itemState, { backgroundColor: itemStateColor }]} >
+                    <Text style={styles.itemStateText}>{stateText}</Text>
                   </View>
-                  <View style={styles.detailItem}>
-                    <Text>{request.descripcion}</Text>
-                  </View>
-                  <View style={styles.itemStateContainer}>
-                    <View style={[styles.itemState, { backgroundColor: itemStateColor }]}>
-                      <Text style={styles.itemStateText}>{stateText}</Text>
+
+                  {/* Nueva vista debajo de itemStateContainer solo si el estado es "Validado" */}
+                  {request.estado === true && (
+                    <View style={styles.specs}>
+                      <View style={styles.titleView}>
+                        <Text style={styles.characteristics}>Comentario del medico</Text>
+                      </View>
+                      <View style={styles.detailItem}>
+                        <Text>{request.comentario}</Text>
+                      </View>
+                      
+                      <View style={styles.validatedContainer}>
+                        <Text style={styles.validatedText}>Tu solicitud ha sido aceptada! Dirigete a los almacenes de de <Text style={styles.validatedHighlightedText}>MedHouse</Text> para depositar el medicamento.</Text>
+                      </View>
                     </View>
-                  </View>
+                  )}
                 </View>
               </View>
             </View>
@@ -193,8 +207,7 @@ const styles = StyleSheet.create({
   },
   titleView: {
     width: '100%',
-    marginTop: 10,
-    marginBottom: 20,
+    marginVertical: 20,
     flexDirection: 'row',
     justifyContent: 'center',
   },
@@ -203,7 +216,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 15,
     borderColor: "#1E98A8",
-    marginBottom: 20,
     width: "100%",
   },
   requestImage: {
@@ -223,6 +235,7 @@ const styles = StyleSheet.create({
   itemState: {
     padding: 12,
     borderRadius: 20,
+    marginTop: 10
   },
   itemStateText: {
     color: "#FFFFFF",
@@ -275,10 +288,31 @@ const styles = StyleSheet.create({
   },
   specs: {
     width: '100%',
+    alignItems: "center",
+    textAlign: "center",
   },
   foto:{
     width: 25,
     height: 25
+  },
+  validatedContainer:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 30,
+    paddingVertical: 21  
+  },
+  validatedText:{
+    fontSize: 16,
+    color: 'gray',
+    fontWeight: 'bold',
+    textAlign: "center"
+  },
+  validatedHighlightedText:{
+    fontSize: 17,
+    color: '#1E98A8',
+    fontWeight: 'bold',
+    textAlign: "center"
   }
 });
 

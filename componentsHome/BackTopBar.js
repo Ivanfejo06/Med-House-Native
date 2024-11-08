@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
 import BackButton from '../components/BackButtonNormal';
 import SearchBar from './SearchBar';
 
@@ -10,12 +10,18 @@ const LINER_HEIGHT = height * 0.03521;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
 
-const BackTopBar = ({ navigation, search, profile }) => {
+const BackTopBar = ({ navigation, search, profile, showText, text }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>
-        <BackButton onPress={() => navigation.goBack()} color={"#FFFFFF"}/>
-        <SearchBar navigation={navigation} search={search}></SearchBar>
+        <BackButton onPress={() => navigation.goBack()} color={"#FFFFFF"} />
+        
+        {showText ? (
+          <Text style={styles.text}>{text}</Text> // Muestra el texto si showText es verdadero
+        ) : (
+          <SearchBar navigation={navigation} search={search} /> // Muestra la barra de búsqueda si showText es falso
+        )}
+        
         <TouchableOpacity style={styles.pfp} onPress={profile}>
           <Image source={require('../assets/Face.png')} style={styles.pfp} />
         </TouchableOpacity>
@@ -45,9 +51,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: LINER_HEIGHT,
-    bottom: HEIGHT/2, 
+    bottom: HEIGHT / 2,
     marginLeft: 15,
-    marginRight: 15
+    marginRight: 15,
   },
   button: {
     alignItems: 'center',
@@ -55,7 +61,13 @@ const styles = StyleSheet.create({
   pfp: {
     width: HEIGHT,
     height: HEIGHT,
-    borderRadius: HEIGHT/2
+    borderRadius: HEIGHT / 2,
+  },
+  text: {
+    fontSize: 16,
+    color: 'White',
+    fontWeight: 'bold',
+    textAlign: "center"
   },
 });
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity, Animated, ScrollView, Text, FlatList } from 'react-native';
-import FarmNavBar from '../../componentsHome/FarmNavBar';
+import FarmNavBar from '../../componentsFarm/FarmNavBar';
 import TopBar from '../../componentsHome/TopBar';
 import { Flow } from 'react-native-animated-spinkit';
-import DonacionItem from '../../componentsHome/DonacionItem';
+import FarmDonacionItem from '../../componentsFarm/FarmDonacionItem';
 import { useFocusEffect } from '@react-navigation/native'; // Importa el hook
 import { useSelector } from 'react-redux';
 
@@ -67,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <TopBar navigation={navigation} />
+      <TopBar navigation={navigation} showText={true} text={"MedHouse Medic"} />
       <ScrollView>
         <View style={styles.bolsaShadowContainer}>
           <View style={styles.bolsaContainer}>
@@ -86,7 +86,7 @@ const HomeScreen = ({ navigation }) => {
               <FlatList
                 data={medScrolls}
                 renderItem={({ item, index }) => (
-                  <DonacionItem
+                  <FarmDonacionItem
                     item={item}
                     med={meds[index]}  // Pasar el medicamento correspondiente al ítem
                     navigation={navigation}

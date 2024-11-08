@@ -7,7 +7,7 @@ import axios from 'axios'; // Importa Axios
 import { setUser } from '../../store/userSlice'; // Importa la acción para actualizar el usuario
 import Boton from '../../components/Button';
 import Mini from '../../components/MiniButton';
-import Logo from '../../assets/Logo'
+import Logo from '../../assets/Logo';
 
 const { height } = Dimensions.get('window');
 
@@ -42,19 +42,28 @@ const ProfileScreen = ({ navigation }) => {
     }
   }, [modalVisible]);
 
+  // Función que determina si el usuario es un "farmacéutico" o no
+  const isFarmaceutico = userData.titulo !== undefined;  // Si 'titulo' existe, es farmaceutico
+
+  // Obtener el endpoint correcto según si es farmaceutico o no
+  const getEndpoint = () => {
+    return isFarmaceutico ? 'farmaceutico' : 'usuario';  // Si es farmaceutico, el endpoint es 'farmaceutico'
+  };
+
   const handleSubmit = async () => {
     if (!passwordInput) {
       Alert.alert('Error', 'Por favor ingrese la contraseña.');
       return;
     }
-    if (passwordInput != user.password) {
-      Alert.alert('Error', 'La constraseña ingresada no es la correcta.');
+    if (passwordInput !== user.password) {
+      Alert.alert('Error', 'La contraseña ingresada no es la correcta.');
       return;
     }
 
     try {
+      const endpoint = getEndpoint(); // Obtener el endpoint dinámico
       const response = await axios.put(
-        'https://hopeful-emerging-snapper.ngrok-free.app/usuario', // Cambia la URL según tu configuración
+        `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}`, // Cambiar la URL dinámica según el tipo de usuario
         userData,
         {
           headers: {
@@ -65,7 +74,7 @@ const ProfileScreen = ({ navigation }) => {
 
       if (response.data.success) {
         try {
-          const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
+          const apiUrl = `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}/login`; // Cambiar la URL de login según el tipo de usuario
           const loginResponse = await axios.post(apiUrl, { 
             dni: userData.dni, 
             password: passwordInput // Usa la contraseña proporcionada
@@ -171,13 +180,13 @@ const ProfileScreen = ({ navigation }) => {
       >
         <TouchableWithoutFeedback onPress={() => { }}>
           <View style={styles.modalOverlay}>
-            <Animated.View style={[styles.modalContainer, { transform: [{ translateY: slideAnim }] }]}>
+            <Animated.View style={[styles.modalContainer, { transform: [{ translateY: slideAnim }] }]} >
               <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.modalContent}
               >
                 <View style={styles.logoContainer}>
-                  <Logo height={25} width={63}/>
+                  <Logo height={25} width={63} />
                 </View>
                 <Text style={styles.modalTitle}>Verifica tu identidad</Text>
                 <Text style={styles.modalSubtitle}>Ingresa nuevamente tu contraseña para efectuar los cambios</Text>

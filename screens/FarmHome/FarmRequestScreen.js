@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, Image, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Image, Dimensions, TouchableOpacity, Alert, TextInput } from 'react-native';
 import axios from 'axios';
-import FarmNavBar from '../../componentsHome/FarmNavBar';
+import FarmNavBar from '../../componentsFarm/FarmNavBar';
 import BackTopBar from '../../componentsHome/BackTopBar';
 import DetailItem from '../../componentsHome/DetailItem';
 import Carousel from 'react-native-snap-carousel';
@@ -11,24 +11,34 @@ import MedItem from '../../componentsHome/MedItem';
 
 const { height, width } = Dimensions.get('window');
 const SLIDER_WIDTH = width;
-const ITEM_WIDTH = 300; // Puedes ajustar esto si es necesario
+const ITEM_WIDTH = 300;
 
 const FarmRequestScreen = ({ route, navigation }) => {
   const { id, med } = route.params;
   const [request, setRequest] = useState(null);
-  const [loading, setLoading] = useState(true);  // Estado para manejar el loading
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [comentary, setcomentary] = useState('');  
+  const [errors, setErrors] = useState({ comentary: false });
+  const [userData, setUserData] = useState(null); // Estado para almacenar los datos del usuario
+  const [showButtons, setShowButtons] = useState(false);  
   const token = useSelector(state => state.user.token);
-  const nombre = useSelector(state => state.user.user.nombre);
-  const apellido = useSelector(state => state.user.user.apellido);
 
   useEffect(() => {
-    const fetchrequestData = async () => {
+    const fetchRequestData = async () => {
       try {
         const response = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/request/${id}`);
         const requestData = response.data.datos;
         if (requestData) {
           setRequest(requestData);
+
+          // Paso 2: Obtener el id del usuario desde los datos de la solicitud
+          const userId = requestData.user_id; // Asegúrate de que "user_id" está en los datos de la solicitud
+
+          // Paso 3: Realizar la consulta para obtener los datos del usuario
+          const userResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/usuario/${userId}`);
+          setUserData(userResponse.datos); // Almacena los datos del usuario en el estado
+          console.log(userResponse.datos)
         } else {
           setError(true);
         }
@@ -39,49 +49,57 @@ const FarmRequestScreen = ({ route, navigation }) => {
         setLoading(false);
       }
     };
-    fetchrequestData();
+
+    fetchRequestData();
   }, [id, token]);
 
+  const validatecomentary = (comentary) => {
+    if (!comentary || comentary.length < 3) {
+      setErrors(prev => ({ ...prev, comentary: true }));
+    } else {
+      setErrors(prev => ({ ...prev, comentary: false }));
+    }
+  };
+
   const handleReject = async () => {
-    Alert.alert(
-      "Confirmar rechazo de solicitud",
-      "¿Estás seguro de que deseas rechazar esta solicitud?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel"
-        },
-        {
-          text: "Rechazar",
-          onPress: async () => {
-            try {
-              await axios.delete(`https://hopeful-emerging-snapper.ngrok-free.app/request/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
-              navigation.goBack(); // Regresa a la pantalla anterior
-            } catch (error) {
-              console.error('Error deleting request:', error);
-              alert('Error al eliminar la solicitud. Por favor, inténtalo de nuevo.');
-            }
-          },
-          style: "destructive"
-        }
-      ]
-    );
-  };  
+    validatecomentary(comentary);
+    if (errors.comentary) {
+      Alert.alert('Por favor, ingresa una razón para rechazar la solicitud');
+      return;
+    }
+    try {
+      await axios.put(`https://hopeful-emerging-snapper.ngrok-free.app/request/${id}`, {
+        estado: false,
+        comentario: comentary,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      navigation.goBack(); // Regresar a la pantalla anterior
+    } catch (error) {
+      console.error('Error rejecting request:', error);
+      alert('Error al rechazar la solicitud. Por favor, inténtalo de nuevo.');
+    }
+  };
 
-  // Determinar el color y texto basado en el estado del request
-  const itemStateColor = request?.estado === true
-    ? '#1EA82C'
-    : request?.estado === false
-    ? '#ED5046'
-    : '#1E98A8';
-
-  const stateText = request?.estado === true
-    ? 'Validado'
-    : request?.estado === false
-    ? 'Rechazado'
-    : 'En proceso';
+  const handleAccept = async () => {
+    validatecomentary(comentary);
+    if (errors.comentary) {
+      Alert.alert('Por favor, ingresa una razón para aceptar la solicitud');
+      return;
+    }
+    try {
+      await axios.put(`https://hopeful-emerging-snapper.ngrok-free.app/request/${id}`, {
+        estado: true,
+        comentario: comentary,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      navigation.goBack(); // Regresar a la pantalla anterior
+    } catch (error) {
+      console.error('Error accepting request:', error);
+      alert('Error al aceptar la solicitud. Por favor, inténtalo de nuevo.');
+    }
+  };
 
   const renderCarouselItem = ({ item }) => (
     <View style={styles.carouselItem}>
@@ -94,12 +112,25 @@ const FarmRequestScreen = ({ route, navigation }) => {
         { label: 'Cantidad', value: request.cantidad },
         { label: 'Fecha de apertura', value: request.fecha_apertura.split('T')[0] },
         { label: 'Fecha de caducidad', value: request.fecha_caducidad.split('T')[0] },
+        { label: 'Descripcion', value: request.descripcion},
       ]
     : [];
 
+  const itemStateColor = request?.estado === true
+    ? '#1EA82C'
+    : request?.estado === false
+    ? '#ED5046'
+    : '#1E98A8';
+
+  const stateText = request?.estado === true
+    ? 'Validado'
+    : request?.estado === false
+    ? 'Rechazado'
+    : 'En proceso';
+
   return (
     <View style={styles.container}>
-      <BackTopBar navigation={navigation} profile={() => navigation.navigate('ProfileIndex')} />
+      <BackTopBar navigation={navigation} showText={true} profile={() => navigation.navigate('ProfileIndex')} text={"MedHouse Medic"} />
 
       <View style={styles.content}>
         {loading ? (
@@ -129,7 +160,12 @@ const FarmRequestScreen = ({ route, navigation }) => {
                 <View style={styles.MedesTitleContainer}>
                   <View style={styles.MedesNameContainer}>
                     <Image source={require('../../assets/Face.png')} style={styles.foto} />
-                    <Text style={styles.MedesTitle}>{nombre} {apellido}</Text>
+                    {/* Paso 4: Mostrar el nombre y apellido del usuario */}
+                    {userData ? (
+                      <Text style={styles.MedesTitle}>{userData.nombre} {userData.apellido}</Text>
+                    ) : (
+                      <Text style={styles.MedesTitle}>Cargando datos del usuario...</Text>
+                    )}
                   </View>
                 </View>
                 <MedItem navigation={navigation} item={med}/>
@@ -139,17 +175,48 @@ const FarmRequestScreen = ({ route, navigation }) => {
                       <DetailItem key={index} label={detail.label} value={detail.value} />
                     ))}
                   </View>
-                  <View style={styles.titleView}>
-                    <Text style={styles.characteristics}>Descripción</Text>
+                  <View style={[styles.itemState, { backgroundColor: itemStateColor }]} >
+                    <Text style={styles.itemStateText}>{stateText}</Text>
                   </View>
-                  <View style={styles.detailItem}>
-                    <Text>{request.descripcion}</Text>
-                  </View>
-                  <View style={styles.itemStateContainer}>
-                    <View style={[styles.itemState, { backgroundColor: itemStateColor }]}>
-                      <Text style={styles.itemStateText}>{stateText}</Text>
+
+                  {/* Mostrar los botones solo si el estado es "En proceso" */}
+                  {request.estado === null && (
+                    <View style={styles.specs}>
+                      <View style={[styles.selectedMedicationContainer, errors.comentary ? styles.errorBorder : styles.validBorder]}>
+                        <TextInput
+                          style={styles.textarea}
+                          placeholder="Ingresa un comentario"
+                          multiline
+                          numberOfLines={4}
+                          value={comentary}
+                          onChangeText={(text) => {
+                            setcomentary(text);
+                            validatecomentary(text);
+                          }}
+                        />
+                        {errors.comentary && <Text style={styles.errorText}>Un comentario es requerido y debe tener al menos 3 caracteres.</Text>}
+                      </View>
+                      <View style={styles.buttonContainer}>
+                        <TouchableOpacity onPress={handleReject} style={[styles.itemState, { backgroundColor: "#ED5046" }]}>
+                          <Text style={styles.itemStateText}>Rechazar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleAccept} style={[styles.itemState, { backgroundColor: "#1EA82C" }]}>
+                          <Text style={styles.itemStateText}>Aceptar</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
+                  )}
+
+                  {request.estado === true && (
+                    <View style={styles.specs}>
+                      <View style={styles.titleView}>
+                        <Text style={styles.characteristics}>Comentario del medico</Text>
+                      </View>
+                      <View style={styles.detailItem}>
+                        <Text>{request.comentario}</Text>
+                      </View>
+                    </View>
+                  )}
                 </View>
               </View>
             </View>
@@ -188,8 +255,7 @@ const styles = StyleSheet.create({
   },
   titleView: {
     width: '100%',
-    marginTop: 10,
-    marginBottom: 20,
+    marginVertical: 20,
     flexDirection: 'row',
     justifyContent: 'center',
   },
@@ -198,7 +264,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 15,
     borderColor: "#1E98A8",
-    marginBottom: 20,
     width: "100%",
   },
   requestImage: {
@@ -218,6 +283,7 @@ const styles = StyleSheet.create({
   itemState: {
     padding: 12,
     borderRadius: 20,
+    marginTop: 10
   },
   itemStateText: {
     color: "#FFFFFF",
@@ -270,11 +336,46 @@ const styles = StyleSheet.create({
   },
   specs: {
     width: '100%',
+    alignItems: "center",
+    textAlign: "center",
   },
   foto:{
     width: 25,
     height: 25
+  },
+  buttonContainer:{
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  textarea:{
+    backgroundColor: '#FFF',
+    borderRadius: 15,
+    padding: 12,
+    width: '100%',
+    height: 100
+  },
+  selectedMedicationContainer: {
+    backgroundColor: "#FFF",
+    borderRadius: 15,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.84, 
+    justifyContent: "space-between",
+    marginVertical: 20,
+    alignItems: "center",
+  },
+  validBorder: {
+    borderColor: '#1E98A8',
+    borderWidth: 2,
+  },
+  errorBorder: {
+    borderColor: '#F00',
+    borderWidth: 2,
   }
+
 });
 
 export default FarmRequestScreen;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, FlatList, Dimensions, StyleSheet } from 'react-native';
 import NotificacionesItem from '../../componentsHome/NotificacionesItem';
-import FarmNavBar from '../../componentsHome/FarmNavBar';
+import FarmNavBar from '../../componentsFarm/FarmNavBar';
 import TopBar from '../../componentsHome/TopBar';
 
 const { height } = Dimensions.get('window');
@@ -28,9 +28,7 @@ const notifications = [
 const FarmNotificacionesScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <TopBar
-        navigation={navigation}
-      />
+      <TopBar navigation={navigation} showText={true} text={"MedHouse Medic"} />
       <FlatList
         data={notifications}
         renderItem={({ item }) => (

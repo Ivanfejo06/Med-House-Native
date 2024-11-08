@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: 15,
         borderColor: "#1E98A8",
-        marginBottom: 10
+        marginBottom: 10,
+        width: "100%"
     },
     detailLabel: {
         color: '#000',

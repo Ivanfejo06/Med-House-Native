@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions, FlatList, Text, ScrollView } from 'react-native';
-import FarmNavBar from '../../componentsHome/FarmNavBar';
+import FarmNavBar from '../../componentsFarm/FarmNavBar';
 import TopBar from '../../componentsHome/TopBar';
-import DonacionItem from '../../componentsHome/DonacionItem';
+import FarmDonacionItem from '../../componentsFarm/FarmDonacionItem';
 import axios from 'axios'; 
 import { useSelector } from 'react-redux';
 import { Flow } from 'react-native-animated-spinkit';
@@ -54,7 +54,7 @@ const FarmHistoryScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <TopBar navigation={navigation} />
+      <TopBar navigation={navigation} showText={true} text={"MedHouse Medic"} />
       <ScrollView>
         <View style={styles.bolsaShadowContainer}>
           <View style={styles.bolsaContainer}>
@@ -73,7 +73,7 @@ const FarmHistoryScreen = ({ navigation }) => {
               <FlatList
                 data={items}
                 renderItem={({ item, index }) => (
-                  <DonacionItem
+                  <FarmDonacionItem
                     item={item}
                     med={meds[index]}  // Pasar el medicamento correspondiente al ítem
                     navigation={navigation}

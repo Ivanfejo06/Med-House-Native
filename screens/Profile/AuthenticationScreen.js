@@ -25,6 +25,11 @@ const ProfileScreen = ({ navigation }) => {
 
   const slideAnim = useRef(new Animated.Value(width)).current; 
 
+  // Determinamos el endpoint según el título del usuario, si existe.
+  const endpoint = user.titulo && user.titulo === 'farmaceutico' 
+    ? 'farmaceutico' 
+    : 'usuario'; // Si el titulo es "farmaceutico", usamos ese endpoint, si no, usamos "usuario"
+
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -63,7 +68,7 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const updatedUserData = { ...user, email: newEmail };
       const response = await axios.put(
-        'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
+        `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}`, // Cambiar la URL aquí
         updatedUserData,
         {
           headers: {
@@ -73,7 +78,7 @@ const ProfileScreen = ({ navigation }) => {
       );
   
       if (response.data.success) {
-        const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
+        const apiUrl = `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}/login`; // Cambiar la URL aquí
         const loginResponse = await axios.post(apiUrl, {
           dni: user.dni,
           password: user.password
@@ -112,7 +117,7 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const updatedUserData = { ...user, password: newPassword };
       const response = await axios.put(
-        'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
+        `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}`, // Cambiar la URL aquí
         updatedUserData,
         {
           headers: {
@@ -123,7 +128,7 @@ const ProfileScreen = ({ navigation }) => {
   
       if (response.data.success) {
         // Ahora autenticar con la nueva contraseña
-        const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
+        const apiUrl = `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}/login`; // Cambiar la URL aquí
         const loginResponse = await axios.post(apiUrl, {
           dni: user.dni,
           password: newPassword
@@ -158,7 +163,7 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const updatedUserData = { ...user, telefono: newPhone }; // Ajusta según el campo del teléfono en tu modelo de datos
       const response = await axios.put(
-        'https://hopeful-emerging-snapper.ngrok-free.app/usuario',
+        `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}`, // Cambiar la URL aquí
         updatedUserData,
         {
           headers: {
@@ -169,7 +174,7 @@ const ProfileScreen = ({ navigation }) => {
   
       if (response.data.success) {
         // Ahora autenticar con el mismo token ya que solo se actualiza el teléfono
-        const apiUrl = 'https://hopeful-emerging-snapper.ngrok-free.app/usuario/login';
+        const apiUrl = `https://hopeful-emerging-snapper.ngrok-free.app/${endpoint}/login`; // Cambiar la URL aquí
         const loginResponse = await axios.post(apiUrl, {
           dni: user.dni,
           password: user.password

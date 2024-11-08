@@ -9,13 +9,17 @@ const LINER_HEIGHT = height * 0.03521;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
 
-const TopBar = ({ navigation }) => {
+const TopBar = ({ navigation, showText, text }) => {
   return (
     <View style={styles.container}>
       <View style={styles.liner}>
-        <SearchBar navigation={navigation}></SearchBar>
+        {showText ? (
+          <Text style={styles.text}>{text}</Text> // Muestra el texto si showText es verdadero
+        ) : (
+          <SearchBar navigation={navigation} /> // Muestra la barra de búsqueda si showText es falso
+        )}
         <TouchableOpacity style={styles.pfp} onPress={() => navigation.navigate('ProfileIndex')}>
-          <Image source={require('../assets/Face.png')} style={styles.pfp}/>
+          <Image source={require('../assets/Face.png')} style={styles.pfp} />
         </TouchableOpacity>
       </View>
     </View>
@@ -43,9 +47,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: LINER_HEIGHT,
-    bottom: HEIGHT/2, 
+    bottom: HEIGHT / 2,
     marginLeft: 15,
-    marginRight: 15
+    marginRight: 15,
   },
   button: {
     alignItems: 'center',
@@ -53,7 +57,13 @@ const styles = StyleSheet.create({
   pfp: {
     width: HEIGHT,
     height: HEIGHT,
-    borderRadius: HEIGHT/2
+    borderRadius: HEIGHT / 2,
+  },
+  text: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: "center"
   },
 });
 
