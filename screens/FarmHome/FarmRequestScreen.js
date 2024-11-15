@@ -32,13 +32,10 @@ const FarmRequestScreen = ({ route, navigation }) => {
         if (requestData) {
           setRequest(requestData);
 
-          // Paso 2: Obtener el id del usuario desde los datos de la solicitud
-          const userId = requestData.user_id; // Asegúrate de que "user_id" está en los datos de la solicitud
+          const userId = requestData.id_usuario;
 
-          // Paso 3: Realizar la consulta para obtener los datos del usuario
           const userResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/usuario/${userId}`);
-          setUserData(userResponse.datos); // Almacena los datos del usuario en el estado
-          console.log(userResponse.datos)
+          setUserData(userResponse.data.datos); // Almacena los datos del usuario en el estado
         } else {
           setError(true);
         }
@@ -54,10 +51,10 @@ const FarmRequestScreen = ({ route, navigation }) => {
   }, [id, token]);
 
   const validatecomentary = (comentary) => {
-    if (!comentary || comentary.length < 3) {
-      setErrors(prev => ({ ...prev, comentary: true }));
+    if (comentary.length < 3) {
+      return false;
     } else {
-      setErrors(prev => ({ ...prev, comentary: false }));
+      return true;
     }
   };
 
@@ -366,6 +363,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical: 20,
     alignItems: "center",
+    width: "100%"
   },
   validBorder: {
     borderColor: '#1E98A8',

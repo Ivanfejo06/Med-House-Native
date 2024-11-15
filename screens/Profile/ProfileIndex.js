@@ -8,6 +8,7 @@ import AuthIcon from '../../assets/AuthIcon';
 import DonacionesIcon from '../../assets/DonacionesIcon';
 import DeseadosIcon from '../../assets/DeseadosIcon';
 import LogoutIcon from '../../assets/LogoutIcon';
+import ValidatedIcon from '../../assets/ValidatedIcon';
 import { clearUser } from '../../store/userSlice';
 
 const { height } = Dimensions.get('window');
@@ -16,12 +17,18 @@ const CONTENT_HEIGHT = height * 0.8;
 const ProfileIndex = ({ navigation }) => {
   const user = useSelector(state => state.user.user); // Obtén el usuario global
   const dispatch = useDispatch();
+  let isFarmaceutico = false
 
   const handleLogout = () => {
     dispatch(clearUser()); // Limpia el token y la información del usuario
     navigation.replace('Start'); // Navega a la pantalla de login
   };
 
+  // Determinar si el usuario es farmacéutico
+  if(user != undefined){
+    isFarmaceutico = user.titulo !== undefined;
+  }
+  
   return (
     <View style={styles.container}>
       <TopBarWhite 
@@ -56,23 +63,47 @@ const ProfileIndex = ({ navigation }) => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Donaciones")}>
-            <View style={styles.navigatorContent}>
-              <View style={styles.icon} >
-                <DonacionesIcon width={30} height={30}/>
+          {/* Condicional para mostrar Donaciones o un nuevo destino */}
+          {!isFarmaceutico ? (
+            <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Donaciones")}>
+              <View style={styles.navigatorContent}>
+                <View style={styles.icon} >
+                  <DonacionesIcon width={30} height={30}/>
+                </View>
+                <Text style={styles.navigatorText}>Donaciones</Text>
               </View>
-              <Text style={styles.navigatorText}>Donaciones</Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("FarmHistory")}>
+              <View style={styles.navigatorContent}>
+                <View style={styles.icon} >
+                  <ValidatedIcon width={30} height={30}/>
+                </View>
+                <Text style={styles.navigatorText}>Historial</Text>
+              </View>
+            </TouchableOpacity>
+          )}
 
-          <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Deseados")}>
-            <View style={styles.navigatorContent}>
-              <View style={styles.icon} >
-                <DeseadosIcon width={30} height={30}/>
+          {/* Condicional para mostrar Deseados o un nuevo destino */}
+          {!isFarmaceutico ? (
+            <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Deseados")}>
+              <View style={styles.navigatorContent}>
+                <View style={styles.icon} >
+                  <DeseadosIcon width={30} height={30}/>
+                </View>
+                <Text style={styles.navigatorText}>Deseados</Text>
               </View>
-              <Text style={styles.navigatorText}>Deseados</Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("NuevoDestino2")}>
+              <View style={styles.navigatorContent}>
+                <View style={styles.icon} >
+                  {/* Icono para nuevo destino */}
+                </View>
+                <Text style={styles.navigatorText}>Nuevo Destino 2</Text>
+              </View>
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity style={styles.navigatorContainer} onPress={handleLogout}>
             <View style={styles.navigatorContent}>

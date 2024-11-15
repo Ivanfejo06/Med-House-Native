@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const MedItem = ({ item, navigation }) => {
+const MedItem = ({ item, navigation, disableOnPress }) => {
   
   const handleItemPress = (id) => {
-    navigation.navigate('Producto', { id });
+    // Solo ejecutamos la acción si no está deshabilitado
+    if (!disableOnPress) {
+      navigation.navigate('Producto', { id });
+    }
   };
 
-  let backgroundColor = '#FFFFFF'; // Establece un valor por defecto si es necesario
+  let backgroundColor = '#FFFFFF'; // Color de fondo por defecto
   let itemstockColor;
   let stockText;
 
@@ -16,9 +19,15 @@ const MedItem = ({ item, navigation }) => {
     stockText = 'Sin stock';
   }
 
+  // Establecemos un estilo para el caso cuando el ítem está deshabilitado
+  const itemStyle = disableOnPress ? styles.disabledItem : {};
+
   return (
-    <TouchableOpacity onPress={() => handleItemPress(item.id)}>
-      <View style={[styles.itemContainer, { backgroundColor }]}>
+    <TouchableOpacity
+      onPress={() => handleItemPress(item.id)}
+      disabled={disableOnPress}  // Deshabilitar la acción onPress si `disableOnPress` es verdadero
+    >
+      <View style={[styles.itemContainer, { backgroundColor }, itemStyle]}>
         <View>
           <Image source={{ uri: item.imagen }} style={styles.itemImage} />
         </View>

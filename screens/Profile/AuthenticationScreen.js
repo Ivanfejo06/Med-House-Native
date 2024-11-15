@@ -25,10 +25,13 @@ const ProfileScreen = ({ navigation }) => {
 
   const slideAnim = useRef(new Animated.Value(width)).current; 
 
-  // Determinamos el endpoint según el título del usuario, si existe.
-  const endpoint = user.titulo && user.titulo === 'farmaceutico' 
-    ? 'farmaceutico' 
-    : 'usuario'; // Si el titulo es "farmaceutico", usamos ese endpoint, si no, usamos "usuario"
+  // Función que determina si el usuario es un "farmacéutico" o no
+  const isFarmaceutico = userData.titulo !== undefined;  // Si 'titulo' existe, es farmaceutico
+
+  // Obtener el endpoint correcto según si es farmaceutico o no
+  const getEndpoint = () => {
+    return isFarmaceutico ? 'farmaceutico' : 'usuario';  // Si es farmaceutico, el endpoint es 'farmaceutico'
+  };
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,6 +63,7 @@ const ProfileScreen = ({ navigation }) => {
   }, [newPhone]);
 
   const handleEmailSubmit = async () => {
+    const endpoint = getEndpoint();
     if (!isEmailValid) {
       Alert.alert('Error', 'El email no es válido o no ha sido modificado.');
       return;
@@ -104,6 +108,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handlePasswordSubmit = async () => {
+    const endpoint = getEndpoint();
     if (!isPasswordValid) {
       Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres, una mayúscula y un símbolo especial.');
       return;
@@ -155,6 +160,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handlePhoneSubmit = async () => {
+    const endpoint = getEndpoint();
     if (!isPhoneValid) {
       Alert.alert('Error', 'El número de teléfono no es válido o no ha sido modificado.');
       return;

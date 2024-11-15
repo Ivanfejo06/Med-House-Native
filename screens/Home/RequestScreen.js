@@ -18,6 +18,7 @@ const RequestScreen = ({ route, navigation }) => {
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);  // Estado para manejar el loading
   const [error, setError] = useState(false);
+  const [userData, setUserData] = useState("");
   const token = useSelector(state => state.user.token);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const RequestScreen = ({ route, navigation }) => {
           setRequest(requestData);
           const userId = requestData.id_usuario;
           const userResponse = await axios.get(`https://hopeful-emerging-snapper.ngrok-free.app/usuario/${userId}`);
-          setUserData(userResponse.datos);
+          setUserData(userResponse.data.datos);
         } else {
           setError(true);
         }

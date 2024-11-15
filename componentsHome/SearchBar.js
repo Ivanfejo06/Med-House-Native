@@ -137,6 +137,7 @@ const SearchBar = ({ navigation, search }) => {
                     onSubmitEditing={handleSearch}
                     style={styles.input}
                     returnKeyType="search"
+                    placeholderTextColor={"#CCC"}
                   />
                 </View>
                 <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
@@ -253,7 +254,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   input: {
-    flex: 1
+    flex: 1,
+    color: "black"
   },
   deleteButton: {
     color: '#ED5046', // Color del texto para eliminar

@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import HomeIcon from '../assets/HomeIcon';
-import BolsaIcon from '../assets/BolsaIcon';
-import DonacionesIcon from '../assets/DonacionesIcon';
 import NotificacionesIcon from '../assets/NotificacionesIcon';
+import ValidatedIcon from '../assets/ValidatedIcon';
 
 const { height } = Dimensions.get('window');
 
@@ -22,7 +21,7 @@ const FarmNavBar = ({ navigation, selected }) => {
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('FarmHistory')}>
-          <DonacionesIcon width={BORDERRADIUS} height={BORDERRADIUS} tintColor={selected === 'donaciones' ? '#1E98A8' : '#A8A8A8'} />
+          <ValidatedIcon width={BORDERRADIUS} height={BORDERRADIUS} tintColor={selected === 'donaciones' ? '#1E98A8' : '#A8A8A8'} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('FarmNotificaciones')}>

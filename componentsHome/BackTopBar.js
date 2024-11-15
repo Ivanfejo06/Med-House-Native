@@ -3,12 +3,13 @@ import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'rea
 import BackButton from '../components/BackButtonNormal';
 import SearchBar from './SearchBar';
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const TOPBAR_HEIGHT = height * 0.13;
 const LINER_HEIGHT = height * 0.03521;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
+const TEXT = width * 0.015;
 
 const BackTopBar = ({ navigation, search, profile, showText, text }) => {
   return (
@@ -64,10 +65,12 @@ const styles = StyleSheet.create({
     borderRadius: HEIGHT / 2,
   },
   text: {
-    fontSize: 16,
-    color: 'White',
+    fontSize: 18,
+    color: 'white',
     fontWeight: 'bold',
-    textAlign: "center"
+    textAlign: "center",
+    position: "relative",
+    right: TEXT
   },
 });
 

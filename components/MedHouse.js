@@ -1,10 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import LogoV from '../assets/LogoV';
+
+const { width } = Dimensions.get('window');
+
+const LAT = width * 0.13;
+const ALT = width * 0.32;
 
 const Medhouse = () => {
   return (
     <View style={styles.logoContainer}>
-      <Image source={require('../assets/LogoV.png')} style={styles.logo} />
+      <LogoV height={ALT} width={LAT}></LogoV>
       <View style={styles.bar}></View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>MED</Text>
@@ -20,7 +26,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 59,
-    height: 120
   },
   logo: {
     width: 45,
@@ -28,7 +33,7 @@ const styles = StyleSheet.create({
   },
   bar:{
     width: 4,
-    height: 120,
+    height: "100%",
     backgroundColor: '#1E98A8',
     borderRadius: 2,
     marginLeft: 21
@@ -45,7 +50,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     height: 56,
-    position: 'relative',
     fontSize: 56,
     fontWeight: 'regular',
     color: '#1E98A8',
@@ -57,6 +61,7 @@ const styles = StyleSheet.create({
     fontWeight: 'medium',
     color: '#00EDDF',
     fontFamily: 'MiFuente-Regular', // Asegúrate de que el nombre de la fuente sea correcto
+    marginTop: 10
   },
 });
 

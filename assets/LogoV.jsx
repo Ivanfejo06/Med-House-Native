@@ -1,9 +1,9 @@
 import * as React from "react";
 import Svg, { Rect, Path } from "react-native-svg";
-const SVGComponent = (props) => (
+const LogoV = (props) => (
   <Svg
-    width={1000}
-    height={2434}
+    width={props.width || 54}
+    height={props.height || 61}
     viewBox="0 0 1000 2434"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -54,4 +54,4 @@ const SVGComponent = (props) => (
     />
   </Svg>
 );
-export default SVGComponent;
+export default LogoV;

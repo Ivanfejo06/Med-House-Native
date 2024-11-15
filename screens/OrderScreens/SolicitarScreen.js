@@ -11,43 +11,6 @@ const { height, width } = Dimensions.get('window');
 const SolicitarScreen = ({ navigation }) => {
   const token = useSelector(state => state.user.token);
 
-  const handleSubmit = async () => {
-    const { selectedMedication, fecha_apertura, fecha_caducidad, descripcion, cantidad } = medicationData;
-    if (!selectedMedication || !fecha_apertura || !fecha_caducidad || !descripcion || !cantidad) {
-      Alert.alert('Error', 'Por favor, completa todos los campos.');
-      return;
-    }
-  
-    if (fecha_caducidad < fecha_apertura) {
-      Alert.alert('Error', 'La fecha de caducidad debe ser posterior a la fecha de apertura.');
-      return;
-    }
-    try {
-      // Aquí debes ajustar la URL a la de tu API
-      const response = await axios.post('https://hopeful-emerging-snapper.ngrok-free.app/request', {
-        medId: selectedMedication.id,
-        fecha_apertura: fecha_apertura.toISOString().split('T')[0],
-        fecha_caducidad: fecha_caducidad.toISOString().split('T')[0],
-        descripcion: descripcion,
-        cantidad: cantidad,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,  // Se usa el token desde Redux
-        }
-      });      
-  
-      if (response.status === 201) {
-        Alert.alert('Éxito', 'Donación realizada con éxito');
-        navigation.goBack();
-      } else {
-        Alert.alert('Error', 'Hubo un problema al enviar los datos.');
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Ocurrió un error al conectar con el servidor.');
-    }
-  };  
-
   return (
     <View style={styles.container}>
       <TopBarWhite 
@@ -70,7 +33,7 @@ const SolicitarScreen = ({ navigation }) => {
             </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.box}>
+        <TouchableOpacity style={styles.box} onPress={() => navigation.navigate("Storage")}>
             <View style={styles.details}>
                 <View style={styles.rower}>
                     <Text style={styles.option}>Retirar en almacen</Text>

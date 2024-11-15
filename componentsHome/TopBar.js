@@ -2,12 +2,13 @@ import React from 'react';
 import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
 import SearchBar from './SearchBar';
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const TOPBAR_HEIGHT = height * 0.13;
 const LINER_HEIGHT = height * 0.03521;
 const HEIGHT = height * 0.03521;
 const BORDERRADIUS = height * 0.029342;
+const TEXT = width * 0.27;
 
 const TopBar = ({ navigation, showText, text }) => {
   return (
@@ -60,10 +61,12 @@ const styles = StyleSheet.create({
     borderRadius: HEIGHT / 2,
   },
   text: {
-    fontSize: 16,
+    fontSize: 18,
     color: 'white',
     fontWeight: 'bold',
-    textAlign: "center"
+    textAlign: "center",
+    position: "relative",
+    left: TEXT
   },
 });
 
