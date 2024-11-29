@@ -65,12 +65,12 @@ const ProfileIndex = ({ navigation }) => {
 
           {/* Condicional para mostrar Donaciones o un nuevo destino */}
           {!isFarmaceutico ? (
-            <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Donaciones")}>
+            <TouchableOpacity style={styles.navigatorContainer} onPress={() => navigation.navigate("Orders")}>
               <View style={styles.navigatorContent}>
                 <View style={styles.icon} >
                   <DonacionesIcon width={30} height={30}/>
                 </View>
-                <Text style={styles.navigatorText}>Donaciones</Text>
+                <Text style={styles.navigatorText}>Pedidos</Text>
               </View>
             </TouchableOpacity>
           ) : (

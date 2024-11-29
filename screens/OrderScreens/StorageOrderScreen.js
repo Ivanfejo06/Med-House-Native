@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, TouchableWithoutFeedback, Alert, Text, FlatList, ScrollView } from 'react-native';
-import TopBarWhite from '../../componentsHome/TopBarWhite';
+import { View, StyleSheet, Dimensions, Text, ScrollView, Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import TopBarWhite from '../../componentsHome/TopBarWhite';
 import SendButton from '../../components/SendButton';
-import { Flow } from 'react-native-animated-spinkit';
-import MedItem from '../../componentsHome/MedItem';
 import VerticalMedScroll from '../../componentsHome/VerticalMedScroll';
 
 const { height, width } = Dimensions.get('window');
@@ -14,6 +12,7 @@ const StorageOrderScreen = ({ navigation }) => {
   const token = useSelector(state => state.user.token);
   const [items, setItems] = useState([]);  // Estado para almacenar los ítems
   const [loading, setLoading] = useState(false);  // Estado de carga
+  const [isSubmitting, setIsSubmitting] = useState(false);  // Estado para controlar el proceso de envío
 
   // Función para obtener los ítems de la API
   const fetchItems = async () => {
@@ -22,7 +21,7 @@ const StorageOrderScreen = ({ navigation }) => {
       const response = await axios.get('https://hopeful-emerging-snapper.ngrok-free.app/bolsa', {
         headers: {
           Authorization: `Bearer ${token}`, // Autenticación con token
-        },
+        }
       });
 
       const data = response.data.datos; // Asegúrate de que estás accediendo a los datos correctos
@@ -38,6 +37,12 @@ const StorageOrderScreen = ({ navigation }) => {
       }
     } catch (error) {
       console.error('Error fetching bolsa items:', error);
+      Alert.alert(
+        'Error',
+        'Hubo un problema al obtener los productos. Intenta nuevamente.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      );
     } finally {
       setLoading(false);
     }
@@ -50,31 +55,82 @@ const StorageOrderScreen = ({ navigation }) => {
     }
   }, [token]); // Se vuelve a ejecutar si el token cambia
 
+  // Función para manejar el submit (crear pedido)
+  const handleSubmit = async () => {
+    if (items.length === 0) {
+      Alert.alert(
+        'Error',
+        'No hay productos en la bolsa para crear el pedido.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      );
+      return;
+    }
+  
+    setIsSubmitting(true);  // Activar estado de carga
+  
+    try {
+      console.log("Token: ", token);  // Verifica el token antes de hacer la solicitud
+      // Enviar solicitud POST para crear el pedido
+      const response = await axios.post(`https://hopeful-emerging-snapper.ngrok-free.app/pedidos/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+  
+      if (response.data.success) {
+        // Si la solicitud fue exitosa, redirigir al usuario a la pantalla de confirmación o detalles del pedido
+        Alert.alert(
+          'Éxito',
+          'Pedido creado correctamente.',
+          [
+            { text: 'OK', onPress: () => navigation.navigate('PedidoDetalle', { pedidoId: response.data.datos.id }) },
+          ],
+          { cancelable: false }
+        );
+      } else {
+        Alert.alert(
+          'Error',
+          'No se pudo crear el pedido. Intenta nuevamente.',
+          [{ text: 'OK' }],
+          { cancelable: false }
+        );
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      Alert.alert(
+        'Error',
+        'Hubo un problema al crear el pedido. Intenta nuevamente.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      );
+    } finally {
+      setIsSubmitting(false);  // Desactivar estado de carga
+    }
+  };  
+
   return (
     <View style={styles.container}>
       <TopBarWhite 
         navigation={() => navigation.goBack()}
         title="Retirar en almacen"
       />
-      
-      <View style={styles.center}>
-        
-        <View style={styles.box}>
-          <Text style={styles.title}>No se que poner ahi</Text>
-        </View>
+      <View style={styles.box}>
+        <Text style={styles.warnText}>Esta opción es para retirar en los almacenes, ten en cuenta los horarios funcionales.</Text>
       </View>
       <ScrollView>
         <VerticalMedScroll
           donations={items}
           navigation={navigation}
-          title={"Prodctos en bolsa"} // Nombre de la categoría
+          title={"Productos en bolsa"} // Nombre de la categoría
           disabled={true}
         />
       </ScrollView>
       <View style={styles.buttonContainer}>
         <SendButton 
           title="Crear Pedido" 
-          onPress={() => navigation.navigate('Solicitar')} 
+          onPress={handleSubmit} // Usamos handleSubmit al presionar el botón
+          disabled={isSubmitting} // Desactivar el botón durante la carga
         />
       </View>
     </View>
@@ -86,16 +142,7 @@ const styles = StyleSheet.create({
     height: height,
     backgroundColor: '#F0F0F0',
   },
-  center: {
-    width: '100%',
-    flexDirection: "column",
-    padding: 15,
-    justifyContent: "center",
-    alignContent: "center",
-    paddingTop: 20
-  },
   box: {
-    width: "100%",
     backgroundColor: "#FFF",
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -105,16 +152,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 20,
     maxHeight: 600,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    margin: 20,
+    marginBottom: 0
   },
   buttonContainer: {
     position: 'absolute',
@@ -122,18 +161,12 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
   },
-  title:{
-    width: "100%",
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 15
+  warnText: {
+    fontSize: 12,
+    color: 'gray',
+    fontWeight: 'bold',
+    textAlign: "center"
   },
-  lister:{
-    borderWidth: 2,
-    borderColor: "#1E98A8",
-    borderRadius: 15,
-  }
 });
 
 export default StorageOrderScreen;

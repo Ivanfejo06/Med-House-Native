@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 150, // Ajusta la altura según sea necesario
+    height: 100, // Ajusta la altura según sea necesario
   },
 });
 

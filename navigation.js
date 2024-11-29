@@ -24,6 +24,8 @@ import QRScannerScreen from './screens/Start/QrScannerScreen';
 import QrHome from './screens/Start/QrHome';
 import SolicitarScreen from './screens/OrderScreens/SolicitarScreen';
 import StorageOrderScreen from './screens/OrderScreens/StorageOrderScreen';
+import OrderScreens from './screens/OrderScreens/PedidosScreen';
+import PedidoDetalleScreen from './screens/OrderScreens/PedidoDetalleScreen';
 
 import FarmLoginScreen from './screens/Start/Login/FarmLoginScreen';
 import FarmHomeScreen from './screens/FarmHome/FarmHomeScreen';
@@ -80,6 +82,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Request" component={RequestScreen} />
         <Stack.Screen name="Solicitar" component={SolicitarScreen} />
         <Stack.Screen name="Storage" component={StorageOrderScreen} />
+        <Stack.Screen name="Orders" component={OrderScreens} />
+        <Stack.Screen name="PedidoDetalle" component={PedidoDetalleScreen} />
 
         {/* SETTINGS ROUTES */}
         <Stack.Screen name="ProfileIndex" component={ProfileIndex} />
