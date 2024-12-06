@@ -50,6 +50,7 @@ const MedSearch = ({ onSelect }) => {
             placeholder="Buscar medicamentos..."
             value={query}
             onChangeText={setQuery}
+            placeholderTextColor={"#000"}
           />
         </View>
       </View>
@@ -91,6 +92,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    color: "#000"
   },
   searchBar: {
     flexDirection: 'row',
