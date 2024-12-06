@@ -22,6 +22,7 @@ const OrderScreens = ({ navigation }) => {
           Authorization: `Bearer ${token}`, // Autenticación con token
         },
       });
+      console.log(response.data.datos)
       setOrders(response.data.datos); // Establecer la lista de pedidos
     } catch (err) {
       console.error('Error fetching orders:', err);
@@ -121,9 +122,8 @@ const styles = StyleSheet.create({
   },
   orderItem: {
     backgroundColor: '#FFF',
-    padding: 15,
     marginHorizontal: 15,
-    marginBottom: 11,
+    marginBottom: 15,
     borderRadius: 15,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
@@ -133,11 +133,15 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Centrar el contenido horizontalmente
   },
   orderHeader: {
-    marginBottom: 10,
+    backgroundColor: "#1E98A8",
+    width: "100%",
+    paddingVertical: 5,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15
   },
   orderTitle: {
     fontSize: 16,
-    color: '#333',
+    color: '#FFF',
     fontWeight: 'bold', // Negrita para el título del pedido
     textAlign: 'center', // Centrado
   },
@@ -146,6 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     alignItems: 'center',
+    padding: 15
   },
   orderDate: {
     fontSize: 14,

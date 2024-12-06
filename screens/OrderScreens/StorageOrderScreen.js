@@ -10,6 +10,7 @@ const { height, width } = Dimensions.get('window');
 
 const StorageOrderScreen = ({ navigation }) => {
   const token = useSelector(state => state.user.token);
+  const user = useSelector(state => state.user.user);
   const [items, setItems] = useState([]);  // Estado para almacenar los ítems
   const [loading, setLoading] = useState(false);  // Estado de carga
   const [isSubmitting, setIsSubmitting] = useState(false);  // Estado para controlar el proceso de envío
@@ -71,12 +72,9 @@ const StorageOrderScreen = ({ navigation }) => {
   
     try {
       console.log("Token: ", token);  // Verifica el token antes de hacer la solicitud
+      console.log("user: ", user);
       // Enviar solicitud POST para crear el pedido
-      const response = await axios.post(`https://hopeful-emerging-snapper.ngrok-free.app/pedidos/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      const response = await axios.post(`https://hopeful-emerging-snapper.ngrok-free.app/pedidos/${user.id}`);
   
       if (response.data.success) {
         // Si la solicitud fue exitosa, redirigir al usuario a la pantalla de confirmación o detalles del pedido
@@ -84,7 +82,7 @@ const StorageOrderScreen = ({ navigation }) => {
           'Éxito',
           'Pedido creado correctamente.',
           [
-            { text: 'OK', onPress: () => navigation.navigate('PedidoDetalle', { pedidoId: response.data.datos.id }) },
+            { text: 'OK', onPress: () => navigation.navigate('Home') },
           ],
           { cancelable: false }
         );
